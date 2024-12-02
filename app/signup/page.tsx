@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import Link from 'next/link'
-import useAuth from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function SignupPage() {
   const [firstName, setFirstName] = useState('')
@@ -14,11 +14,11 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showCheckEmail, setShowCheckEmail] = useState(false)
-  const { signupUser, loading, error } = useAuth()
+  const { signup, isLoading, error } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const success = await signupUser({
+    const success = await signup({
       first_name: firstName,
       last_name: lastName,
       username,
@@ -49,7 +49,7 @@ export default function SignupPage() {
               Didn&apos;t receive the email? Check your spam folder or{' '}
               <button
                 onClick={() =>
-                  signupUser({
+                  signup({
                     first_name: firstName,
                     last_name: lastName,
                     username,
@@ -123,10 +123,12 @@ export default function SignupPage() {
               Already have an account?
             </Link>
           </div>
-          <Button type='submit' className='w-full' disabled={loading}>
+          <Button type='submit' className='w-full' disabled={isLoading}>
             Create account
           </Button>
-          {error && <p className='text-red-500 text-sm text-center'>{error}</p>}
+          {error && (
+            <p className='text-red-500 text-sm text-center'>{error.message}</p>
+          )}
         </form>
       </AuthCard>
     </div>

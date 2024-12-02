@@ -3,6 +3,7 @@
 import Header from '@/components/Header'
 import NewGoalView from '@/components/NewGoalView'
 import useAuth from '@/hooks/useAuth'
+
 export default function NewGoalPage() {
   const { user, isLoading } = useAuth()
 

@@ -1,8 +1,8 @@
 import { useRouter, usePathname } from 'next/navigation'
 import { authService } from '@/services/authService'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { User, ApiUser } from '@/types/auth'
+import { User, ApiUser, RegisterCredentials } from '@/types/auth'
 
 export const useAuth = () => {
   const router = useRouter()
@@ -60,6 +60,27 @@ export const useAuth = () => {
     refetchOnMount: true,
     refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes
   })
+
+  const signUpMutation = useMutation({
+    mutationFn: async (credentials: RegisterCredentials) => {
+      const response = await authService.register(credentials)
+      return response
+    },
+    onSuccess: () => {
+      toast.success(
+        'Account created! Please check your email to verify your account.'
+      )
+      router.push('/login')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to create account')
+    },
+  })
+
+  const signup = async (credentials: RegisterCredentials) => {
+    const response = signUpMutation.mutate(credentials)
+    return response !== undefined
+  }
 
   const login = async (email: string, password: string) => {
     try {
@@ -136,6 +157,7 @@ export const useAuth = () => {
     isSuccess,
     login,
     logout,
+    signup,
     verifyEmail,
     resendVerificationEmail,
   }
