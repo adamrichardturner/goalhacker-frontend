@@ -1,11 +1,10 @@
-"use client"
+'use client'
 
-import Header from "@/components/Header"
-import { useUser } from "@/hooks/useUser"
-import NewGoalView from "@/components/NewGoalView"
-
+import Header from '@/components/Header'
+import NewGoalView from '@/components/NewGoalView'
+import useAuth from '@/hooks/useAuth'
 export default function NewGoalPage() {
-  const { data: user, isLoading } = useUser()
+  const { user, isLoading } = useAuth()
 
   if (!user) {
     return null

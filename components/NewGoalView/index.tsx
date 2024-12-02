@@ -1,18 +1,25 @@
-import { useState } from "react"
-import { NewGoalStages } from "./NewGoalStages"
-import { Goal } from "@/types/goal"
-import { Button } from "../ui/button"
-import Link from "next/link"
+import { useState } from 'react'
+import { NewGoalStages } from './NewGoalStages'
+import { Goal } from '@/types/goal'
+import { Button } from '../ui/button'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { goalsService } from '@/services/goalsService'
+import useAuth from '@/hooks/useAuth'
 
-const stages = ["BasicInfo", "Timeline", "Measure", "Steps", "Review"] as const
+const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
 type Stage = (typeof stages)[number]
 
 export default function NewGoalView() {
-  const [currentStage, setCurrentStage] = useState<Stage>("BasicInfo")
+  const router = useRouter()
+  const { user, isLoading, error } = useAuth()
+  const [currentStage, setCurrentStage] = useState<Stage>('BasicInfo')
   const [goalData, setGoalData] = useState<Partial<Goal>>({
-    status: "not_started",
+    status: 'not_started',
     progress: 0,
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const updateGoalData = (data: Partial<Goal>) => {
     setGoalData((prev) => ({ ...prev, ...data }))
@@ -32,24 +39,64 @@ export default function NewGoalView() {
     }
   }
 
+  const handleCreateGoal = async () => {
+    if (!user) {
+      toast.error('You must be logged in to create a goal')
+      return
+    }
+
+    try {
+      setIsSubmitting(true)
+      await goalsService.createGoal({
+        ...goalData,
+        user_id: user.user_id,
+      })
+      toast.success('Goal created successfully!')
+      router.push('/goals')
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to create goal'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (error || !user) {
+    return (
+      <div className='text-center'>
+        <h2 className='text-xl font-semibold'>Please log in to create goals</h2>
+        <Link href='/login'>
+          <Button className='mt-4'>Go to Login</Button>
+        </Link>
+      </div>
+    )
+  }
+
   const renderStage = () => {
     const props = {
       onNext: handleNext,
       onBack: handleBack,
       updateGoalData,
       goalData,
+      onSubmit: handleCreateGoal,
+      isSubmitting,
     }
 
     switch (currentStage) {
-      case "BasicInfo":
+      case 'BasicInfo':
         return <NewGoalStages.BasicInfo {...props} />
-      case "Timeline":
+      case 'Timeline':
         return <NewGoalStages.Timeline {...props} />
-      case "Measure":
+      case 'Measure':
         return <NewGoalStages.Measure {...props} />
-      case "Steps":
+      case 'Steps':
         return <NewGoalStages.Steps {...props} />
-      case "Review":
+      case 'Review':
         return <NewGoalStages.Review {...props} />
     }
   }
@@ -81,17 +128,17 @@ export default function NewGoalView() {
             key={stage}
             className={`flex items-center ${
               index < stages.indexOf(currentStage)
-                ? "text-electricPurple"
+                ? 'text-electricPurple'
                 : index === stages.indexOf(currentStage)
-                ? "text-foreground"
-                : "text-muted"
+                  ? 'text-foreground'
+                  : 'text-muted'
             }`}
           >
             <div
               className={`w-4 h-4 text-xs p-2 rounded-full flex items-center justify-center border ${
                 index <= stages.indexOf(currentStage)
-                  ? "border-electricPurple"
-                  : "border-muted"
+                  ? 'border-electricPurple'
+                  : 'border-muted'
               }`}
             >
               {index + 1}
@@ -100,8 +147,8 @@ export default function NewGoalView() {
               <div
                 className={`w-full h-[1px] px-2 ${
                   index < stages.indexOf(currentStage)
-                    ? "bg-electricPurple"
-                    : "bg-muted"
+                    ? 'bg-electricPurple'
+                    : 'bg-muted'
                 }`}
               />
             )}

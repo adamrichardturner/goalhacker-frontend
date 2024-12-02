@@ -1,16 +1,16 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Goal, Subgoal } from "@/types/goal"
-import { X, CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Goal, Subgoal } from '@/types/goal'
+import { X, CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 
 interface SubGoalsListProps {
   goalData: Partial<Goal>
@@ -22,18 +22,18 @@ export const SubGoalsList = ({
   updateGoalData,
 }: SubGoalsListProps) => {
   const [subGoals, setSubGoals] = useState<Partial<Subgoal>[]>([
-    { title: "", due_date: undefined },
+    { title: '', due_date: undefined },
   ])
 
   const addSubGoal = () => {
-    setSubGoals([...subGoals, { title: "", due_date: undefined }])
+    setSubGoals([...subGoals, { title: '', due_date: undefined }])
   }
 
   const removeSubGoal = (index: number) => {
     if (subGoals.length > 1) {
       const newSubGoals = subGoals.filter((_, i) => i !== index)
       setSubGoals(newSubGoals)
-      updateGoalData({ subgoals: newSubGoals })
+      updateGoalData({ subgoals: newSubGoals as Subgoal[] })
     }
   }
 
@@ -42,7 +42,7 @@ export const SubGoalsList = ({
       i === index ? { ...subGoal, ...updates } : subGoal
     )
     setSubGoals(newSubGoals)
-    updateGoalData({ subgoals: newSubGoals })
+    updateGoalData({ subgoals: newSubGoals as Subgoal[] })
   }
 
   return (
@@ -68,15 +68,15 @@ export const SubGoalsList = ({
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                variant={"outline"}
+                variant={'outline'}
                 className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !subGoal.due_date && "text-muted"
+                  'w-full justify-start text-left font-normal',
+                  !subGoal.due_date && 'text-muted'
                 )}
               >
                 <CalendarIcon className='mr-2 h-4 w-4' />
                 {subGoal.due_date ? (
-                  format(new Date(subGoal.due_date), "PPP")
+                  format(new Date(subGoal.due_date), 'PPP')
                 ) : (
                   <span>Set deadline for this sub-goal</span>
                 )}

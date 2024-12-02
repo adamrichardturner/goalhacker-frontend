@@ -1,20 +1,20 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { AuthCard } from "@/components/form-components"
-import Link from "next/link"
-import useAuth from "@/hooks/useAuth"
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { AuthCard } from '@/components/form-components'
+import Link from 'next/link'
+import useAuth from '@/hooks/useAuth'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const { loginUser, loading } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { login, isLoading } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await loginUser({ email, password })
+    await login(email, password)
   }
 
   return (
@@ -31,7 +31,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
           <div className='space-y-2'>
@@ -41,7 +41,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
           <div className='flex justify-between items-center text-sm'>
@@ -55,8 +55,8 @@ export default function LoginPage() {
               Create account
             </Link>
           </div>
-          <Button type='submit' className='w-full' disabled={loading}>
-            {loading ? "Signing in..." : "Sign in"}
+          <Button type='submit' className='w-full' disabled={isLoading}>
+            {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
         </form>
       </AuthCard>

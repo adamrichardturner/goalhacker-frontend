@@ -1,10 +1,10 @@
-import { User } from "@/types/auth"
-import { Goal } from "@/types/goal"
-import { Button } from "../ui/button"
-import { useState } from "react"
-import Link from "next/link"
+import { User } from '@/types/auth'
+import { Goal } from '@/types/goal'
+import { Button } from '../ui/button'
+import { useState } from 'react'
+import Link from 'next/link'
 
-type FilterType = "All" | "Active" | "Completed"
+type FilterType = 'All' | 'Active' | 'Completed'
 
 interface GoalsViewProps {
   goals: Goal[]
@@ -12,9 +12,17 @@ interface GoalsViewProps {
 }
 
 const GoalsView = ({ goals, user }: GoalsViewProps) => {
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>("All")
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('All')
 
-  const filters: FilterType[] = ["All", "Active", "Completed"]
+  console.log(goals)
+
+  const filters: FilterType[] = ['All', 'Active', 'Completed']
+
+  const filteredGoals = goals.filter((goal) => {
+    if (selectedFilter === 'All') return true
+    if (selectedFilter === 'Active') return goal.status !== 'completed'
+    return goal.status === 'completed'
+  })
 
   return (
     <div className='flex flex-col gap-6'>
@@ -38,8 +46,8 @@ const GoalsView = ({ goals, user }: GoalsViewProps) => {
             onClick={() => setSelectedFilter(filter)}
             className={`relative pb-2 text-sm transition-colors duration-200 ${
               selectedFilter === filter
-                ? "text-foreground font-semibold"
-                : "text-muted hover:text-foreground"
+                ? 'text-foreground font-semibold'
+                : 'text-muted hover:text-foreground'
             }`}
           >
             {filter}
@@ -49,8 +57,21 @@ const GoalsView = ({ goals, user }: GoalsViewProps) => {
           </button>
         ))}
       </nav>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+        {filteredGoals.map((goal) => (
+          <div key={goal.goal_id} className='p-4 border rounded-lg'>
+            <h3 className='font-semibold'>{goal.title}</h3>
+            <p className='text-sm text-muted-foreground mt-2'>{goal.aims}</p>
+            {goal.target_date && (
+              <p className='text-sm mt-2'>
+                Target: {new Date(goal.target_date).toLocaleDateString()}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
-
 export default GoalsView

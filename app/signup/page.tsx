@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { AuthCard } from "@/components/form-components"
-import Link from "next/link"
-import useAuth from "@/hooks/useAuth"
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { AuthCard } from '@/components/form-components'
+import Link from 'next/link'
+import useAuth from '@/hooks/useAuth'
 
 export default function SignupPage() {
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showCheckEmail, setShowCheckEmail] = useState(false)
   const { signupUser, loading, error } = useAuth()
 
@@ -31,7 +31,7 @@ export default function SignupPage() {
   }
 
   const handleOpenEmail = () => {
-    window.location.href = "mailto:"
+    window.location.href = 'mailto:'
   }
 
   if (showCheckEmail) {
@@ -46,7 +46,7 @@ export default function SignupPage() {
               Open Email Client
             </Button>
             <p className='text-sm text-center text-gray-600'>
-              Didn&apos;t receive the email? Check your spam folder or{" "}
+              Didn&apos;t receive the email? Check your spam folder or{' '}
               <button
                 onClick={() =>
                   signupUser({

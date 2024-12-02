@@ -1,38 +1,40 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Goal } from "@/types/goal"
-import Image from "next/image"
-import lightBulbDrawing from "../../assets/illustrations/lightbulb.svg"
-import chartSteppingDrawing from "../../assets/illustrations/chart-stepping.svg"
-import metricsDrawing from "../../assets/illustrations/metrics.svg"
-import reviewDrawing from "../../assets/illustrations/review.svg"
-import { Textarea } from "../ui/textarea"
-import { useState } from "react"
-import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Goal } from '@/types/goal'
+import Image from 'next/image'
+import lightBulbDrawing from '../../assets/illustrations/lightbulb.svg'
+import chartSteppingDrawing from '../../assets/illustrations/chart-stepping.svg'
+import metricsDrawing from '../../assets/illustrations/metrics.svg'
+import reviewDrawing from '../../assets/illustrations/review.svg'
+import { Textarea } from '../ui/textarea'
+import { useState } from 'react'
+import { format } from 'date-fns'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { CalendarIcon } from "@radix-ui/react-icons"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { SubGoalsList } from "./SubGoalsList"
+} from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
+import { CalendarIcon } from '@radix-ui/react-icons'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { SubGoalsList } from './SubGoalsList'
 
 interface StageProps {
   onNext: () => void
   onBack?: () => void
   updateGoalData: (data: Partial<Goal>) => void
   goalData: Partial<Goal>
+  onSubmit?: () => Promise<void>
+  isSubmitting?: boolean
 }
 
 const BasicInfo = ({ onNext, updateGoalData, goalData }: StageProps) => {
@@ -52,7 +54,7 @@ const BasicInfo = ({ onNext, updateGoalData, goalData }: StageProps) => {
             </h2>
             <p>
               Your goal should be defined clearly. It should be achievable,
-              realistic and measurable.{" "}
+              realistic and measurable.{' '}
             </p>
             <p>Focus on what you want to achieve, avoiding vague statements.</p>
             <p>
@@ -73,7 +75,7 @@ const BasicInfo = ({ onNext, updateGoalData, goalData }: StageProps) => {
         <div className='space-y-4'>
           <Input
             placeholder='Exercise three times a week to improve fitness'
-            value={goalData.title || ""}
+            value={goalData.title || ''}
             onChange={(e) => updateGoalData({ title: e.target.value })}
             required
           />
@@ -124,7 +126,7 @@ const Timeline = ({ onNext, onBack, updateGoalData, goalData }: StageProps) => {
         <div className='space-y-4'>
           <Textarea
             placeholder='Complete a 5K race in under 30 minutes'
-            value={goalData.aims || ""}
+            value={goalData.aims || ''}
             onChange={(e) => updateGoalData({ aims: e.target.value })}
             required
             maxLength={200}
@@ -185,7 +187,7 @@ const Steps = ({ onNext, onBack, updateGoalData, goalData }: StageProps) => {
             </label>
             <Textarea
               placeholder="List the key actions you'll take..."
-              value={goalData.steps_to_completion || ""}
+              value={goalData.steps_to_completion || ''}
               onChange={(e) =>
                 updateGoalData({ steps_to_completion: e.target.value })
               }
@@ -262,7 +264,7 @@ const Measure = ({ onNext, onBack, updateGoalData, goalData }: StageProps) => {
             </div>
             <Textarea
               placeholder='I will track...'
-              value={goalData.measurement_method || ""}
+              value={goalData.measurement_method || ''}
               onChange={(e) =>
                 updateGoalData({ measurement_method: e.target.value })
               }
@@ -280,16 +282,16 @@ const Measure = ({ onNext, onBack, updateGoalData, goalData }: StageProps) => {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    variant={"outline"}
+                    variant={'outline'}
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      'w-full justify-start text-left font-normal',
                       !goalData.target_date &&
-                        "text-muted bg-card hover:bg-card"
+                        'text-muted bg-card hover:bg-card'
                     )}
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />
                     {goalData.target_date ? (
-                      format(new Date(goalData.target_date), "PPP")
+                      format(new Date(goalData.target_date), 'PPP')
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -321,7 +323,7 @@ const Measure = ({ onNext, onBack, updateGoalData, goalData }: StageProps) => {
               </label>
               <Select
                 value={goalData.priority}
-                onValueChange={(value: "low" | "medium" | "high") =>
+                onValueChange={(value: 'low' | 'medium' | 'high') =>
                   updateGoalData({ priority: value })
                 }
               >
@@ -355,7 +357,7 @@ const Measure = ({ onNext, onBack, updateGoalData, goalData }: StageProps) => {
   )
 }
 
-const Review = ({ onBack, goalData }: StageProps) => {
+const Review = ({ onBack, goalData, onSubmit, isSubmitting }: StageProps) => {
   return (
     <div className='space-y-4'>
       <div className='flex flex-col gap-4'>
@@ -387,17 +389,17 @@ const Review = ({ onBack, goalData }: StageProps) => {
               <strong>How to measure:</strong> {goalData.measurement_method}
             </p>
             <p>
-              <strong>Steps to completion:</strong>{" "}
+              <strong>Steps to completion:</strong>{' '}
               {goalData.steps_to_completion}
             </p>
             {goalData.target_date && (
               <p>
-                <strong>Target Date:</strong>{" "}
-                {format(new Date(goalData.target_date), "PPP")}
+                <strong>Target Date:</strong>{' '}
+                {format(new Date(goalData.target_date), 'PPP')}
               </p>
             )}
             <p>
-              <strong>Priority:</strong>{" "}
+              <strong>Priority:</strong>{' '}
               <span className='capitalize'>{goalData.priority}</span>
             </p>
           </div>
@@ -411,7 +413,7 @@ const Review = ({ onBack, goalData }: StageProps) => {
                     {subgoal.title}
                     {subgoal.due_date && (
                       <span className='text-muted ml-2'>
-                        (Due: {format(new Date(subgoal.due_date), "PPP")})
+                        (Due: {format(new Date(subgoal.due_date), 'PPP')})
                       </span>
                     )}
                   </li>
@@ -425,8 +427,8 @@ const Review = ({ onBack, goalData }: StageProps) => {
           <Button onClick={onBack} variant='outline' className='flex-1'>
             Go Back
           </Button>
-          <Button type='submit' className='flex-1'>
-            Create Goal
+          <Button onClick={onSubmit} disabled={isSubmitting} className='flex-1'>
+            {isSubmitting ? 'Creating Goal...' : 'Create Goal'}
           </Button>
         </div>
       </div>

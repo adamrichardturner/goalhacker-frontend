@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import Image from "next/image"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Image from 'next/image'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useState } from "react"
+} from '@/components/ui/dropdown-menu'
+import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -19,9 +19,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet"
-import { User } from "@/types/auth"
-import useAuth from "@/hooks/useAuth"
+} from '../ui/sheet'
+import { User } from '@/types/auth'
+import { useAuth } from '@/hooks/useAuth'
 
 interface HeaderProps {
   user: User
@@ -29,16 +29,16 @@ interface HeaderProps {
 }
 
 const Header = ({ user, loading }: HeaderProps) => {
-  const { logoutUser } = useAuth()
-  const [selectedLink, setSelectedLink] = useState("Goals")
+  const { logout } = useAuth()
+  const [selectedLink, setSelectedLink] = useState('Goals')
   const [isOpen, setIsOpen] = useState(false)
   const links = [
-    { name: "Goals", href: "/goals" },
-    { name: "Dashboard", href: "/" },
+    { name: 'Goals', href: '/goals' },
+    { name: 'Dashboard', href: '/' },
   ]
 
   const handleLogout = async () => {
-    await logoutUser()
+    await logout()
   }
 
   return (
@@ -61,8 +61,8 @@ const Header = ({ user, loading }: HeaderProps) => {
                   onClick={() => setSelectedLink(link.name)}
                   className={`transition-colors text-sm duration-200 ease-in-out ${
                     selectedLink === link.name
-                      ? "font-[600]"
-                      : "text-primary hover:text-card-foreground"
+                      ? 'font-[600]'
+                      : 'text-primary hover:text-card-foreground'
                   }`}
                 >
                   {link.name}
@@ -71,8 +71,8 @@ const Header = ({ user, loading }: HeaderProps) => {
                   <motion.div
                     className='absolute bottom-0 h-[1px] bg-[#8B5CF6]'
                     initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
                   />
                 )}
               </motion.div>
@@ -98,7 +98,7 @@ const Header = ({ user, loading }: HeaderProps) => {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} disabled={loading}>
-                {loading ? "Signing out..." : "Sign out"}
+                {loading ? 'Signing out...' : 'Sign out'}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -118,13 +118,13 @@ const Header = ({ user, loading }: HeaderProps) => {
             <motion.div
               initial={false}
               animate={{ rotate: isOpen ? 90 : 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
             >
               <Image
-                src={isOpen ? "/burger-close.svg" : "/burger-menu.svg"}
+                src={isOpen ? '/burger-close.svg' : '/burger-menu.svg'}
                 width={20}
                 height={20}
-                alt={"Burger Menu"}
+                alt={'Burger Menu'}
                 className='transition-opacity duration-200'
                 style={{
                   opacity: isOpen ? 0.8 : 1,
@@ -155,8 +155,8 @@ const Header = ({ user, loading }: HeaderProps) => {
                     }}
                     className={`text-lg ${
                       selectedLink === link.name
-                        ? "font-[600] border-b-2 border-electricPurple"
-                        : "text-primary hover:text-card-foreground"
+                        ? 'font-[600] border-b-2 border-electricPurple'
+                        : 'text-primary hover:text-card-foreground'
                     }`}
                   >
                     {link.name}
@@ -166,7 +166,7 @@ const Header = ({ user, loading }: HeaderProps) => {
             </SheetHeader>
             <SheetFooter className='flex flex-col gap-4'>
               <span className='text-md text-primary' onClick={handleLogout}>
-                {loading ? "Signing out..." : "Sign out"}
+                {loading ? 'Signing out...' : 'Sign out'}
               </span>
               <Link href='/support'>Support</Link>
               <Link href='/terms-conditions'>Terms & Conditions</Link>

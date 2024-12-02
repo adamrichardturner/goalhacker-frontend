@@ -1,18 +1,18 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 // Add paths that should be protected
-const protectedPaths = ["/dashboard", "/profile", "/goals"]
+const protectedPaths = ['/dashboard', '/profile', '/goals']
 // Add paths that should be accessible only to non-authenticated users
-const authPaths = ["/login", "/signup", "/forgot-password"]
+const authPaths = ['/login', '/signup', '/forgot-password']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const isAuthenticated = request.cookies.has("connect.sid") // Check for session cookie
+  const isAuthenticated = request.cookies.has('goalhacker.sid') // Check for session cookie
 
   // Redirect authenticated users away from auth pages
   if (isAuthenticated && authPaths.includes(pathname)) {
-    return NextResponse.redirect(new URL("/goals", request.url))
+    return NextResponse.redirect(new URL('/goals', request.url))
   }
 
   // Redirect non-authenticated users to login
@@ -20,8 +20,8 @@ export function middleware(request: NextRequest) {
     !isAuthenticated &&
     protectedPaths.some((path) => pathname.startsWith(path))
   ) {
-    const redirectUrl = new URL("/login", request.url)
-    redirectUrl.searchParams.set("from", pathname)
+    const redirectUrl = new URL('/login', request.url)
+    redirectUrl.searchParams.set('from', pathname)
     return NextResponse.redirect(redirectUrl)
   }
 
@@ -38,6 +38,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|public).*)",
+    '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
   ],
 }
