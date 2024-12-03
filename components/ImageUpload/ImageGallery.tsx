@@ -19,17 +19,20 @@ import { Skeleton } from '../ui/skeleton'
 import useCategorizedImages from '@/hooks/useCategorizedImages'
 import { useState } from 'react'
 import { CategorizedImage } from '@/types/image'
+import useImageUpload from '@/hooks/useImageUpload'
 
 interface ImageGalleryProps {
   selectedImage?: string | null
   onImageSelect: (file: File) => void
   onDefaultImageSelect: (image: DefaultImage) => void
+  goalId: string
 }
 
 export function ImageGallery({
   selectedImage,
   onImageSelect,
   onDefaultImageSelect,
+  goalId,
 }: ImageGalleryProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>()
   const [currentPage, setCurrentPage] = useState(1)
@@ -37,13 +40,33 @@ export function ImageGallery({
   const { images, isLoading, categories, totalPages, total } =
     useCategorizedImages(selectedCategory, currentPage)
 
+  console.log('GOAL ID: ', goalId)
+
+  const { uploadImage, isLoading: isUploading } = useImageUpload(goalId)
+
   console.log(images)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      onImageSelect(file)
-      setUploadValue('')
+    if (!file) return
+
+    try {
+      uploadImage(file, {
+        onSuccess: (data) => {
+          if (typeof data.image_url === 'string') {
+            onImageSelect(data.image_url)
+            setUploadValue('')
+          } else {
+            console.error('Invalid response format: image_url is not a string')
+          }
+        },
+        onError: (error) => {
+          console.error('Failed to upload image:', error)
+          // You might want to show an error toast here
+        },
+      })
+    } catch (error) {
+      console.error('Failed to upload image:', error)
     }
   }
 
@@ -83,17 +106,31 @@ export function ImageGallery({
             <div className='flex items-center justify-center w-full'>
               <label
                 htmlFor='image-upload'
-                className='flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-accent/50 border-border'
+                className={cn(
+                  'flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-accent/50 border-border',
+                  isUploading && 'opacity-50 cursor-not-allowed'
+                )}
               >
                 <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                  <Upload className='h-8 w-8 mb-4 text-muted-foreground' />
-                  <p className='mb-2 text-sm text-muted-foreground'>
-                    <span className='font-semibold'>Click to upload</span> or
-                    drag and drop
-                  </p>
-                  <p className='text-xs text-muted-foreground'>
-                    PNG, JPG or GIF (MAX. 800x400px)
-                  </p>
+                  {isUploading ? (
+                    <div className='flex flex-col items-center'>
+                      <span className='loading loading-spinner'></span>
+                      <p className='text-sm text-muted-foreground mt-2'>
+                        Uploading...
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className='h-8 w-8 mb-4 text-muted-foreground' />
+                      <p className='mb-2 text-sm text-muted-foreground'>
+                        <span className='font-semibold'>Click to upload</span>{' '}
+                        or drag and drop
+                      </p>
+                      <p className='text-xs text-muted-foreground'>
+                        PNG, JPG or GIF (MAX. 800x400px)
+                      </p>
+                    </>
+                  )}
                 </div>
                 <input
                   id='image-upload'
@@ -102,6 +139,7 @@ export function ImageGallery({
                   accept='image/*'
                   onChange={handleFileChange}
                   value={uploadValue}
+                  disabled={isUploading}
                 />
               </label>
             </div>

@@ -155,6 +155,7 @@ export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
                 </TabsContent>
                 <TabsContent value='image' className='py-4 max-w-2xl'>
                   <ImageGallery
+                    goalId={goal.goal_id || ''}
                     selectedImage={editedGoal.image_url}
                     onDefaultImageSelect={handleImageSelect}
                     onImageSelect={handleImageUpload}

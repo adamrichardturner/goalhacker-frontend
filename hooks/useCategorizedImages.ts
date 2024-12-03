@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 const IMAGES_PER_PAGE = 12
@@ -9,6 +9,8 @@ export default function useCategorizedImages(
   category?: string,
   page: number = 1
 ) {
+  const queryClient = useQueryClient()
+
   const { data, isLoading } = useQuery({
     queryKey: ['defaultImages', category, page],
     queryFn: async () => {
@@ -32,11 +34,18 @@ export default function useCategorizedImages(
     },
   })
 
+  const refreshImages = () => {
+    queryClient.invalidateQueries({
+      queryKey: ['defaultImages', category, page],
+    })
+  }
+
   return {
     images: data?.images || [],
     categories: data?.categories || [],
     total: data?.total || 0,
     totalPages: Math.ceil((data?.total || 0) / IMAGES_PER_PAGE),
     isLoading,
+    refreshImages,
   }
 }
