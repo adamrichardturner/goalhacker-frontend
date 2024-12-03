@@ -24,13 +24,12 @@ export function Review({
   isLoading = false,
   updateGoalData,
 }: ReviewProps) {
-  const { preview, handleImageSelect, handleDefaultImageSelect } =
-    useGoalImageUpload(({ image_url, default_image_key }) => {
-      updateGoalData({
-        image_url,
-        default_image_key,
-      })
-    }, goalData.image_url || goalData.default_image_key)
+  const { handleImageChange } = useGoalImageUpload((result) => {
+    updateGoalData({
+      image_url: result.image_url || undefined,
+      default_image_key: result.default_image_key || undefined,
+    })
+  }, goalData.image_url || goalData.default_image_key)
 
   if (isLoading) {
     return (
@@ -127,9 +126,9 @@ export function Review({
               motivated.
             </p>
             <ImageUpload
-              onImageSelect={handleImageSelect}
-              onDefaultImageSelect={handleDefaultImageSelect}
-              selectedImage={preview}
+              goalId={goalData.goal_id}
+              currentImage={goalData.image_url || goalData.default_image_key}
+              onImageChange={handleImageChange}
             />
           </div>
         </div>

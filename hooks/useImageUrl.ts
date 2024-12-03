@@ -4,8 +4,16 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 
 export const useImageUrl = () => {
   const formatImageUrl = useCallback(
-    (url: string | null | undefined): string | null => {
+    (
+      url: string | null | undefined,
+      isDefaultImageKey = false
+    ): string | null => {
       if (!url) return null
+
+      // If it's a default_image_key, don't modify it
+      if (isDefaultImageKey) {
+        return url
+      }
 
       // If it starts with a slash, it's a relative path
       if (url.startsWith('/')) {

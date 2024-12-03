@@ -4,6 +4,7 @@ import { API_URL } from '@/config'
 export const goalsService = {
   // Image handling methods
   formatImageUrl(url: string | null | undefined): string | null {
+    console.log('formatImageUrl input:', url)
     if (!url) {
       return null
     }
@@ -11,16 +12,19 @@ export const goalsService = {
     // If it starts with a slash, it's a relative path
     if (url.startsWith('/')) {
       const fullUrl = `${API_URL}${url}`
+      console.log('formatImageUrl output:', fullUrl)
       return fullUrl
     }
 
     try {
       // Check if it's already a valid URL
       new URL(url)
+      console.log('formatImageUrl output:', url)
       return url
     } catch {
       // If not a valid URL and doesn't start with slash, prepend API_URL with slash
       const fullUrl = `${API_URL}/${url}`
+      console.log('formatImageUrl output:', fullUrl)
       return fullUrl
     }
   },
@@ -72,11 +76,12 @@ export const goalsService = {
 
   // Goal handling methods
   formatGoalImages(goal: Goal): Goal {
-    return {
+    const formatted = {
       ...goal,
       image_url: this.formatImageUrl(goal.image_url),
-      default_image_key: this.formatImageUrl(goal.default_image_key),
+      default_image_key: goal.default_image_key,
     }
+    return formatted
   },
 
   // Image selection methods
@@ -95,21 +100,25 @@ export const goalsService = {
     try {
       const urlObj = new URL(url)
       if (urlObj.origin === API_URL) {
-        return urlObj.pathname
+        const stripped = urlObj.pathname
+        console.log('Stripped to:', stripped)
+        return stripped
       }
       return url
     } catch {
+      // If URL parsing fails, it's probably a key, not a URL
+      console.log('Not a URL, returning as-is:', url)
       return url
     }
   },
 
   async createGoal(goalData: Partial<Goal>): Promise<Goal> {
     try {
-      // Strip API_URL from image URLs before sending to server
+      // Only strip API_URL from image_url, leave default_image_key as-is
       const strippedData = {
         ...goalData,
         image_url: this.stripApiUrl(goalData.image_url),
-        default_image_key: this.stripApiUrl(goalData.default_image_key),
+        default_image_key: goalData.default_image_key,
       }
 
       const response = await fetch(`${API_URL}/api/goals`, {
@@ -147,8 +156,15 @@ export const goalsService = {
         throw new Error(error.message || 'Failed to fetch goals')
       }
 
-      const goals = await response.json()
-      return goals.map((goal: Goal) => this.formatGoalImages(goal))
+      const rawGoals = await response.json()
+      console.log('Raw goals from API:', rawGoals)
+
+      const formattedGoals = rawGoals.map((goal: Goal) =>
+        this.formatGoalImages(goal)
+      )
+      console.log('Goals after formatting:', formattedGoals)
+
+      return formattedGoals
     } catch (error) {
       throw error
     }
@@ -171,8 +187,15 @@ export const goalsService = {
         throw new Error(error.message || 'Failed to fetch goal')
       }
 
-      const goal = await response.json()
-      return this.formatGoalImages(goal)
+      const rawGoal = await response.json()
+      console.log('Raw goal from API in getGoalById:', rawGoal)
+
+      // Log the goal before and after formatting
+      console.log('Before formatGoalImages:', rawGoal)
+      const formattedGoal = this.formatGoalImages(rawGoal)
+      console.log('After formatGoalImages:', formattedGoal)
+
+      return formattedGoal
     } catch (error) {
       console.error('Error fetching goal:', error)
       throw error

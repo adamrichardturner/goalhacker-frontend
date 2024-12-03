@@ -12,8 +12,6 @@ export default function useImageUpload(goalId: string) {
       const formData = new FormData()
       formData.append('image', file)
 
-      console.log('GOAL ID', goalId)
-
       const response = await fetch(`${API_URL}/api/goals/${goalId}/image`, {
         method: 'POST',
         credentials: 'include',

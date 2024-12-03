@@ -14,25 +14,32 @@ import {
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '../ui/button'
-import { ImagePlus, Upload, ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  ImagePlus,
+  Upload,
+  ChevronLeft,
+  ChevronRight,
+  Trash2,
+} from 'lucide-react'
 import { Skeleton } from '../ui/skeleton'
 import useCategorizedImages from '@/hooks/useCategorizedImages'
 import { useState } from 'react'
 import { CategorizedImage } from '@/types/image'
-import useImageUpload from '@/hooks/useImageUpload'
 
 interface ImageGalleryProps {
-  selectedImage?: string | null
+  selectedImage: string | null
   onImageSelect: (file: File) => void
   onDefaultImageSelect: (image: DefaultImage) => void
-  goalId: string
+  onRemoveImage: () => void
+  isUploading: boolean
 }
 
 export function ImageGallery({
   selectedImage,
   onImageSelect,
   onDefaultImageSelect,
-  goalId,
+  onRemoveImage,
+  isUploading,
 }: ImageGalleryProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>()
   const [currentPage, setCurrentPage] = useState(1)
@@ -40,31 +47,13 @@ export function ImageGallery({
   const { images, isLoading, categories, totalPages, total } =
     useCategorizedImages(selectedCategory, currentPage)
 
-  console.log('GOAL ID: ', goalId)
-
-  const { uploadImage, isLoading: isUploading } = useImageUpload(goalId)
-
-  console.log(images)
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     try {
-      uploadImage(file, {
-        onSuccess: (data) => {
-          if (typeof data.image_url === 'string') {
-            onImageSelect(data.image_url)
-            setUploadValue('')
-          } else {
-            console.error('Invalid response format: image_url is not a string')
-          }
-        },
-        onError: (error) => {
-          console.error('Failed to upload image:', error)
-          // You might want to show an error toast here
-        },
-      })
+      onImageSelect(file)
+      setUploadValue('')
     } catch (error) {
       console.error('Failed to upload image:', error)
     }
@@ -94,6 +83,21 @@ export function ImageGallery({
           Gallery
         </TabsTrigger>
       </TabsList>
+
+      {selectedImage && (
+        <div className='mt-4 flex justify-end'>
+          <Button
+            variant='destructive'
+            size='sm'
+            onClick={onRemoveImage}
+            className='flex items-center gap-2'
+          >
+            <Trash2 className='h-4 w-4' />
+            Remove Image
+          </Button>
+        </div>
+      )}
+
       <TabsContent value='upload' className='mt-4'>
         <Card>
           <CardHeader>

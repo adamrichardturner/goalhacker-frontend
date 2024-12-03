@@ -17,8 +17,8 @@ export function useGoal(id?: string) {
   } = useQuery<Goal[]>({
     queryKey: ['goals'],
     queryFn: async () => {
-      const goals = await goalsService.getGoals()
-      return goals
+      const response = await goalsService.getGoals()
+      return response
     },
     staleTime: 0,
     refetchOnWindowFocus: true,
@@ -34,7 +34,11 @@ export function useGoal(id?: string) {
     error,
   } = useQuery<Goal | null>({
     queryKey: ['goal', id],
-    queryFn: () => (id ? goalsService.getGoalById(id) : null),
+    queryFn: async () => {
+      if (!id) return null
+      const response = await goalsService.getGoalById(id)
+      return response
+    },
     enabled: !!id,
   })
 

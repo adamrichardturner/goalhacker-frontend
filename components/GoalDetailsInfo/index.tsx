@@ -30,9 +30,8 @@ import { useRouter } from 'next/navigation'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
-import { ImageGallery } from '../ImageUpload/ImageGallery'
-import { useGoalImage } from '@/hooks/useGoalImage'
 import useCategorizedImages from '@/hooks/useCategorizedImages'
+import ImageUpload from '../ImageUpload'
 
 interface GoalDetailsInfoProps {
   goal: Goal
@@ -46,9 +45,6 @@ const targetBadgeStyles =
 export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
   const router = useRouter()
   const { deleteGoal, updateGoal } = useGoal(goal.goal_id)
-  const { handleImageUpload, handleImageSelect } = useGoalImage(
-    goal.goal_id || ''
-  )
   const { images: defaultImages } = useCategorizedImages()
   const [isDeleting, setIsDeleting] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -154,11 +150,17 @@ export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
                   </div>
                 </TabsContent>
                 <TabsContent value='image' className='py-4 max-w-2xl'>
-                  <ImageGallery
-                    goalId={goal.goal_id || ''}
-                    selectedImage={editedGoal.image_url}
-                    onDefaultImageSelect={handleImageSelect}
-                    onImageSelect={handleImageUpload}
+                  <ImageUpload
+                    goalId={goal.goal_id}
+                    currentImage={editedGoal.image_url}
+                    onImageChange={(result) => {
+                      console.log('Image change result:', result)
+                      setEditedGoal({
+                        ...editedGoal,
+                        image_url: result.image_url || null,
+                        default_image_key: result.default_image_key || null,
+                      })
+                    }}
                   />
                 </TabsContent>
               </Tabs>
