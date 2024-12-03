@@ -115,27 +115,40 @@ export function ImageGallery({
                   isUploading && 'opacity-50 cursor-not-allowed'
                 )}
               >
-                <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                  {isUploading ? (
-                    <div className='flex flex-col items-center'>
-                      <span className='loading loading-spinner'></span>
-                      <p className='text-sm text-muted-foreground mt-2'>
-                        Uploading...
-                      </p>
+                {selectedImage ? (
+                  <>
+                    <div className='relative w-full h-full'>
+                      <img
+                        src={selectedImage}
+                        alt='Selected image'
+                        className='absolute inset-0 w-full h-full object-cover rounded-lg'
+                      />
+                      <div className='absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center rounded-lg'>
+                        <Upload className='h-8 w-8 mb-4 text-white' />
+                        <p className='mb-2 text-sm text-white'>
+                          <span className='font-semibold'>
+                            Click to replace
+                          </span>
+                        </p>
+                      </div>
                     </div>
-                  ) : (
-                    <>
-                      <Upload className='h-8 w-8 mb-4 text-muted-foreground' />
-                      <p className='mb-2 text-sm text-muted-foreground'>
-                        <span className='font-semibold'>Click to upload</span>{' '}
-                        or drag and drop
-                      </p>
-                      <p className='text-xs text-muted-foreground'>
-                        PNG, JPG or GIF (MAX. 800x400px)
-                      </p>
-                    </>
-                  )}
-                </div>
+                  </>
+                ) : (
+                  <div className='flex flex-col items-center justify-center pt-5 pb-6'>
+                    {isUploading ? (
+                      <Skeleton className='h-8 w-8 mb-4 rounded-full' />
+                    ) : (
+                      <Upload className='h-8 w-8 mb-4' />
+                    )}
+                    <p className='mb-2 text-sm'>
+                      <span className='font-semibold'>Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className='text-xs text-muted-foreground'>
+                      PNG, JPG or GIF (max. 2MB)
+                    </p>
+                  </div>
+                )}
                 <input
                   id='image-upload'
                   type='file'
