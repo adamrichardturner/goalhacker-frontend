@@ -3,35 +3,20 @@
 import { useQuery } from '@tanstack/react-query'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+const IMAGES_PER_PAGE = 12
 
-export const categories = [
-  'Fitness',
-  'Business',
-  'Education',
-  'Travel',
-  'Health',
-  'Finance',
-  'Creative',
-  'Technology',
-] as const
-
-export type ImageCategory = (typeof categories)[number]
-
-interface CategorizedImage {
-  key: string
-  url: string
-  category: ImageCategory
-}
-
-interface ImagesResponse {
-  images: CategorizedImage[]
-}
-
-export default function useCategorizedImages(category?: ImageCategory) {
+export default function useCategorizedImages(
+  category?: string,
+  page: number = 1
+) {
   const { data, isLoading } = useQuery({
-    queryKey: ['defaultImages', category],
+    queryKey: ['defaultImages', category, page],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/api/images/default-images`, {
+      const url = category
+        ? `${API_URL}/api/images/default-goal-images?category=${category}`
+        : `${API_URL}/api/images/default-goal-images?page=${page}&per_page=${IMAGES_PER_PAGE}`
+
+      const response = await fetch(url, {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
@@ -42,17 +27,16 @@ export default function useCategorizedImages(category?: ImageCategory) {
         throw new Error('Failed to fetch images')
       }
 
-      const data = (await response.json()) as ImagesResponse
-      if (category) {
-        return data.images.filter((img) => img.category === category)
-      }
-      return data.images
+      const data = await response.json()
+      return data
     },
   })
 
   return {
-    images: data || [],
+    images: data?.images || [],
+    categories: data?.categories || [],
+    total: data?.total || 0,
+    totalPages: Math.ceil((data?.total || 0) / IMAGES_PER_PAGE),
     isLoading,
-    categories,
   }
 }

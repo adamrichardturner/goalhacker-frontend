@@ -35,7 +35,7 @@ export const useGoalImageDisplay = (goal: Goal): UseGoalImageDisplayReturn => {
         return url
       } catch {
         // If not a valid URL and doesn't start with slash, prepend API_URL with slash
-        return `${API_URL}/${url}`
+        return `${API_URL}/api${url}`
       }
     },
     []

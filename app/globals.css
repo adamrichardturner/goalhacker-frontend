@@ -74,3 +74,19 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.prose {
+  @apply text-foreground;
+}
+
+.prose p {
+  @apply my-2;
+}
+
+.prose ul {
+  @apply list-disc pl-6 my-2;
+}
+
+.prose ol {
+  @apply list-decimal pl-6 my-2;
+}

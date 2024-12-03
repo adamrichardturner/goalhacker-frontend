@@ -8,19 +8,17 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '../ui/button'
-import { ImagePlus, Upload } from 'lucide-react'
+import { ImagePlus, Upload, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Skeleton } from '../ui/skeleton'
-import useCategorizedImages, {
-  ImageCategory,
-} from '@/hooks/useCategorizedImages'
+import useCategorizedImages from '@/hooks/useCategorizedImages'
 import { useState } from 'react'
+import { CategorizedImage } from '@/types/image'
 
 interface ImageGalleryProps {
   selectedImage?: string | null
@@ -33,14 +31,31 @@ export function ImageGallery({
   onImageSelect,
   onDefaultImageSelect,
 }: ImageGalleryProps) {
-  const [selectedCategory, setSelectedCategory] = useState<ImageCategory>()
-  const { images, isLoading, categories } =
-    useCategorizedImages(selectedCategory)
+  const [selectedCategory, setSelectedCategory] = useState<string>()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [uploadValue, setUploadValue] = useState<string>('')
+  const { images, isLoading, categories, totalPages, total } =
+    useCategorizedImages(selectedCategory, currentPage)
+
+  console.log(images)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       onImageSelect(file)
+      setUploadValue('')
+    }
+  }
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1)
+    }
+  }
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1)
     }
   }
 
@@ -86,6 +101,7 @@ export function ImageGallery({
                   className='hidden'
                   accept='image/*'
                   onChange={handleFileChange}
+                  value={uploadValue}
                 />
               </label>
             </div>
@@ -104,8 +120,8 @@ export function ImageGallery({
             {isLoading ? (
               <div className='space-y-4'>
                 <Skeleton className='h-12 w-full' />
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                  {[...Array(8)].map((_, i) => (
+                <div className='grid md:grid-cols-2 gap-4'>
+                  {[...Array(12)].map((_, i) => (
                     <div key={`skeleton-${i}`} className='space-y-2'>
                       <Skeleton className='h-32 w-full' />
                     </div>
@@ -114,16 +130,19 @@ export function ImageGallery({
               </div>
             ) : (
               <>
-                <ScrollArea className='w-full whitespace-nowrap rounded-md border'>
+                <ScrollArea className='w-full whitespace-nowrap rounded-md border mb-6'>
                   <div className='flex w-max space-x-4 p-4'>
                     <Button
                       variant={!selectedCategory ? 'secondary' : 'outline'}
-                      className='shrink-0'
-                      onClick={() => setSelectedCategory(undefined)}
+                      className='shrink-0 capitalize'
+                      onClick={() => {
+                        setSelectedCategory(undefined)
+                        setCurrentPage(1)
+                      }}
                     >
                       All
                     </Button>
-                    {categories.map((category) => (
+                    {categories.map((category: string) => (
                       <Button
                         key={`category-${category}`}
                         variant={
@@ -131,8 +150,11 @@ export function ImageGallery({
                             ? 'secondary'
                             : 'outline'
                         }
-                        className='shrink-0'
-                        onClick={() => setSelectedCategory(category)}
+                        className='shrink-0 capitalize'
+                        onClick={() => {
+                          setSelectedCategory(category)
+                          setCurrentPage(1)
+                        }}
                       >
                         {category}
                       </Button>
@@ -140,8 +162,8 @@ export function ImageGallery({
                   </div>
                   <ScrollBar orientation='horizontal' />
                 </ScrollArea>
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4'>
-                  {images.map((image) => (
+                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+                  {images.map((image: CategorizedImage) => (
                     <div
                       key={`image-${image.key}`}
                       className={cn(
@@ -159,24 +181,46 @@ export function ImageGallery({
                       <AspectRatio ratio={16 / 9}>
                         <img
                           src={image.url}
-                          alt={`${image.category} goal image`}
+                          alt={`${image.category} image`}
                           className='object-cover w-full h-full transition-all hover:scale-105'
                         />
                       </AspectRatio>
                       <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-2'>
-                        <p className='text-white text-sm font-medium text-center'>
-                          Select Image
-                        </p>
-                        <p className='text-white/80 text-xs text-center'>
+                        <p className='text-white text-sm font-medium text-center capitalize'>
                           {image.category}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
-                <CardFooter className='text-sm text-muted-foreground mt-4'>
-                  {images.length} images available
-                </CardFooter>
+                {!selectedCategory && (
+                  <div className='flex items-center justify-between mt-6'>
+                    <p className='text-sm text-muted-foreground'>
+                      Showing {images.length} of {total} images
+                    </p>
+                    <div className='flex items-center gap-2'>
+                      <Button
+                        variant='outline'
+                        size='icon'
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                      >
+                        <ChevronLeft className='h-4 w-4' />
+                      </Button>
+                      <span className='text-sm'>
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <Button
+                        variant='outline'
+                        size='icon'
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
+                        <ChevronRight className='h-4 w-4' />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </CardContent>

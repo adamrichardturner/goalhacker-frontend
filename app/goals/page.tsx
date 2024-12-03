@@ -14,6 +14,8 @@ export default function GoalsPage() {
     return null
   }
 
+  console.log(goals)
+
   return (
     <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
       {userIsLoading ? (

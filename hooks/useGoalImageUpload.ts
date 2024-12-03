@@ -21,7 +21,7 @@ export function useGoalImageUpload(
   const [preview, setPreview] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const { formatImageUrl } = useImageUrl()
-  const { defaultImages, isLoading: isLoadingDefaultImages } =
+  const { images: defaultImages = [], isLoading: isLoadingDefaultImages } =
     useDefaultImages()
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function useGoalImageUpload(
       }
 
       const data = (await response.json()) as ImageUploadResponse
-      const imageUrl = formatImageUrl(data.imageUrl)
+      const imageUrl = formatImageUrl(`/api${data.imageUrl}`)
       if (imageUrl) {
         setPreview(imageUrl)
         onImageChange({ image_url: data.imageUrl })
@@ -62,7 +62,7 @@ export function useGoalImageUpload(
 
   const handleDefaultImageSelect = (image: DefaultImage) => {
     if (image.key) {
-      const imageUrl = formatImageUrl(image.key)
+      const imageUrl = formatImageUrl(`/api${image.key}`)
       if (imageUrl) {
         setPreview(imageUrl)
         onImageChange({ default_image_key: image.key })
@@ -78,15 +78,12 @@ export function useGoalImageUpload(
     onImageChange({ image_url: undefined, default_image_key: undefined })
   }
 
-  const formattedDefaultImages: DefaultImage[] = defaultImages.map(
-    (key: string) => {
-      const url = formatImageUrl(key)
-      return {
-        key,
-        url: url || '',
-      }
-    }
-  )
+  const formattedDefaultImages: DefaultImage[] = defaultImages.map((image) => ({
+    key: image.key,
+    url: formatImageUrl(image.url) || '',
+    category: image.category,
+    alt: image.alt,
+  }))
 
   return {
     preview,

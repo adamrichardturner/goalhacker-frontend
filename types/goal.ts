@@ -3,6 +3,7 @@ export type SubgoalStatus = 'planned' | 'in_progress' | 'completed'
 export interface ProgressNote {
   note_id?: string
   goal_id: string
+  title: string
   content: string
   created_at?: string
   updated_at?: string
@@ -22,6 +23,7 @@ export interface DefaultImage {
   key: string
   url: string
   category?: string
+  alt?: string
 }
 
 export interface Goal {

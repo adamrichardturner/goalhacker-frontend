@@ -1,14 +1,7 @@
 'use client'
 
 import { Goal } from '@/types/goal'
-import {
-  BasicInfo,
-  Timeline,
-  Measure,
-  Steps,
-  Review,
-  LoadingSkeletons,
-} from './stages'
+import { BasicInfo, Timeline, Measure, Steps, Review } from './stages'
 
 export const stages = [
   'BasicInfo',
@@ -17,6 +10,7 @@ export const stages = [
   'Steps',
   'Review',
 ] as const
+
 export type Stage = (typeof stages)[number]
 
 export interface StageProps {
@@ -35,5 +29,4 @@ export const NewGoalStages = {
   Measure,
   Steps,
   Review,
-  LoadingSkeletons,
 }

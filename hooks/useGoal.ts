@@ -197,20 +197,188 @@ export function useGoal(id?: string) {
     },
   })
 
+  const { mutate: addProgressNote } = useMutation({
+    mutationFn: async ({
+      title,
+      content,
+    }: {
+      title: string
+      content: string
+    }) => {
+      if (!id) throw new Error('Goal ID is required')
+      const response = await fetch(`${API_URL}/api/goals/${id}/notes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          goal_id: id,
+          title: title,
+          content: content,
+        }),
+      })
+      if (!response.ok) throw new Error('Failed to add progress note')
+      return response.json()
+    },
+    onMutate: async (newNote) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['goal', id] })
+
+      // Snapshot the previous value
+      const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
+
+      // Optimistically update the goal with new progress note
+      if (previousGoal) {
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...previousGoal,
+          progress_notes: [
+            {
+              note_id: crypto.randomUUID(),
+              goal_id: id!,
+              title: newNote.title,
+              content: newNote.content,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+            ...(previousGoal.progress_notes || []),
+          ],
+        })
+      }
+
+      return { previousGoal }
+    },
+    onError: (err, newNote, context) => {
+      // Rollback on error
+      if (context?.previousGoal) {
+        queryClient.setQueryData(['goal', id], context.previousGoal)
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+    },
+  })
+
+  const { mutate: updateProgressNote } = useMutation({
+    mutationFn: async ({
+      noteId,
+      title,
+      content,
+    }: {
+      noteId: string
+      title: string
+      content: string
+    }) => {
+      if (!id) throw new Error('Goal ID is required')
+      const response = await fetch(
+        `${API_URL}/api/goals/${id}/notes/${noteId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            note_id: noteId,
+            title: title,
+            content: content,
+          }),
+        }
+      )
+      if (!response.ok) throw new Error('Failed to update progress note')
+      return response.json()
+    },
+    onMutate: async (updatedNote) => {
+      await queryClient.cancelQueries({ queryKey: ['goal', id] })
+      const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
+
+      if (previousGoal) {
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...previousGoal,
+          progress_notes: previousGoal.progress_notes?.map((note) =>
+            note.note_id === updatedNote.noteId
+              ? {
+                  ...note,
+                  title: updatedNote.title,
+                  content: updatedNote.content,
+                  updated_at: new Date().toISOString(),
+                }
+              : note
+          ),
+        })
+      }
+
+      return { previousGoal }
+    },
+    onError: (err, updatedNote, context) => {
+      if (context?.previousGoal) {
+        queryClient.setQueryData(['goal', id], context.previousGoal)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+    },
+  })
+
+  const { mutate: deleteProgressNote } = useMutation({
+    mutationFn: async (noteId: string) => {
+      if (!id) throw new Error('Goal ID is required')
+      const response = await fetch(
+        `${API_URL}/api/goals/${id}/notes/${noteId}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        }
+      )
+      if (!response.ok) throw new Error('Failed to delete progress note')
+      return response.json()
+    },
+    onMutate: async (noteId) => {
+      await queryClient.cancelQueries({ queryKey: ['goal', id] })
+      const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
+
+      if (previousGoal) {
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...previousGoal,
+          progress_notes: previousGoal.progress_notes?.filter(
+            (note) => note.note_id !== noteId
+          ),
+        })
+      }
+
+      return { previousGoal }
+    },
+    onError: (err, noteId, context) => {
+      if (context?.previousGoal) {
+        queryClient.setQueryData(['goal', id], context.previousGoal)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+    },
+  })
+
   return {
     goals,
-    isGoalsLoading,
-    isGoalsError,
-    goalsError,
-    refetchGoals,
     goal,
     isLoading,
     isError,
     error,
+    isGoalsLoading,
+    isGoalsError,
+    goalsError,
+    refetchGoals,
     createSubgoal,
     updateSubgoal,
     deleteSubgoal,
     updateGoal,
     deleteGoal,
+    addProgressNote,
+    updateProgressNote,
+    deleteProgressNote,
   }
 }
