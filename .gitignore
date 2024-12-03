@@ -38,3 +38,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# image handling
+uploads/*
+!uploads/.gitkeep
+default-goal-images/*
+!default-goal-images/.gitkeep

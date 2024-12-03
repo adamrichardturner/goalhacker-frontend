@@ -1,6 +1,8 @@
+'use client'
+
 import { useState } from 'react'
-import { NewGoalStages } from './NewGoalStages'
 import { Goal } from '@/types/goal'
+import { NewGoalStages } from './NewGoalStages'
 import { Button } from '../ui/button'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -11,13 +13,18 @@ import useAuth from '@/hooks/useAuth'
 const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
 type Stage = (typeof stages)[number]
 
-export default function NewGoalView() {
+interface NewGoalViewProps {
+  isLoading?: boolean
+}
+
+export default function NewGoalView({ isLoading = false }: NewGoalViewProps) {
   const router = useRouter()
-  const { user, isLoading, error } = useAuth()
+  const { user } = useAuth()
   const [currentStage, setCurrentStage] = useState<Stage>('BasicInfo')
   const [goalData, setGoalData] = useState<Partial<Goal>>({
-    status: 'not_started',
+    status: 'planned',
     progress: 0,
+    priority: 'medium',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -39,7 +46,7 @@ export default function NewGoalView() {
     }
   }
 
-  const handleCreateGoal = async () => {
+  const handleSubmit = async () => {
     if (!user) {
       toast.error('You must be logged in to create a goal')
       return
@@ -47,8 +54,10 @@ export default function NewGoalView() {
 
     try {
       setIsSubmitting(true)
+      const subgoals = goalData.subgoals?.filter((subgoal) => subgoal.title)
       await goalsService.createGoal({
         ...goalData,
+        subgoals: subgoals?.length ? subgoals : undefined,
         user_id: user.user_id,
       })
       toast.success('Goal created successfully!')
@@ -62,11 +71,7 @@ export default function NewGoalView() {
     }
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-
-  if (error || !user) {
+  if (!user) {
     return (
       <div className='text-center'>
         <h2 className='text-xl font-semibold'>Please log in to create goals</h2>
@@ -78,12 +83,17 @@ export default function NewGoalView() {
   }
 
   const renderStage = () => {
+    if (isLoading) {
+      const LoadingSkeleton = NewGoalStages.LoadingSkeletons[currentStage]
+      return <LoadingSkeleton />
+    }
+
     const props = {
       onNext: handleNext,
       onBack: handleBack,
       updateGoalData,
       goalData,
-      onSubmit: handleCreateGoal,
+      onSubmit: handleSubmit,
       isSubmitting,
     }
 
@@ -106,20 +116,16 @@ export default function NewGoalView() {
       <div className='w-full'>
         <div className='flex items-center justify-between border-b border-border pb-4'>
           <div>
-            <h1 className='text-2xl font-semibold'>Create a new goal</h1>
+            <h1 className='text-xl font-semibold'>Create a new goal</h1>
             <div className='flex flex-col gap-0 text-xs'>
-              <p className='text-muted'>
+              <p className='text-muted-foreground'>
                 Plan your goal for success with the SMART framework.
               </p>
-              <p className='text-muted'>Click here for more information</p>
+              <p className='text-muted-foreground'>
+                Click here for more information
+              </p>
             </div>
           </div>
-
-          <Link href='/goals'>
-            <Button className='text-muted bg-muted-foreground texted-muted'>
-              Cancel
-            </Button>
-          </Link>
         </div>
       </div>
       <div className='flex w-full items-end justify-end pt-2 pb-4'>
@@ -131,7 +137,7 @@ export default function NewGoalView() {
                 ? 'text-electricPurple'
                 : index === stages.indexOf(currentStage)
                   ? 'text-foreground'
-                  : 'text-muted'
+                  : 'text-muted-foreground'
             }`}
           >
             <div

@@ -4,31 +4,100 @@ import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
+import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 
+interface ValidationErrors {
+  email?: string
+  password?: string
+  username?: string
+  general?: string
+}
+
+interface RegistrationState {
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  password: string
+}
+
 export default function SignupPage() {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [formData, setFormData] = useState<RegistrationState>({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    password: '',
+  })
   const [showCheckEmail, setShowCheckEmail] = useState(false)
-  const { signup, isLoading, error } = useAuth()
+  const [errors, setErrors] = useState<ValidationErrors>({})
+  const { signup, isLoading } = useAuth()
+
+  const validateForm = () => {
+    const newErrors: ValidationErrors = {}
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address'
+    }
+
+    // Password validation
+    if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long'
+    }
+
+    // Username validation
+    if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters long'
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(formData.username)) {
+      newErrors.username =
+        'Username can only contain letters, numbers, underscores, and hyphens'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const success = await signup({
-      first_name: firstName,
-      last_name: lastName,
-      username,
-      email,
-      password,
-    })
-    if (success) {
-      setShowCheckEmail(true)
+    setErrors({})
+
+    if (!validateForm()) {
+      return
+    }
+
+    try {
+      const success = await signup({
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      })
+      if (success) {
+        setShowCheckEmail(true)
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setErrors({ general: err.message })
+      } else {
+        setErrors({
+          general: 'An unexpected error occurred. Please try again.',
+        })
+      }
     }
   }
+
+  const handleInputChange =
+    (field: keyof RegistrationState) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }))
+      setErrors({})
+    }
 
   const handleOpenEmail = () => {
     window.location.href = 'mailto:'
@@ -36,99 +105,149 @@ export default function SignupPage() {
 
   if (showCheckEmail) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
+      <div className='min-h-screen flex flex-col items-center justify-center'>
+        <Link href='/' className='w-full pb-6 flex justify-center'>
+          <img src='/goalhacker-logo.svg' alt='GoalHacker' className='w-1/2' />
+        </Link>
         <AuthCard
-          title='Check your email'
-          description='We sent you a verification email. Please check your inbox and click the verification link to activate your account.'
+          title='Verify your email'
+          description='Please check your inbox and click the verification link to activate your account.'
         >
           <div className='space-y-4'>
-            <Button onClick={handleOpenEmail} className='w-full'>
-              Open Email Client
-            </Button>
-            <p className='text-sm text-center text-gray-600'>
-              Didn&apos;t receive the email? Check your spam folder or{' '}
-              <button
-                onClick={() =>
-                  signup({
-                    first_name: firstName,
-                    last_name: lastName,
-                    username,
-                    email,
-                    password,
-                  })
-                }
-                className='text-blue-600 hover:underline'
-              >
-                click here to resend
-              </button>
-            </p>
+            <Alert variant='info' className='mb-4'>
+              We sent a verification link to {formData.email}
+            </Alert>
+            <div className='space-y-2'>
+              <Button onClick={handleOpenEmail} className='w-full'>
+                Open Email Client
+              </Button>
+              <p className='text-sm text-center text-muted-foreground'>
+                Can&apos;t find the email? Check your spam folder or{' '}
+                <button
+                  onClick={() =>
+                    signup({
+                      first_name: formData.firstName,
+                      last_name: formData.lastName,
+                      username: formData.username,
+                      email: formData.email,
+                      password: formData.password,
+                    })
+                  }
+                  className='text-blue-600 hover:underline'
+                >
+                  click here to resend
+                </button>
+              </p>
+            </div>
+            <div className='pt-4 border-t'>
+              <p className='text-sm text-center text-muted-foreground'>
+                Already verified?{' '}
+                <Link href='/login' className='text-blue-600 hover:underline'>
+                  Sign in to your account
+                </Link>
+              </p>
+            </div>
           </div>
         </AuthCard>
       </div>
     )
   }
 
+  const isValidForm =
+    formData.firstName &&
+    formData.lastName &&
+    formData.username &&
+    formData.email &&
+    formData.password &&
+    Object.keys(errors).length === 0
+
   return (
-    <div className='min-h-screen flex items-center justify-center'>
+    <div className='min-h-screen flex flex-col items-center justify-center'>
+      <Link href='/' className='w-full pb-6 flex justify-center'>
+        <img src='/goalhacker-logo.svg' alt='GoalHacker' className='w-1/2' />
+      </Link>
       <AuthCard
         title='Create an account'
         description='Enter your details to create your account'
       >
         <form onSubmit={handleSubmit} className='space-y-4'>
+          {errors.general && (
+            <Alert variant='destructive' className='mb-4'>
+              {errors.general}
+            </Alert>
+          )}
           <div className='grid grid-cols-2 gap-4'>
             <Input
               type='text'
               placeholder='First Name'
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={formData.firstName}
+              onChange={handleInputChange('firstName')}
               required
+              disabled={isLoading}
             />
             <Input
               type='text'
               placeholder='Last Name'
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              value={formData.lastName}
+              onChange={handleInputChange('lastName')}
               required
+              disabled={isLoading}
             />
           </div>
           <div className='space-y-2'>
             <Input
               type='text'
               placeholder='Username'
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={formData.username}
+              onChange={handleInputChange('username')}
               required
+              disabled={isLoading}
+              className={errors.username ? 'border-destructive' : ''}
             />
+            {errors.username && (
+              <p className='text-xs text-destructive'>{errors.username}</p>
+            )}
           </div>
           <div className='space-y-2'>
             <Input
               type='email'
               placeholder='Email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleInputChange('email')}
               required
+              disabled={isLoading}
+              className={errors.email ? 'border-destructive' : ''}
             />
+            {errors.email && (
+              <p className='text-xs text-destructive'>{errors.email}</p>
+            )}
           </div>
           <div className='space-y-2'>
             <Input
               type='password'
               placeholder='Password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleInputChange('password')}
               required
+              disabled={isLoading}
+              className={errors.password ? 'border-destructive' : ''}
             />
+            {errors.password && (
+              <p className='text-xs text-destructive'>{errors.password}</p>
+            )}
           </div>
           <div className='text-sm text-right'>
             <Link href='/login' className='text-blue-600 hover:underline'>
               Already have an account?
             </Link>
           </div>
-          <Button type='submit' className='w-full' disabled={isLoading}>
-            Create account
+          <Button
+            type='submit'
+            className='w-full'
+            disabled={isLoading || !isValidForm}
+          >
+            {isLoading ? 'Creating account...' : 'Create account'}
           </Button>
-          {error && (
-            <p className='text-red-500 text-sm text-center'>{error.message}</p>
-          )}
         </form>
       </AuthCard>
     </div>

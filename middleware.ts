@@ -1,34 +1,76 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { config } from '@/config'
 
-// Add paths that should be protected
-const protectedPaths = ['/dashboard', '/profile', '/goals']
-// Add paths that should be accessible only to non-authenticated users
-const authPaths = ['/login', '/signup', '/forgot-password']
+const PUBLIC_PATHS = [
+  '/',
+  '/login',
+  '/signup',
+  '/verify-email',
+  '/forgot-password',
+  '/reset-password',
+]
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const sessionCookie = request.cookies.get('goalhacker.sid')?.value
   const { pathname } = request.nextUrl
-  const isAuthenticated = request.cookies.has('goalhacker.sid') // Check for session cookie
 
-  // Redirect authenticated users away from auth pages
-  if (isAuthenticated && authPaths.includes(pathname)) {
-    return NextResponse.redirect(new URL('/goals', request.url))
+  // Allow public paths without session
+  if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+    return NextResponse.next()
   }
 
-  // Redirect non-authenticated users to login
-  if (
-    !isAuthenticated &&
-    protectedPaths.some((path) => pathname.startsWith(path))
-  ) {
-    const redirectUrl = new URL('/login', request.url)
-    redirectUrl.searchParams.set('from', pathname)
-    return NextResponse.redirect(redirectUrl)
+  // If no session and not on public path, redirect to login
+  if (!sessionCookie && pathname !== '/') {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  // If there's a session, verify it's still valid
+  if (sessionCookie) {
+    try {
+      const response = await fetch(`${config.API_URL}/api/users/profile`, {
+        credentials: 'include',
+        headers: {
+          Cookie: `goalhacker.sid=${sessionCookie}`,
+        },
+      })
+
+      if (!response.ok) {
+        // Session is invalid, remove cookie and redirect to homepage
+        const redirectResponse = NextResponse.redirect(
+          new URL('/', request.url)
+        )
+        // Delete the cookie with the correct options
+        redirectResponse.cookies.set('goalhacker.sid', '', {
+          maxAge: 0,
+          path: '/',
+          domain: 'localhost',
+          sameSite: 'none',
+          secure: true,
+        })
+        return redirectResponse
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_unused) {
+      // On any error, assume session is invalid
+      const redirectResponse = NextResponse.redirect(new URL('/', request.url))
+      // Delete the cookie with the correct options
+      redirectResponse.cookies.set('goalhacker.sid', '', {
+        maxAge: 0,
+        path: '/',
+        domain: 'localhost',
+        sameSite: 'none',
+        secure: true,
+      })
+      return redirectResponse
+    }
   }
 
   return NextResponse.next()
 }
 
-export const config = {
+// Middleware configuration for Next.js
+export const middlewareConfig = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:

@@ -110,18 +110,16 @@ export const authService = {
     }
   },
 
-  async resendVerificationEmail(): Promise<void> {
-    const response = await fetch(
-      `${API_URL}/api/users/resend-verification-email`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: defaultHeaders,
-      }
-    )
+  async resendVerificationEmail(email: string): Promise<void> {
+    const response = await fetch(`${API_URL}/api/users/resend-verification`, {
+      method: 'POST',
+      headers: defaultHeaders,
+      body: JSON.stringify({ email }),
+    })
 
     if (!response.ok) {
-      throw new Error('Failed to resend verification email')
+      const error = await response.json()
+      throw new Error(error.message || 'Failed to resend verification email')
     }
   },
 }

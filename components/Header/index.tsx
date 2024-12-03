@@ -79,13 +79,16 @@ const Header = ({ user, loading }: HeaderProps) => {
             ))}
           </div>
           <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className='outline-none' asChild>
+            <DropdownMenuTrigger
+              className='outline-none hover:cursor-pointer'
+              asChild
+            >
               <Avatar>
                 <AvatarImage src='/profile.jpg' />
                 <AvatarFallback>AT</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-48'>
+            <DropdownMenuContent align='end' className='w-48 cursor-pointer'>
               <DropdownMenuItem>
                 <Link href='/account' className='w-full'>
                   Account
@@ -97,7 +100,11 @@ const Header = ({ user, loading }: HeaderProps) => {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} disabled={loading}>
+              <DropdownMenuItem
+                onClick={handleLogout}
+                disabled={loading}
+                className='cursor-pointer'
+              >
                 {loading ? 'Signing out...' : 'Sign out'}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -139,7 +146,7 @@ const Header = ({ user, loading }: HeaderProps) => {
                   <AvatarImage src='/profile.jpg' />
                   <AvatarFallback>AT</AvatarFallback>
                 </Avatar>
-                <SheetTitle className='text-sm font-semibold'>
+                <SheetTitle className='text-sm text-left font-semibold'>
                   Welcome, {user?.first_name} {user?.last_name}! 👋
                 </SheetTitle>
               </div>

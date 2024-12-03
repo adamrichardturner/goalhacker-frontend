@@ -11,6 +11,7 @@ export const useAuth = () => {
 
   const publicPaths = [
     '/login',
+    '/signup',
     '/register',
     '/forgot-password',
     '/reset-password',
@@ -21,9 +22,12 @@ export const useAuth = () => {
     user_id: userData.id,
     email: userData.email,
     username: userData.username,
-    first_name: userData.first_name || '',
-    last_name: userData.last_name || '',
-    email_verified: userData.email_verified || false,
+    first_name: userData.first_name,
+    last_name: userData.last_name,
+    plan_type: userData.plan_type,
+    email_verified: userData.email_verified,
+    created_at: userData.created_at,
+    updated_at: userData.updated_at,
   })
 
   const {
@@ -135,9 +139,9 @@ export const useAuth = () => {
     }
   }
 
-  const resendVerificationEmail = async () => {
+  const resendVerificationEmail = async (email: string) => {
     try {
-      await authService.resendVerificationEmail()
+      await authService.resendVerificationEmail(email)
       toast.success('Verification email sent! Please check your inbox.')
     } catch (error) {
       toast.error(
