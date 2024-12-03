@@ -42,16 +42,18 @@ export function useGoal(id?: string) {
     mutationFn: async ({
       title,
       target_date,
+      status = 'planned',
     }: {
       title: string
       target_date?: string
+      status?: SubgoalStatus
     }) => {
       if (!goal) throw new Error('Goal not found')
 
       const newSubgoal = {
         title,
         target_date,
-        status: 'NOT_STARTED' as SubgoalStatus,
+        status,
         subgoal_id: crypto.randomUUID(),
       }
 
@@ -86,10 +88,12 @@ export function useGoal(id?: string) {
       subgoalId,
       status,
       target_date,
+      title,
     }: {
       subgoalId: string
       status?: SubgoalStatus
       target_date?: string
+      title?: string
     }) => {
       if (!goal) throw new Error('Goal not found')
 
@@ -101,6 +105,7 @@ export function useGoal(id?: string) {
                 ...subgoal,
                 ...(status && { status }),
                 ...(target_date && { target_date }),
+                ...(title && { title }),
               }
             : subgoal
         ),

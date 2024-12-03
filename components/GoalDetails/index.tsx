@@ -6,7 +6,7 @@ import { Progress } from '../ui/progress'
 import { calculateGoalProgress } from '@/utils/goalProgress'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { Button } from '../ui/button'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Pen } from 'lucide-react'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -25,6 +25,15 @@ import { useState } from 'react'
 import { getPriorityConfig } from '@/utils/goalPriority'
 import { formatDate } from '../../utils/formatDate'
 import SubGoals from '../SubGoals'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 interface GoalDetailsProps {
   goal: Goal
@@ -38,8 +47,14 @@ const targetBadgeStyles =
 
 export default function GoalDetails({ goal }: GoalDetailsProps) {
   const router = useRouter()
-  const { deleteGoal } = useGoal(goal.goal_id)
+  const { deleteGoal, updateGoal } = useGoal(goal.goal_id)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedGoal, setEditedGoal] = useState({
+    title: goal.title,
+    aims: goal.aims,
+    target_date: goal.target_date,
+  })
 
   const { progress, completedSteps, totalSteps } = calculateGoalProgress(goal)
   const hasProgress = progress !== null && totalSteps > 0
@@ -61,6 +76,16 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
     }
   }
 
+  const handleSave = () => {
+    try {
+      updateGoal(editedGoal)
+      setIsEditing(false)
+      toast.success('Goal updated successfully')
+    } catch {
+      toast.error('Failed to update goal')
+    }
+  }
+
   return (
     <div className='flex flex-col'>
       <div
@@ -70,7 +95,63 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
           backgroundSize: 'cover',
         }}
       >
-        <div className='absolute flex items-start p-6 justify-end inset-0 bg-black/40 rounded-t-lg'>
+        <div className='absolute flex items-start p-6 justify-end gap-2 inset-0 bg-black/40 rounded-t-lg'>
+          <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogTrigger asChild>
+              <Button size='icon' className='bg-black/50 hover:bg-black/70'>
+                <Pen className='h-4 w-4 text-white' />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className='text-xl font-semibold text-primary'>
+                  Edit Goal
+                </DialogTitle>
+              </DialogHeader>
+              <div className='space-y-4 py-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='title'>Title</Label>
+                  <Input
+                    id='title'
+                    value={editedGoal.title}
+                    onChange={(e) =>
+                      setEditedGoal({ ...editedGoal, title: e.target.value })
+                    }
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='aims'>Aims</Label>
+                  <Input
+                    id='aims'
+                    value={editedGoal.aims}
+                    onChange={(e) =>
+                      setEditedGoal({ ...editedGoal, aims: e.target.value })
+                    }
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='target_date'>Target Date</Label>
+                  <Input
+                    id='target_date'
+                    type='date'
+                    value={editedGoal.target_date}
+                    onChange={(e) =>
+                      setEditedGoal({
+                        ...editedGoal,
+                        target_date: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className='flex justify-end gap-2 pt-4'>
+                  <Button variant='outline' onClick={() => setIsEditing(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave}>Save Changes</Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           <AlertDialog open={isDeleting} onOpenChange={setIsDeleting}>
             <AlertDialogTrigger asChild>
               <Button
@@ -145,7 +226,11 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
                 </span>
                 <span>{progress}%</span>
               </div>
-              <Progress value={progress} className='h-2' />
+              <Progress
+                value={progress}
+                className='h-2'
+                indicatorClassName='bg-electricPurple rounded-lg'
+              />
             </div>
           </div>
         )}
