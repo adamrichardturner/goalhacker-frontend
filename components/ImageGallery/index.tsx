@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -15,7 +15,7 @@ interface ImageGalleryProps {
   selectedImage?: Image
 }
 
-export function ImageGallery({
+export const ImageGallery = memo(function ImageGallery({
   onImageSelect,
   selectedImage,
 }: ImageGalleryProps) {
@@ -24,6 +24,7 @@ export function ImageGallery({
     categories,
     total,
     isLoadingDefaultImages,
+    isLoadingNextPage,
     uploadImage,
     isUploading,
     page,
@@ -53,8 +54,7 @@ export function ImageGallery({
     }
   }
 
-  const imagesPerPage = selectedCategory ? 12 : 6
-  const totalPages = Math.ceil(total / imagesPerPage)
+  const totalPages = Math.ceil(total / 6)
 
   return (
     <Card className='w-full'>
@@ -116,9 +116,9 @@ export function ImageGallery({
                   />
                 )}
 
-                <ScrollArea className='h-[400px]'>
+                <ScrollArea className='h-[400px] relative'>
                   <div className='grid grid-cols-3 gap-4 p-1'>
-                    {defaultImages?.map((image) => (
+                    {defaultImages?.map((image: Image) => (
                       <div
                         key={image.id}
                         className={cn(
@@ -138,6 +138,11 @@ export function ImageGallery({
                       </div>
                     ))}
                   </div>
+                  {isLoadingNextPage && (
+                    <div className='absolute inset-0 bg-black/10 flex items-center justify-center'>
+                      <Loader2 className='w-6 h-6 animate-spin' />
+                    </div>
+                  )}
                 </ScrollArea>
 
                 {totalPages > 1 && (
@@ -146,7 +151,7 @@ export function ImageGallery({
                       variant='outline'
                       size='sm'
                       onClick={() => changePage(page - 1)}
-                      disabled={page === 1 || isLoadingDefaultImages}
+                      disabled={page === 1 || isLoadingNextPage}
                     >
                       Previous
                     </Button>
@@ -157,7 +162,7 @@ export function ImageGallery({
                       variant='outline'
                       size='sm'
                       onClick={() => changePage(page + 1)}
-                      disabled={page === totalPages || isLoadingDefaultImages}
+                      disabled={page === totalPages || isLoadingNextPage}
                     >
                       Next
                     </Button>
@@ -170,4 +175,4 @@ export function ImageGallery({
       </CardContent>
     </Card>
   )
-}
+})

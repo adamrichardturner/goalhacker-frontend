@@ -1,9 +1,11 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { UploadImageResponse } from '@/types/image'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const IMAGES_PER_PAGE = 6
+const IMAGES_PER_CATEGORY = 12
 
 interface DefaultImagesResponse {
   images: Array<{
@@ -26,14 +28,10 @@ export const useImageGallery = (initialPage = 1) => {
   const [selectedCategory, setSelectedCategory] = useState('')
 
   // Fetch default images with pagination
-  const fetchImages = async ({
-    page,
-    per_page,
-    category,
-  }: FetchImagesParams) => {
+  const fetchImages = async ({ page, category }: FetchImagesParams) => {
     const params = new URLSearchParams({
       page: page.toString(),
-      per_page: per_page.toString(),
+      per_page: IMAGES_PER_PAGE.toString(),
       ...(category ? { category } : {}),
     })
 
@@ -44,16 +42,22 @@ export const useImageGallery = (initialPage = 1) => {
     return response.data
   }
 
-  const { data, isLoading: isLoadingDefaultImages } =
-    useQuery<DefaultImagesResponse>({
-      queryKey: ['defaultImages', page, selectedCategory],
-      queryFn: () =>
-        fetchImages({
-          page,
-          per_page: selectedCategory ? 12 : 6,
-          category: selectedCategory || undefined,
-        }),
-    })
+  const {
+    data,
+    isLoading: isLoadingDefaultImages,
+    isFetching,
+  } = useQuery<DefaultImagesResponse>({
+    queryKey: ['defaultImages', page, selectedCategory],
+    queryFn: () =>
+      fetchImages({
+        page,
+        per_page: IMAGES_PER_PAGE,
+        category: selectedCategory || undefined,
+      }),
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    gcTime: 0,
+  })
 
   // Transform the API response into a more usable format
   const defaultImages = data?.images.map((img) => ({
@@ -89,25 +93,41 @@ export const useImageGallery = (initialPage = 1) => {
     },
   })
 
-  const changePage = (newPage: number) => {
-    setPage(newPage)
-  }
+  const changePage = useCallback(
+    (newPage: number) => {
+      // For categories, limit to 2 pages
+      if (selectedCategory && newPage > 2) {
+        return
+      }
+      setPage(newPage)
+    },
+    [selectedCategory]
+  )
 
-  const changeCategory = (category: string) => {
+  const changeCategory = useCallback((category: string) => {
     setSelectedCategory(category)
-    setPage(1)
-  }
+    setPage(1) // Reset to first page when changing category
+  }, [])
+
+  // Calculate total pages based on whether a category is selected
+  const totalPages = selectedCategory
+    ? Math.min(Math.ceil((data?.total || 0) / IMAGES_PER_PAGE), 2)
+    : Math.ceil((data?.total || 0) / IMAGES_PER_PAGE)
 
   return {
     defaultImages,
     categories,
-    total: data?.total || 0,
+    total: selectedCategory
+      ? Math.min(data?.total || 0, IMAGES_PER_CATEGORY)
+      : data?.total || 0,
     isLoadingDefaultImages,
+    isLoadingNextPage: isFetching,
     uploadImage,
     isUploading,
     page,
     selectedCategory,
     changePage,
     changeCategory,
+    totalPages,
   }
 }

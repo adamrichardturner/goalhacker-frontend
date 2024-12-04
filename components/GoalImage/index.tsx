@@ -1,10 +1,10 @@
 import { Goal } from '@/types/goal'
 import { Skeleton } from '../ui/skeleton'
-import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
 import { AspectRatio } from '../ui/aspect-ratio'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { getPriorityConfig } from '@/utils/goalPriority'
 import { Badge } from '../ui/badge'
+import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
 
 interface GoalImageProps {
   goal: Goal
@@ -40,9 +40,10 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
         <div
           className='relative w-full h-full rounded-2xl overflow-hidden group'
           style={{
-            backgroundImage: `url(${imageUrl})`,
+            backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            backgroundColor: !imageUrl ? 'hsl(var(--muted))' : undefined,
           }}
         >
           <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60' />
