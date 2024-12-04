@@ -1,9 +1,10 @@
 'use client'
 
+import { DefaultImage } from '@/types/goal'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
-const IMAGES_PER_PAGE = 12
+const IMAGES_PER_PAGE = 6
 
 export default function useCategorizedImages(
   category?: string,
@@ -14,9 +15,17 @@ export default function useCategorizedImages(
   const { data, isLoading } = useQuery({
     queryKey: ['defaultImages', category, page],
     queryFn: async () => {
-      const url = category
-        ? `${API_URL}/api/images/default-goal-images?category=${category}`
-        : `${API_URL}/api/images/default-goal-images?page=${page}&per_page=${IMAGES_PER_PAGE}`
+      const baseUrl = `${API_URL}/api/images/default-goal-images`
+      const params = new URLSearchParams()
+
+      if (category) {
+        params.append('category', category)
+      } else {
+        params.append('page', page.toString())
+        params.append('per_page', IMAGES_PER_PAGE.toString())
+      }
+
+      const url = `${baseUrl}?${params.toString()}`
 
       const response = await fetch(url, {
         credentials: 'include',
@@ -40,11 +49,19 @@ export default function useCategorizedImages(
     })
   }
 
+  const paginateImages = (images: DefaultImage[]) => {
+    if (!category) return images
+    const startIndex = (page - 1) * IMAGES_PER_PAGE
+    return images.slice(startIndex, startIndex + IMAGES_PER_PAGE)
+  }
+
   return {
-    images: data?.images || [],
+    images: paginateImages(data?.images || []),
     categories: data?.categories || [],
     total: data?.total || 0,
-    totalPages: Math.ceil((data?.total || 0) / IMAGES_PER_PAGE),
+    totalPages: category
+      ? Math.ceil((data?.images?.length || 0) / IMAGES_PER_PAGE)
+      : Math.ceil((data?.total || 0) / IMAGES_PER_PAGE),
     isLoading,
     refreshImages,
   }

@@ -2,7 +2,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { DefaultImage } from '@/types/goal'
+import type { DefaultImage } from '@/types/goal'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import {
   Card,
@@ -24,7 +24,7 @@ import {
 import { Skeleton } from '../ui/skeleton'
 import useCategorizedImages from '@/hooks/useCategorizedImages'
 import { useState } from 'react'
-import { CategorizedImage } from '@/types/image'
+import { API_URL } from '@/config'
 
 interface ImageGalleryProps {
   selectedImage: string | null
@@ -70,6 +70,8 @@ export function ImageGallery({
       setCurrentPage((prev) => prev - 1)
     }
   }
+
+  console.log('SELECTED IMAGE   ', selectedImage)
 
   return (
     <Tabs defaultValue='upload' className='w-full'>
@@ -217,38 +219,48 @@ export function ImageGallery({
                   </div>
                   <ScrollBar orientation='horizontal' />
                 </ScrollArea>
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                  {images.map((image: CategorizedImage) => (
-                    <div
-                      key={`image-${image.key}`}
-                      className={cn(
-                        'group cursor-pointer relative overflow-hidden rounded-lg',
-                        selectedImage === image.url &&
-                          'ring-2 ring-primary ring-offset-2'
-                      )}
-                      onClick={() =>
-                        onDefaultImageSelect({
-                          key: image.key,
-                          url: image.url,
-                        })
-                      }
-                    >
-                      <AspectRatio ratio={16 / 9}>
-                        <img
-                          src={image.url}
-                          alt={`${image.category} image`}
-                          className='object-cover w-full h-full transition-all hover:scale-105'
-                        />
-                      </AspectRatio>
-                      <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-2'>
-                        <p className='text-white text-sm font-medium text-center capitalize'>
-                          {image.category}
-                        </p>
+                <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+                  {images.map((image: DefaultImage) => {
+                    // No need to add '/api' to image.url
+                    const isSelected = selectedImage?.endsWith(image.url)
+
+                    console.log('IS SELECTED   ', isSelected)
+
+                    return (
+                      <div
+                        key={`image-${image.key}`}
+                        className={cn(
+                          'group cursor-pointer relative overflow-hidden rounded-lg',
+                          isSelected && 'border-[1.5px] border-[#9D4EDD]'
+                        )}
+                        onClick={() =>
+                          onDefaultImageSelect({
+                            key: image.key,
+                            url: image.url,
+                          })
+                        }
+                      >
+                        <AspectRatio ratio={16 / 9}>
+                          <img
+                            src={image.url}
+                            alt={`${image.category} image`}
+                            className={cn(
+                              'object-cover w-full h-full transition-all hover:scale-105',
+                              isSelected &&
+                                'border-[1.5px] border-electricPurple'
+                            )}
+                          />
+                        </AspectRatio>
+                        <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-2'>
+                          <p className='text-white text-sm font-medium text-center capitalize'>
+                            {image.category}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
-                {!selectedCategory && (
+                {images?.length > 0 && (
                   <div className='flex items-center justify-between mt-6'>
                     <p className='text-sm text-muted-foreground'>
                       Showing {images.length} of {total} images
@@ -277,6 +289,76 @@ export function ImageGallery({
                   </div>
                 )}
               </>
+            )}
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value='default' className='mt-4'>
+        <Card>
+          <CardContent className='p-6'>
+            <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+              {isLoading
+                ? Array.from({ length: 6 }).map((_, index) => (
+                    <Skeleton
+                      key={index}
+                      className='aspect-square rounded-lg'
+                    />
+                  ))
+                : images?.map((image: DefaultImage) => (
+                    <div
+                      key={image.url}
+                      onClick={() => onDefaultImageSelect(image)}
+                      className={cn(
+                        'group cursor-pointer relative overflow-hidden rounded-lg',
+                        (selectedImage === image.url ||
+                          selectedImage === `/api${image.url}` ||
+                          selectedImage === `${API_URL}/api${image.url}`) &&
+                          'ring-2 ring-primary ring-offset-2'
+                      )}
+                    >
+                      <img
+                        src={`/api${image.url}`}
+                        alt={image.category}
+                        className='aspect-square object-cover w-full h-full'
+                      />
+                      <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center'>
+                        <ImagePlus className='h-6 w-6 text-white' />
+                      </div>
+                    </div>
+                  ))}
+            </div>
+            {images && images.length > 0 && (
+              <div className='flex justify-between items-center mt-6'>
+                <span className='text-sm text-muted-foreground'>
+                  Page {currentPage} of {Math.ceil(images.length / 6)}
+                </span>
+                <div className='flex gap-2'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    disabled={currentPage === 1 || isLoading}
+                  >
+                    <ChevronLeft className='h-4 w-4 mr-2' />
+                    Previous
+                  </Button>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    disabled={
+                      !images ||
+                      currentPage >= Math.ceil(images.length / 6) ||
+                      isLoading
+                    }
+                  >
+                    Next
+                    <ChevronRight className='h-4 w-4 ml-2' />
+                  </Button>
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
