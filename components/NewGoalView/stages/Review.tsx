@@ -4,8 +4,6 @@ import { Goal } from '@/types/goal'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
-import ImageUpload from '@/components/ImageUpload'
-import { useGoalImageUpload } from '@/hooks/useGoalImageUpload'
 
 interface ReviewProps {
   onBack?: () => void
@@ -22,15 +20,7 @@ export function Review({
   onSubmit,
   isSubmitting,
   isLoading = false,
-  updateGoalData,
 }: ReviewProps) {
-  const { handleImageChange } = useGoalImageUpload((result) => {
-    updateGoalData({
-      image_url: result.image_url || undefined,
-      default_image_key: result.default_image_key || undefined,
-    })
-  }, goalData.image_url || goalData.default_image_key)
-
   if (isLoading) {
     return (
       <div className='space-y-4'>
@@ -125,11 +115,7 @@ export function Review({
               Choose an image that represents your goal and will keep you
               motivated.
             </p>
-            <ImageUpload
-              goalId={goalData.goal_id}
-              currentImage={goalData.image_url || goalData.default_image_key}
-              onImageChange={handleImageChange}
-            />
+            {/* TODO: Add image upload component */}
           </div>
         </div>
 

@@ -1,11 +1,16 @@
-export interface CategorizedImage {
-  key: string
+export interface Image {
+  id: string
   url: string
-  category: string
+  category?: string
+  name?: string
 }
 
-export interface ImagesResponse {
-  images: CategorizedImage[]
-  categories: string[]
-  total: number
+export interface ImageCategory {
+  name: string
+  images: Image[]
+}
+
+export type UploadImageResponse = {
+  url: string
+  id: string
 }

@@ -1,4 +1,4 @@
-import { DefaultImage, Goal } from '@/types/goal'
+import { Goal } from '@/types/goal'
 import { Card, CardContent } from '../ui/card'
 import { getPriorityConfig } from '@/utils/goalPriority'
 import { Badge } from '../ui/badge'
@@ -30,8 +30,8 @@ import { useRouter } from 'next/navigation'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
-import useCategorizedImages from '@/hooks/useCategorizedImages'
-import ImageUpload from '../ImageUpload'
+import { ImageGallery } from '../ImageGallery'
+import { Image } from '@/types/image'
 
 interface GoalDetailsInfoProps {
   goal: Goal
@@ -45,7 +45,6 @@ const targetBadgeStyles =
 export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
   const router = useRouter()
   const { deleteGoal, updateGoal } = useGoal(goal.goal_id)
-  const { images: defaultImages } = useCategorizedImages()
   const [isDeleting, setIsDeleting] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editedGoal, setEditedGoal] = useState({
@@ -79,23 +78,26 @@ export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
     }
   }
 
+  const handleImageSelect = (image: Image) => {
+    setEditedGoal({
+      ...editedGoal,
+      default_image_key: image.id,
+      image_url: image.url,
+    })
+  }
+
   return (
-    <div>
+    <>
       <div
-        className='h-[300px] w-full bg-cover bg-center relative rounded-t-lg'
+        className='h-[200px] relative rounded-t-lg overflow-hidden'
         style={{
-          backgroundImage: `url(${
-            editedGoal.image_url ||
-            (editedGoal.default_image_key &&
-              defaultImages?.find(
-                (img: DefaultImage) => img.key === editedGoal.default_image_key
-              )?.url) ||
-            '/default-goal.jpg'
-          })`,
+          backgroundImage: `url(${goal.image_url})`,
           backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
-        <div className='absolute flex items-start p-6 justify-end gap-2 inset-0 bg-black/40 rounded-t-lg'>
+        <div className='absolute inset-0 bg-black/40' />
+        <div className='absolute top-6 right-6 flex items-start gap-2'>
           <Dialog open={isEditing} onOpenChange={setIsEditing}>
             <DialogTrigger asChild>
               <Button size='icon' className='bg-black/50 hover:bg-black/70'>
@@ -149,18 +151,17 @@ export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
                     />
                   </div>
                 </TabsContent>
-                <TabsContent value='image' className='py-4 max-w-2xl'>
-                  <ImageUpload
-                    goalId={goal.goal_id}
-                    currentImage={editedGoal.image_url}
-                    onImageChange={(result) => {
-                      console.log('Image change result:', result)
-                      setEditedGoal({
-                        ...editedGoal,
-                        image_url: result.image_url || null,
-                        default_image_key: result.default_image_key || null,
-                      })
-                    }}
+                <TabsContent value='image' className='py-4'>
+                  <ImageGallery
+                    onImageSelect={handleImageSelect}
+                    selectedImage={
+                      editedGoal.default_image_key && editedGoal.image_url
+                        ? {
+                            id: editedGoal.default_image_key,
+                            url: editedGoal.image_url,
+                          }
+                        : undefined
+                    }
                   />
                 </TabsContent>
               </Tabs>
@@ -203,29 +204,34 @@ export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <div className='absolute bottom-6 left-6 right-6 text-white'>
-            <div className='flex items-center gap-2'>
-              <Badge
-                className={`${badgeBaseStyles} ${goal.status === 'completed' ? 'bg-green-500/20' : goal.status === 'in_progress' ? 'bg-blue-500/20' : goal.status === 'archived' ? 'bg-gray-500/20' : 'bg-yellow-500/20'}`}
-              >
-                {goal.status}
+        </div>
+        <div className='absolute bottom-6 left-6 right-6 text-white'>
+          <div className='flex items-center gap-2'>
+            <Badge
+              className={`${badgeBaseStyles} ${
+                goal.status === 'completed'
+                  ? 'bg-green-500/20'
+                  : goal.status === 'in_progress'
+                    ? 'bg-blue-500/20'
+                    : goal.status === 'archived'
+                      ? 'bg-gray-500/20'
+                      : 'bg-yellow-500/20'
+              }`}
+            >
+              {goal.status}
+            </Badge>
+            <Badge className={`${badgeBaseStyles} ${priorityConfig.color}`}>
+              {goal.priority}
+            </Badge>
+            {goal.target_date && (
+              <Badge className={targetBadgeStyles}>
+                🎯 {formatDate(goal.target_date)}
               </Badge>
-              <Badge className={`${badgeBaseStyles} ${priorityConfig.color}`}>
-                {goal.priority}
-              </Badge>
-              {goal.target_date && (
-                <Badge className={targetBadgeStyles}>
-                  🎯 {formatDate(goal.target_date)}
-                </Badge>
-              )}
-            </div>
-            <h1 className='text-3xl font-bold mt-2 line-clamp-2'>
-              {goal.title}
-            </h1>
+            )}
           </div>
+          <h1 className='text-3xl font-bold mt-2 line-clamp-2'>{goal.title}</h1>
         </div>
       </div>
-
       <Card className='rounded-t-none'>
         <CardContent className='pt-6 space-y-6'>
           <div>
@@ -242,6 +248,6 @@ export default function GoalDetailsInfo({ goal }: GoalDetailsInfoProps) {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </>
   )
 }
