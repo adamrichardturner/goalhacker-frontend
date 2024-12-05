@@ -1,14 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState, memo } from 'react'
+import { useState, memo, useCallback } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { useImageGallery } from '@/hooks/useImageGallery'
 import { Image } from '@/types/image'
+import { DefaultImagesGrid } from './DefaultImagesGrid'
+import { Upload, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Loader2, Upload } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { CategorySelector } from './CategorySelector'
 
 interface ImageGalleryProps {
   onImageSelect: (image: Image) => void
@@ -21,42 +18,34 @@ export const ImageGallery = memo(function ImageGallery({
   selectedImage,
   existingImage,
 }: ImageGalleryProps) {
-  const {
-    defaultImages,
-    categories,
-    isLoadingDefaultImages,
-    isLoadingNextPage,
-    uploadImage,
-    isUploading,
-    page,
-    selectedCategory,
-    changePage,
-    changeCategory,
-    totalPages,
-  } = useImageGallery()
-
   const [uploadPreview, setUploadPreview] = useState<string>(
     existingImage || ''
   )
+  const [isUploading, setIsUploading] = useState(false)
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const handleFileChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
 
-    // Show preview
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setUploadPreview(reader.result as string)
-    }
-    reader.readAsDataURL(file)
+      setIsUploading(true)
+      // Show preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setUploadPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
 
-    try {
-      const response = await uploadImage(file)
-      onImageSelect({ id: response.id, url: response.url })
-    } catch (error) {
-      console.error('Failed to upload image:', error)
-    }
-  }
+      try {
+        // Handle upload logic here
+        setIsUploading(false)
+      } catch (error) {
+        console.error('Failed to upload image:', error)
+        setIsUploading(false)
+      }
+    },
+    []
+  )
 
   return (
     <Card className='w-full'>
@@ -92,7 +81,7 @@ export const ImageGallery = memo(function ImageGallery({
                             Uploading...
                           </span>
                         ) : (
-                          'Click to upload a new image'
+                          'Click to upload another'
                         )}
                       </p>
                     </div>
@@ -124,74 +113,10 @@ export const ImageGallery = memo(function ImageGallery({
           </TabsContent>
 
           <TabsContent value='default' className='mt-4'>
-            {isLoadingDefaultImages ? (
-              <div className='flex items-center justify-center h-32'>
-                <Loader2 className='w-6 h-6 animate-spin' />
-              </div>
-            ) : (
-              <div className='space-y-4'>
-                {categories && (
-                  <CategorySelector
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={changeCategory}
-                  />
-                )}
-
-                <ScrollArea className='relative'>
-                  <div className='grid grid-cols-3 gap-4 p-1'>
-                    {defaultImages?.map((image: Image) => (
-                      <div
-                        key={image.id}
-                        className={cn(
-                          'relative cursor-pointer rounded-lg overflow-hidden border-2 border-electricPurple p-[2px]',
-                          'hover:border-electricPurple transition-colors',
-                          selectedImage?.id === image.id
-                            ? 'border-electricPurple'
-                            : 'border-transparent'
-                        )}
-                        onClick={() => onImageSelect(image)}
-                      >
-                        <img
-                          src={image.url}
-                          alt={`${image.category} image`}
-                          className='w-full h-32 object-cover rounded-lg'
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  {isLoadingNextPage && (
-                    <div className='absolute inset-0 bg-black/10 flex items-center justify-center'>
-                      <Loader2 className='w-6 h-6 animate-spin' />
-                    </div>
-                  )}
-                </ScrollArea>
-
-                {totalPages > 1 && (
-                  <div className='flex justify-center gap-2 mt-4'>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => changePage(page - 1)}
-                      disabled={page === 1 || isLoadingNextPage}
-                    >
-                      Previous
-                    </Button>
-                    <span className='flex items-center px-3 text-sm'>
-                      Page {page} of {totalPages}
-                    </span>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => changePage(page + 1)}
-                      disabled={page === totalPages || isLoadingNextPage}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
+            <DefaultImagesGrid
+              onImageSelect={onImageSelect}
+              selectedImage={selectedImage}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>

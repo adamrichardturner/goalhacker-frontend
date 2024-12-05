@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../ui/dialog'
-import { useState } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
 import { Image } from '@/types/image'
@@ -53,13 +53,23 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
     }
   }
 
-  const handleImageSelect = (image: Image) => {
-    setEditedGoal({
-      ...editedGoal,
+  const handleImageSelect = useCallback((image: Image) => {
+    setEditedGoal((prev) => ({
+      ...prev,
       default_image_key: image.id,
       image_url: image.url,
-    })
-  }
+    }))
+  }, [])
+
+  const selectedImage = useMemo(() => {
+    if (editedGoal.default_image_key && editedGoal.image_url) {
+      return {
+        id: editedGoal.default_image_key,
+        url: editedGoal.image_url,
+      }
+    }
+    return undefined
+  }, [editedGoal.default_image_key, editedGoal.image_url])
 
   const handleGoalDelete = () => {
     setIsDeleting(true)
@@ -85,14 +95,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
           <div className='py-4'>
             <ImageGallery
               onImageSelect={handleImageSelect}
-              selectedImage={
-                editedGoal.default_image_key && editedGoal.image_url
-                  ? {
-                      id: editedGoal.default_image_key,
-                      url: editedGoal.image_url,
-                    }
-                  : undefined
-              }
+              selectedImage={selectedImage}
               existingImage={editedGoal.image_url}
             />
           </div>
