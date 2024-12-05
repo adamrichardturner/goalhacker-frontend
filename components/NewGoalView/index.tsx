@@ -13,11 +13,7 @@ import useAuth from '@/hooks/useAuth'
 const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
 type Stage = (typeof stages)[number]
 
-interface NewGoalViewProps {
-  isLoading?: boolean
-}
-
-export default function NewGoalView({ isLoading = false }: NewGoalViewProps) {
+export default function NewGoalView() {
   const router = useRouter()
   const { user } = useAuth()
   const [currentStage, setCurrentStage] = useState<Stage>('BasicInfo')
@@ -83,11 +79,6 @@ export default function NewGoalView({ isLoading = false }: NewGoalViewProps) {
   }
 
   const renderStage = () => {
-    if (isLoading) {
-      const LoadingSkeleton = NewGoalStages.LoadingSkeletons[currentStage]
-      return <LoadingSkeleton />
-    }
-
     const props = {
       onNext: handleNext,
       onBack: handleBack,

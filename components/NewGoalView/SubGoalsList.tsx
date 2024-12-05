@@ -65,28 +65,6 @@ export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
                 Due: {format(new Date(subgoal.target_date), 'PPP')}
               </span>
             )}
-            <Button
-              variant='ghost'
-              size='icon'
-              className={cn(
-                'h-8 w-8',
-                !subgoal.target_date && 'text-muted bg-card hover:bg-card'
-              )}
-              onClick={() => {
-                const updatedSubgoals = [...(goalData.subgoals || [])]
-                updatedSubgoals[index] = {
-                  ...subgoal,
-                  target_date: undefined,
-                }
-                updateGoalData({ subgoals: updatedSubgoals })
-              }}
-            >
-              {subgoal.target_date ? (
-                format(new Date(subgoal.target_date), 'PPP')
-              ) : (
-                <CalendarIcon className='h-4 w-4' />
-              )}
-            </Button>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant='ghost' className='h-8 w-8 p-0'>
@@ -124,6 +102,12 @@ export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
             setNewSubgoal({ ...newSubgoal, title: e.target.value })
           }
           placeholder='Add a new sub-goal...'
+          required
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && newSubgoal.title) {
+              handleAddSubgoal()
+            }
+          }}
         />
         <div className='flex items-center gap-2'>
           <Button
@@ -170,7 +154,15 @@ export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
         </div>
       </div>
 
-      <Button onClick={handleAddSubgoal} disabled={!newSubgoal.title}>
+      <Button
+        onClick={(e) => {
+          e.preventDefault()
+          if (newSubgoal.title) {
+            handleAddSubgoal()
+          }
+        }}
+        disabled={!newSubgoal.title}
+      >
         Add Sub-goal
       </Button>
     </div>

@@ -1,9 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import { Goal } from '@/types/goal'
+import { Image } from '@/types/image'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
+import { ImageGallery } from '@/components/ImageGallery'
 
 interface ReviewProps {
   onBack?: () => void
@@ -20,6 +23,7 @@ export function Review({
   onSubmit,
   isSubmitting,
   isLoading = false,
+  updateGoalData,
 }: ReviewProps) {
   if (isLoading) {
     return (
@@ -47,6 +51,13 @@ export function Review({
         </div>
       </div>
     )
+  }
+
+  const handleImageSelect = (image: Image) => {
+    updateGoalData({
+      ...goalData,
+      image_url: image.url,
+    })
   }
 
   return (
@@ -115,7 +126,15 @@ export function Review({
               Choose an image that represents your goal and will keep you
               motivated.
             </p>
-            {/* TODO: Add image upload component */}
+
+            <ImageGallery
+              onImageSelect={handleImageSelect}
+              selectedImage={
+                goalData.image_url
+                  ? { id: goalData.image_url, url: goalData.image_url }
+                  : undefined
+              }
+            />
           </div>
         </div>
 

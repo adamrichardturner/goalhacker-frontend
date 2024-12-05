@@ -22,7 +22,6 @@ export const ImageGallery = memo(function ImageGallery({
   const {
     defaultImages,
     categories,
-    total,
     isLoadingDefaultImages,
     isLoadingNextPage,
     uploadImage,
@@ -31,6 +30,7 @@ export const ImageGallery = memo(function ImageGallery({
     selectedCategory,
     changePage,
     changeCategory,
+    totalPages,
   } = useImageGallery()
 
   const [uploadPreview, setUploadPreview] = useState<string>('')
@@ -53,8 +53,6 @@ export const ImageGallery = memo(function ImageGallery({
       console.error('Failed to upload image:', error)
     }
   }
-
-  const totalPages = Math.ceil(total / 6)
 
   return (
     <Card className='w-full'>
