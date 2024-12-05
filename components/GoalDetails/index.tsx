@@ -8,6 +8,7 @@ import ProgressGoals from './ProgressGoals'
 import ProgressNotes from './ProgressNotes'
 import { Summary } from './Summary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+import { GoalStatusEditor } from './GoalStatusEditor'
 
 interface GoalDetailsProps {
   goal: Goal
@@ -54,27 +55,33 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
   return (
     <div className='space-y-6'>
       <GoalBanner goal={goal} />
-      <Tabs defaultValue='summary' className='w-full'>
-        <TabsList className='grid sm:w-1/2 w-full grid-cols-3 bg-card'>
-          <TabsTrigger value='summary'>Summary</TabsTrigger>
-          <TabsTrigger value='progress'>Progress</TabsTrigger>
-          <TabsTrigger value='notes'>Notes</TabsTrigger>
-        </TabsList>
-        <TabsContent value='summary'>
-          <Summary goal={goal} />
-        </TabsContent>
-        <TabsContent value='progress'>
-          <ProgressGoals goal={goal} />
-        </TabsContent>
-        <TabsContent value='notes'>
-          <ProgressNotes
-            goal={goal}
-            onEditNote={handleProgressNoteEdit}
-            onDeleteNote={handleProgressNoteDelete}
-            onAddNote={handleProgressNoteSave}
-          />
-        </TabsContent>
-      </Tabs>
+      <div className='space-y-4'>
+        <Tabs defaultValue='summary' className='w-full'>
+          <div className='flex justify-between items-start mb-4'>
+            <TabsList className='grid sm:w-[400px] w-full grid-cols-3 bg-card'>
+              <TabsTrigger value='summary'>Summary</TabsTrigger>
+              <TabsTrigger value='progress'>Progress</TabsTrigger>
+              <TabsTrigger value='notes'>Notes</TabsTrigger>
+            </TabsList>
+            <GoalStatusEditor goal={goal} />
+          </div>
+
+          <TabsContent value='summary'>
+            <Summary goal={goal} />
+          </TabsContent>
+          <TabsContent value='progress'>
+            <ProgressGoals goal={goal} />
+          </TabsContent>
+          <TabsContent value='notes'>
+            <ProgressNotes
+              goal={goal}
+              onEditNote={handleProgressNoteEdit}
+              onDeleteNote={handleProgressNoteDelete}
+              onAddNote={handleProgressNoteSave}
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }
