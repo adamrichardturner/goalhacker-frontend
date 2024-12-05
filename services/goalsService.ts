@@ -1,6 +1,10 @@
 import { Goal } from '@/types/goal'
 import { API_URL } from '@/config'
 
+let reorderTimeout: NodeJS.Timeout | null = null
+let pendingUpdates: Map<string, { subgoal_id: string; order: number }[]> =
+  new Map()
+
 export const goalsService = {
   // Image handling methods
   formatImageUrl(url: string | null | undefined): string | null {
@@ -205,5 +209,52 @@ export const goalsService = {
     } catch (error) {
       throw error
     }
+  },
+
+  async updateSubgoalsOrder(
+    goalId: string,
+    updates: { subgoal_id: string; order: number }[]
+  ): Promise<void> {
+    // Store the latest updates for this goal
+    pendingUpdates.set(goalId, updates)
+
+    // Clear existing timeout if any
+    if (reorderTimeout) {
+      clearTimeout(reorderTimeout)
+    }
+
+    // Set new timeout to process updates
+    reorderTimeout = setTimeout(async () => {
+      try {
+        // Get the final state for this goal
+        const finalUpdates = pendingUpdates.get(goalId)
+        if (!finalUpdates) return
+
+        // Clear pending updates for this goal
+        pendingUpdates.delete(goalId)
+
+        const response = await fetch(
+          `${API_URL}/api/goals/${goalId}/subgoals/reorder`,
+          {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ updates: finalUpdates }),
+          }
+        )
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(error.message || 'Failed to update subgoals order')
+        }
+      } catch (error) {
+        // In case of error, you might want to implement a retry mechanism
+        // or notify the user that the order might not have been saved
+        console.error('Failed to save subgoal order:', error)
+        throw error
+      }
+    }, 500) // Debounce time of 500ms
   },
 }

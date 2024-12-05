@@ -29,6 +29,8 @@ import {
 import { cn } from '@/lib/utils'
 import { useGoal } from '@/hooks/useGoal'
 import { format } from 'date-fns'
+import { Reorder } from 'framer-motion'
+import { goalsService } from '@/services/goalsService'
 
 interface SubGoalsProps {
   goal: Goal
@@ -65,6 +67,8 @@ export default function SubGoals({ goal }: SubGoalsProps) {
   const [deletingSubgoalId, setDeletingSubgoalId] = useState<string | null>(
     null
   )
+
+  const [localSubgoals, setLocalSubgoals] = useState(goal.subgoals || [])
 
   const handleSubgoalCreate = () => {
     if (!newSubgoal.title) return
@@ -140,19 +144,20 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     }
   }
 
-  const sortedSubgoals = [...(goal.subgoals || [])].sort((a, b) => {
-    // If both have target dates, compare them
-    if (a.target_date && b.target_date) {
-      return (
-        new Date(a.target_date).getTime() - new Date(b.target_date).getTime()
-      )
+  const handleReorder = async (reorderedSubgoals: typeof localSubgoals) => {
+    if (!goal.goal_id) return
+    setLocalSubgoals(reorderedSubgoals)
+    const updates = reorderedSubgoals.map((subgoal, index) => ({
+      subgoal_id: subgoal.subgoal_id!,
+      order: index,
+    }))
+    try {
+      await goalsService.updateSubgoalsOrder(goal.goal_id, updates)
+    } catch (error) {
+      setLocalSubgoals(goal.subgoals || [])
+      console.error('Failed to update subgoal order:', error)
     }
-    // If only one has a target date, put the one with date first
-    if (a.target_date) return -1
-    if (b.target_date) return 1
-    // If neither has a target date, maintain their original order
-    return 0
-  })
+  }
 
   return (
     <div className='space-y-4'>
@@ -224,11 +229,18 @@ export default function SubGoals({ goal }: SubGoalsProps) {
       </div>
 
       {/* Existing Subgoals */}
-      <div className='space-y-3'>
-        {sortedSubgoals.map((subgoal) => (
-          <div
+      <Reorder.Group
+        axis='y'
+        values={localSubgoals}
+        onReorder={handleReorder}
+        className='space-y-3 cursor-grab'
+      >
+        {localSubgoals.map((subgoal) => (
+          <Reorder.Item
             key={subgoal.subgoal_id}
+            value={subgoal}
             className='flex items-center justify-between p-4 border rounded-lg'
+            style={{ position: 'relative' }}
           >
             <div className='flex items-center gap-3 flex-1'>
               <Select
@@ -356,9 +368,9 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                 </>
               )}
             </div>
-          </div>
+          </Reorder.Item>
         ))}
-      </div>
+      </Reorder.Group>
 
       <AlertDialog
         open={!!deletingSubgoalId}

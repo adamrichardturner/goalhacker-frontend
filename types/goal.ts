@@ -17,6 +17,7 @@ export interface Subgoal {
   status: SubgoalStatus
   created_at?: string
   updated_at?: string
+  order?: number
 }
 
 export interface DefaultImage {

@@ -430,6 +430,20 @@ export function useGoal(id?: string) {
     },
   })
 
+  const updateSubgoalsOrder = async (
+    updates: { subgoal_id: string; order: number }[]
+  ) => {
+    try {
+      await goalsService.updateSubgoalsOrder(id!, updates)
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+    } catch (error) {
+      console.error('Error updating subgoals order:', error)
+      throw error
+    }
+  }
+
   return {
     goals,
     goal,
@@ -450,5 +464,6 @@ export function useGoal(id?: string) {
     addProgressNote,
     updateProgressNote,
     deleteProgressNote,
+    updateSubgoalsOrder,
   }
 }
