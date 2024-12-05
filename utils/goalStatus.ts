@@ -10,46 +10,51 @@ export const getGoalStatus = (status: Goal['status']): StatusConfig => {
     case 'completed':
       return {
         label: 'Completed',
-        className: 'bg-green-500/10 text-green-500 backdrop-blur-sm',
+        className: '#22c55e',
       }
     case 'in_progress':
       return {
         label: 'In Progress',
-        className: 'bg-blue-500/10 text-blue-500 backdrop-blur-sm',
+        className: '#7C3AED',
       }
     case 'archived':
       return {
         label: 'Archived',
-        className: 'bg-gray-500/10 text-gray-500 backdrop-blur-sm',
+        className: '#6b7280',
       }
     case 'planned':
     default:
       return {
         label: 'Planned',
-        className: 'bg-electricPurple text-white backdrop-blur-sm',
+        className: '#7C3AED',
       }
   }
 }
 
 export const getSubgoalStatus = (
-  status: 'planned' | 'in_progress' | 'completed'
+  status: 'planned' | 'in_progress' | 'completed' | 'archived'
 ): StatusConfig => {
   switch (status) {
     case 'completed':
       return {
         label: 'Completed',
-        className: 'bg-green-500/10 text-green-500 backdrop-blur-sm',
+        className: 'text-success',
       }
     case 'in_progress':
       return {
         label: 'In Progress',
-        className: 'bg-blue-500/10 text-blue-500 backdrop-blur-sm',
+        className: 'text-electricPurple',
+      }
+    case 'archived':
+      return {
+        label: 'Archived',
+        className: 'text-muted-foreground',
       }
     case 'planned':
     default:
       return {
         label: 'Planned',
-        className: 'bg-purple-500/10 text-purple-500 backdrop-blur-sm',
+        className: 'text-foreground',
       }
   }
 }

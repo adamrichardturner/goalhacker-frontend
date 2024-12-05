@@ -1,6 +1,6 @@
 import { Goal } from '@/types/goal'
 import { Button } from '@/components/ui/button'
-import { Pen } from 'lucide-react'
+import { Pen, CalendarIcon } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,21 @@ import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { format } from 'date-fns'
+import { cn } from '@/lib/utils'
 
 interface EditSummaryProps {
   goal: Goal
@@ -25,6 +40,8 @@ export function EditSummary({ goal }: EditSummaryProps) {
     aims: goal.aims || '',
     steps_to_completion: goal.steps_to_completion || '',
     measurement_method: goal.measurement_method || '',
+    target_date: goal.target_date || undefined,
+    priority: goal.priority || 'medium',
   })
 
   const handleSave = () => {
@@ -93,6 +110,65 @@ export function EditSummary({ goal }: EditSummaryProps) {
               placeholder='How will you measure progress towards this goal?'
               className='min-h-[100px]'
             />
+          </div>
+          <div className='grid grid-cols-2 gap-4'>
+            <div className='space-y-2'>
+              <Label>Target Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant='outline'
+                    className={cn(
+                      'w-full justify-start text-left font-normal',
+                      !editedGoal.target_date && 'text-muted-foreground'
+                    )}
+                  >
+                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    {editedGoal.target_date ? (
+                      format(new Date(editedGoal.target_date), 'PPP')
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className='w-auto p-0' align='start'>
+                  <Calendar
+                    mode='single'
+                    selected={
+                      editedGoal.target_date
+                        ? new Date(editedGoal.target_date)
+                        : undefined
+                    }
+                    onSelect={(date) =>
+                      setEditedGoal((prev) => ({
+                        ...prev,
+                        target_date: date?.toISOString(),
+                      }))
+                    }
+                    disabled={(date) => date < new Date()}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className='space-y-2'>
+              <Label>Priority</Label>
+              <Select
+                value={editedGoal.priority}
+                onValueChange={(value: 'low' | 'medium' | 'high') =>
+                  setEditedGoal((prev) => ({ ...prev, priority: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='low'>Low</SelectItem>
+                  <SelectItem value='medium'>Medium</SelectItem>
+                  <SelectItem value='high'>High</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
         <div className='flex justify-end gap-2'>

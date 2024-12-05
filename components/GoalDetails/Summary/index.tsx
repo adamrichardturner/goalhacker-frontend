@@ -3,7 +3,7 @@ import { Goal } from '@/types/goal'
 import { EditSummary } from './EditSummary'
 
 export const Summary = ({ goal }: { goal: Goal }) => (
-  <Card className='rounded-lg relative'>
+  <Card className='rounded-xl relative'>
     <CardContent className='pt-6 space-y-6'>
       <EditSummary goal={goal} />
       <div>
