@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { useGoal } from '@/hooks/useGoal'
+import { format } from 'date-fns'
 
 interface SubGoalsProps {
   goal: Goal
@@ -278,6 +279,11 @@ export default function SubGoals({ goal }: SubGoalsProps) {
               )}
             </div>
             <div className='flex items-center gap-2'>
+              {subgoal.target_date && (
+                <span className='text-sm text-muted-foreground whitespace-nowrap'>
+                  {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
+                </span>
+              )}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button

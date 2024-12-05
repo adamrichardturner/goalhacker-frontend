@@ -66,25 +66,25 @@ export function SubGoalsList({
             placeholder='Enter a sub-goal...'
           />
           <div className='flex items-center gap-2'>
+            {!isCreating && subgoal.target_date && (
+              <span className='text-sm text-muted-foreground whitespace-nowrap'>
+                {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
+              </span>
+            )}
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  variant='ghost'
+                  variant='outline'
+                  size='icon'
                   className={cn(
-                    'h-12 w-12 p-0',
-                    subgoal.target_date && 'border-2 border-electricPurple'
+                    'h-8 w-8',
+                    subgoal.target_date && 'border-primary'
                   )}
                 >
-                  {!isCreating && subgoal.target_date ? (
-                    <span className='text-xs'>
-                      {format(new Date(subgoal.target_date), 'MMM d')}
-                    </span>
-                  ) : (
-                    <CalendarIcon className='h-4 w-4' />
-                  )}
+                  <CalendarIcon className='h-4 w-4' />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className='w-auto p-0' align='start'>
+              <PopoverContent className='w-auto p-0' align='end'>
                 <Calendar
                   mode='single'
                   selected={
@@ -101,6 +101,7 @@ export function SubGoalsList({
                     updateGoalData({ subgoals: updatedSubgoals })
                   }}
                   disabled={(date) => date < new Date()}
+                  initialFocus
                 />
               </PopoverContent>
             </Popover>

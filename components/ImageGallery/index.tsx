@@ -6,6 +6,8 @@ import { Image } from '@/types/image'
 import { DefaultImagesGrid } from './DefaultImagesGrid'
 import { Upload, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useImageGallery } from '@/hooks/useImageGallery'
+import { toast } from 'sonner'
 
 interface ImageGalleryProps {
   onImageSelect: (image: Image) => void
@@ -21,15 +23,14 @@ export const ImageGallery = memo(function ImageGallery({
   const [uploadPreview, setUploadPreview] = useState<string>(
     existingImage || ''
   )
-  const [isUploading, setIsUploading] = useState(false)
+  const { uploadImage, isUploading } = useImageGallery()
 
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (!file) return
 
-      setIsUploading(true)
-      // Show preview
+      // Show preview immediately
       const reader = new FileReader()
       reader.onloadend = () => {
         setUploadPreview(reader.result as string)
@@ -37,14 +38,20 @@ export const ImageGallery = memo(function ImageGallery({
       reader.readAsDataURL(file)
 
       try {
-        // Handle upload logic here
-        setIsUploading(false)
+        // Upload the image
+        const uploadedImage = await uploadImage(file)
+        onImageSelect({
+          id: uploadedImage.id,
+          url: uploadedImage.url,
+        })
+        toast.success('Image uploaded successfully')
       } catch (error) {
         console.error('Failed to upload image:', error)
-        setIsUploading(false)
+        toast.error('Failed to upload image')
+        setUploadPreview('')
       }
     },
-    []
+    [uploadImage, onImageSelect]
   )
 
   return (

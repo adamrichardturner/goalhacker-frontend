@@ -7,6 +7,8 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useState } from 'react'
 import { Bold, Italic, List, ListOrdered, Strikethrough } from 'lucide-react'
+import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
 interface ProgressNoteEditorProps {
   onSubmit: (note: { title: string; content: string }) => void
@@ -22,6 +24,10 @@ export default function ProgressNoteEditor({
   initialContent = '',
 }: ProgressNoteEditorProps) {
   const [title, setTitle] = useState(initialTitle)
+  const [errors, setErrors] = useState({
+    title: false,
+    content: false,
+  })
   const editor = useEditor({
     extensions: [StarterKit],
     content: initialContent,
@@ -29,27 +35,64 @@ export default function ProgressNoteEditor({
 
   const handleSubmit = () => {
     if (!editor) return
+
+    const newErrors = {
+      title: !title.trim(),
+      content: editor.getHTML() === '<p></p>' || !editor.getHTML().trim(),
+    }
+    setErrors(newErrors)
+
+    if (newErrors.title || newErrors.content) {
+      if (newErrors.title) {
+        toast.error('Please enter a title')
+      } else if (newErrors.content) {
+        toast.error('Please enter some content')
+      }
+      return
+    }
+
     onSubmit({
-      title,
+      title: title.trim(),
       content: editor.getHTML(),
     })
     editor.commands.clearContent()
+    setTitle('')
+    setErrors({ title: false, content: false })
+    onCancel()
   }
 
   return (
     <div className='space-y-4'>
       <div className='space-y-2'>
         <Label htmlFor='title'>Title</Label>
-        <Input
-          id='title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder='Enter a title for your progress note'
-        />
+        <div
+          className={cn(
+            'rounded-md',
+            errors.title && 'ring-1 ring-destructive'
+          )}
+        >
+          <Input
+            id='title'
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value)
+              if (e.target.value.trim()) {
+                setErrors((prev) => ({ ...prev, title: false }))
+              }
+            }}
+            placeholder='Enter a title for your progress note'
+            className={cn('border', errors.title && 'border-destructive')}
+          />
+        </div>
       </div>
       <div className='space-y-2'>
         <Label>Content</Label>
-        <div className='border rounded-md'>
+        <div
+          className={cn(
+            'border rounded-md',
+            errors.content && 'border-destructive ring-1 ring-destructive'
+          )}
+        >
           <div className='border-b p-2 flex gap-1'>
             <Button
               type='button'
@@ -102,6 +145,11 @@ export default function ProgressNoteEditor({
             <EditorContent
               editor={editor}
               className='prose prose-sm max-w-none min-h-[200px]'
+              onFocus={() => {
+                if (editor?.getHTML().trim()) {
+                  setErrors((prev) => ({ ...prev, content: false }))
+                }
+              }}
             />
           </div>
         </div>
