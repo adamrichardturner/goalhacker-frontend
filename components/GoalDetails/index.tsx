@@ -55,7 +55,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
   return (
     <div className='space-y-6'>
       <GoalBanner goal={goal} />
-      <div className='space-y-4'>
+      <div className='space-y-0'>
         <Tabs defaultValue='summary' className='w-full'>
           <div className='flex justify-between items-start mb-4'>
             <TabsList className='grid sm:w-[400px] w-full grid-cols-3 bg-card'>

@@ -1,8 +1,6 @@
 'use client'
 
 import { notFound } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { useGoal } from '@/hooks/useGoal'
 import { Skeleton } from '@/components/ui/skeleton'
 import { use } from 'react'
@@ -45,11 +43,6 @@ export default function GoalPage({ params }: GoalPageProps) {
             </div>
           ) : goal ? (
             <>
-              <div className='mb-6 px-4'>
-                <Link href='/goals'>
-                  <Button variant='ghost'>← Back to Goals</Button>
-                </Link>
-              </div>
               <GoalDetails goal={goal} />
             </>
           ) : null}

@@ -32,7 +32,7 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
         <Skeleton className='h-full w-full rounded-2xl' />
       ) : (
         <div
-          className='relative w-full h-full rounded-2xl overflow-hidden group'
+          className='relative w-full h-[200px] rounded-2xl overflow-hidden group'
           style={{
             backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
             backgroundSize: 'cover',
