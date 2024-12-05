@@ -13,11 +13,13 @@ import { CategorySelector } from './CategorySelector'
 interface ImageGalleryProps {
   onImageSelect: (image: Image) => void
   selectedImage?: Image
+  existingImage?: string
 }
 
 export const ImageGallery = memo(function ImageGallery({
   onImageSelect,
   selectedImage,
+  existingImage,
 }: ImageGalleryProps) {
   const {
     defaultImages,
@@ -33,7 +35,9 @@ export const ImageGallery = memo(function ImageGallery({
     totalPages,
   } = useImageGallery()
 
-  const [uploadPreview, setUploadPreview] = useState<string>('')
+  const [uploadPreview, setUploadPreview] = useState<string>(
+    existingImage || ''
+  )
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -65,20 +69,49 @@ export const ImageGallery = memo(function ImageGallery({
 
           <TabsContent value='upload' className='mt-4'>
             <div className='flex flex-col items-center space-y-4'>
-              <label className='flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800'>
-                <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                  <Upload className='w-8 h-8 mb-2 text-gray-500' />
-                  <p className='text-sm text-gray-500'>
-                    {isUploading ? (
-                      <span className='flex items-center'>
-                        <Loader2 className='w-4 h-4 mr-2 animate-spin' />
-                        Uploading...
-                      </span>
-                    ) : (
-                      'Click to upload or drag and drop'
-                    )}
-                  </p>
-                </div>
+              <label
+                className={cn(
+                  'flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer',
+                  'hover:bg-gray-50 dark:hover:bg-gray-800 relative overflow-hidden',
+                  uploadPreview ? 'border-electricPurple' : 'border-gray-300'
+                )}
+              >
+                {uploadPreview ? (
+                  <>
+                    <img
+                      src={uploadPreview}
+                      alt='Upload preview'
+                      className='absolute inset-0 w-full h-full object-cover'
+                    />
+                    <div className='absolute inset-0 bg-black/50 flex flex-col items-center justify-center'>
+                      <Upload className='w-8 h-8 mb-2 text-white' />
+                      <p className='text-sm text-white font-medium'>
+                        {isUploading ? (
+                          <span className='flex items-center'>
+                            <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                            Uploading...
+                          </span>
+                        ) : (
+                          'Click to upload a new image'
+                        )}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className='flex flex-col items-center justify-center pt-5 pb-6'>
+                    <Upload className='w-8 h-8 mb-2 text-gray-500' />
+                    <p className='text-sm text-gray-500'>
+                      {isUploading ? (
+                        <span className='flex items-center'>
+                          <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                          Uploading...
+                        </span>
+                      ) : (
+                        'Click to upload or drag and drop'
+                      )}
+                    </p>
+                  </div>
+                )}
                 <input
                   type='file'
                   className='hidden'
@@ -87,15 +120,6 @@ export const ImageGallery = memo(function ImageGallery({
                   disabled={isUploading}
                 />
               </label>
-              {uploadPreview && (
-                <div className='mt-4'>
-                  <img
-                    src={uploadPreview}
-                    alt='Upload preview'
-                    className='max-w-xs rounded-lg shadow-md'
-                  />
-                </div>
-              )}
             </div>
           </TabsContent>
 
@@ -114,16 +138,16 @@ export const ImageGallery = memo(function ImageGallery({
                   />
                 )}
 
-                <ScrollArea className='h-[400px] relative'>
+                <ScrollArea className='relative'>
                   <div className='grid grid-cols-3 gap-4 p-1'>
                     {defaultImages?.map((image: Image) => (
                       <div
                         key={image.id}
                         className={cn(
-                          'relative cursor-pointer rounded-lg overflow-hidden border-2',
-                          'hover:border-primary transition-colors',
+                          'relative cursor-pointer rounded-lg overflow-hidden border-2 border-electricPurple p-[2px]',
+                          'hover:border-electricPurple transition-colors',
                           selectedImage?.id === image.id
-                            ? 'border-primary'
+                            ? 'border-electricPurple'
                             : 'border-transparent'
                         )}
                         onClick={() => onImageSelect(image)}
@@ -131,7 +155,7 @@ export const ImageGallery = memo(function ImageGallery({
                         <img
                           src={image.url}
                           alt={`${image.category} image`}
-                          className='w-full h-32 object-cover'
+                          className='w-full h-32 object-cover rounded-lg'
                         />
                       </div>
                     ))}

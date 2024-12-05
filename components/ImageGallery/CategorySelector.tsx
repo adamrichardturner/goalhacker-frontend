@@ -1,5 +1,11 @@
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 
 interface CategorySelectorProps {
   categories: string[]
@@ -13,26 +19,31 @@ export function CategorySelector({
   onSelectCategory,
 }: CategorySelectorProps) {
   return (
-    <ScrollArea className='w-full whitespace-nowrap rounded-md border'>
-      <div className='flex p-4 space-x-2'>
-        <Button
-          variant={selectedCategory === '' ? 'default' : 'outline'}
-          onClick={() => onSelectCategory('')}
-          className='flex-shrink-0'
-        >
-          All Categories
-        </Button>
-        {categories.map((category) => (
-          <Button
-            key={category}
-            variant={selectedCategory === category ? 'default' : 'outline'}
-            onClick={() => onSelectCategory(category)}
-            className='flex-shrink-0'
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </Button>
-        ))}
-      </div>
-    </ScrollArea>
+    <div className='space-y-2'>
+      <Label htmlFor='category'>Category</Label>
+      <Select
+        value={selectedCategory || 'all'}
+        onValueChange={(value) =>
+          onSelectCategory(value === 'all' ? '' : value)
+        }
+      >
+        <SelectTrigger className='w-[180px]' id='category'>
+          <SelectValue placeholder='Select category'>
+            {selectedCategory
+              ? selectedCategory.charAt(0).toUpperCase() +
+                selectedCategory.slice(1)
+              : 'All Categories'}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value='all'>All Categories</SelectItem>
+          {categories.map((category) => (
+            <SelectItem key={category} value={category}>
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   )
 }

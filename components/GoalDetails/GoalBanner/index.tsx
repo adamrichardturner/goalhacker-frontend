@@ -2,7 +2,7 @@ import { Goal } from '@/types/goal'
 import { getPriorityConfig } from '@/utils/goalPriority'
 import { Badge } from '../../ui/badge'
 import { formatDate } from '@/utils/formatDate'
-import { EditGoal } from './EditGoal'
+import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
 
 interface GoalBannerProps {
@@ -30,7 +30,7 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
       >
         <div className='absolute inset-0 bg-black/40' />
         <div className='absolute top-6 right-6 flex items-start gap-2'>
-          <EditGoal goal={goal} />
+          <EditGoalImage goal={goal} />
         </div>
         <div className='absolute bottom-6 space-y-4 left-6 right-6 text-white'>
           <h1 className='text-3xl font-bold mt-2 line-clamp-2'>{goal.title}</h1>
