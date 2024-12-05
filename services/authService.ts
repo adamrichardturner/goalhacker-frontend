@@ -1,125 +1,136 @@
-import {
-  LoginCredentials,
-  RegisterCredentials,
-  AuthResponse,
-  ProfileResponse,
-} from '@/types/auth'
+import { User } from '@/types/auth'
+import { api } from './api'
+import { AxiosError } from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+interface LoginResponse {
+  success: boolean
+  user: User
+  error?: string
+}
 
-const defaultHeaders = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json',
+interface RegisterResponse {
+  success: boolean
+  message: string
+  user: User
+  error?: string
+}
+
+interface ProfileResponse {
+  success: boolean
+  user: User
+  error?: string
 }
 
 export const authService = {
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await fetch(`${API_URL}/api/users/login`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: defaultHeaders,
-      body: JSON.stringify(credentials),
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Login failed')
+  async login(email: string, password: string) {
+    if (!email || !password) {
+      throw new Error('Email and password are required')
     }
 
-    return response.json()
-  },
+    try {
+      const response = await api.post<LoginResponse>(
+        '/api/users/login',
+        {
+          email: email.trim(),
+          password: password.trim(),
+        },
+        {
+          withCredentials: true,
+        }
+      )
 
-  async register(credentials: RegisterCredentials): Promise<AuthResponse> {
-    const response = await fetch(`${API_URL}/api/users/register`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: defaultHeaders,
-      body: JSON.stringify(credentials),
-    })
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Login failed')
+      }
 
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Registration failed')
-    }
-
-    return response.json()
-  },
-
-  async logout(): Promise<void> {
-    const response = await fetch(`${API_URL}/api/users/logout`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: defaultHeaders,
-    })
-
-    if (!response.ok) {
-      throw new Error('Logout failed')
+      return response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.error || 'Invalid email or password'
+        )
+      }
+      throw error
     }
   },
 
-  async getProfile(): Promise<ProfileResponse> {
-    const response = await fetch(`${API_URL}/api/users/profile`, {
-      credentials: 'include',
-      headers: defaultHeaders,
-    })
+  async register(userData: Partial<User>) {
+    try {
+      const response = await api.post<RegisterResponse>(
+        '/api/users/register',
+        userData,
+        {
+          withCredentials: true,
+        }
+      )
 
-    if (response.status === 401) {
-      throw new Error('Unauthorized - Please log in')
-    }
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Registration failed')
+      }
 
-    if (!response.ok) {
-      throw new Error('Failed to get user profile')
-    }
-
-    return response.json()
-  },
-
-  async verifyEmail(token: string, email: string): Promise<void> {
-    const response = await fetch(`${API_URL}/api/users/verify-email`, {
-      method: 'POST',
-      headers: defaultHeaders,
-      body: JSON.stringify({ token, email }),
-    })
-
-    if (!response.ok) {
-      throw new Error('Email verification failed')
+      return response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.error || 'Failed to register user'
+        )
+      }
+      throw error
     }
   },
 
-  async forgotPassword(email: string): Promise<void> {
-    const response = await fetch(`${API_URL}/api/users/forgot-password`, {
-      method: 'POST',
-      headers: defaultHeaders,
-      body: JSON.stringify({ email }),
-    })
+  async getProfile() {
+    try {
+      const response = await api.get<ProfileResponse>('/api/users/profile', {
+        withCredentials: true,
+      })
 
-    if (!response.ok) {
-      throw new Error('Failed to send reset password email')
+      if (!response.data.success) {
+        throw new Error('Failed to get user profile')
+      }
+
+      return response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.error || 'Failed to get user profile'
+        )
+      }
+      throw error
     }
   },
 
-  async resetPassword(token: string, password: string): Promise<void> {
-    const response = await fetch(`${API_URL}/api/users/reset-password`, {
-      method: 'POST',
-      headers: defaultHeaders,
-      body: JSON.stringify({ token, password }),
-    })
-
-    if (!response.ok) {
-      throw new Error('Password reset failed')
+  async logout() {
+    try {
+      await api.post<{ success: boolean; message: string }>(
+        '/api/users/logout',
+        {},
+        {
+          withCredentials: true,
+        }
+      )
+    } catch (error) {
+      console.error('Logout error:', error)
+    } finally {
+      localStorage.removeItem('token')
     }
   },
 
-  async resendVerificationEmail(email: string): Promise<void> {
-    const response = await fetch(`${API_URL}/api/users/resend-verification`, {
-      method: 'POST',
-      headers: defaultHeaders,
-      body: JSON.stringify({ email }),
-    })
+  async verifyEmail(token: string, email: string) {
+    const response = await api.post<{ success: boolean }>(
+      '/api/users/verify-email',
+      { token, email },
+      { withCredentials: true }
+    )
+    return response.data
+  },
 
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Failed to resend verification email')
-    }
+  async resendVerificationEmail(email: string) {
+    const response = await api.post<{ success: boolean }>(
+      '/api/users/resend-verification',
+      { email },
+      { withCredentials: true }
+    )
+    return response.data
   },
 }

@@ -1,3 +1,5 @@
+import { Category } from './category'
+
 export type SubgoalStatus = 'planned' | 'in_progress' | 'completed'
 
 export interface ProgressNote {
@@ -39,7 +41,8 @@ export interface Goal {
   measurement_method: string
   created_at: string
   updated_at: string
-  category: string
+  category_id?: string
+  category?: Category
   priority: 'low' | 'medium' | 'high'
   subgoals?: Subgoal[]
   progress_notes?: ProgressNote[]

@@ -3,19 +3,18 @@
 import { useState } from 'react'
 import { Goal } from '@/types/goal'
 import { NewGoalStages } from './NewGoalStages'
-import { Button } from '../ui/button'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { goalsService } from '@/services/goalsService'
 import useAuth from '@/hooks/useAuth'
+import { Loading } from '../ui/loading'
 
 const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
 type Stage = (typeof stages)[number]
 
 export default function NewGoalView() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, isLoading: userLoading } = useAuth()
   const [currentStage, setCurrentStage] = useState<Stage>('BasicInfo')
   const [goalData, setGoalData] = useState<Partial<Goal>>({
     status: 'planned',
@@ -67,15 +66,8 @@ export default function NewGoalView() {
     }
   }
 
-  if (!user) {
-    return (
-      <div className='text-center'>
-        <h2 className='text-xl font-semibold'>Please log in to create goals</h2>
-        <Link href='/login'>
-          <Button className='mt-4'>Go to Login</Button>
-        </Link>
-      </div>
-    )
+  if (userLoading) {
+    return <Loading className='h-screen' />
   }
 
   const renderStage = () => {

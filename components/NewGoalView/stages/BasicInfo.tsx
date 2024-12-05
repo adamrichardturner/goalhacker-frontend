@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Label } from '@/components/ui/label'
+import { CategorySelect } from '@/components/CategorySelect'
 
 interface BasicInfoProps {
   onNext: () => void
@@ -82,6 +83,13 @@ export function BasicInfo({
               required
             />
           </div>
+        </div>
+
+        <div className='space-y-6 pb-2'>
+          <CategorySelect
+            value={goalData.category_id}
+            onValueChange={(value) => updateGoalData({ category_id: value })}
+          />
         </div>
 
         <Button

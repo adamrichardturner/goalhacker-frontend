@@ -5,8 +5,10 @@ import { goalsService } from '@/services/goalsService'
 import { Goal, Subgoal, SubgoalStatus } from '@/types/goal'
 import { API_URL } from '@/config'
 import { toast } from 'sonner'
+import useAuth from './useAuth'
 
 export function useGoal(id?: string) {
+  const { user } = useAuth()
   const queryClient = useQueryClient()
 
   const {
@@ -512,6 +514,40 @@ export function useGoal(id?: string) {
     },
   })
 
+  const createGoalMutation = useMutation({
+    mutationFn: async (goalData: Partial<Goal>) => {
+      if (!user?.user_id) {
+        throw new Error('User not authenticated')
+      }
+
+      const response = await goalsService.createGoal({
+        ...goalData,
+        user_id: user.user_id,
+        status: 'planned',
+        progress: 0,
+        category_id: goalData.category_id || undefined,
+      })
+      return response
+    },
+    onSuccess: (newGoal) => {
+      // Invalidate and refetch goals list
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+
+      // Add the new goal to the cache
+      queryClient.setQueryData<Goal[]>(['goals'], (old = []) => [
+        ...old,
+        newGoal,
+      ])
+
+      toast.success('Goal created successfully')
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to create goal'
+      )
+    },
+  })
+
   return {
     goals,
     goal,
@@ -533,5 +569,7 @@ export function useGoal(id?: string) {
     updateProgressNote,
     deleteProgressNote,
     updateSubgoalsOrder,
+    createGoal: createGoalMutation.mutate,
+    isCreatingGoal: createGoalMutation.isPending,
   }
 }

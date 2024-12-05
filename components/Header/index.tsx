@@ -43,7 +43,7 @@ const Header = ({ user, loading }: HeaderProps) => {
 
   const links = [
     { name: 'Goals', href: '/goals' },
-    { name: 'Dashboard', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
   ]
 
   const avatarSrc = user.avatar_url

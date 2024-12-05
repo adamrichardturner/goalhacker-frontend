@@ -18,17 +18,17 @@ export const useAuth = () => {
     '/verify-email',
   ]
 
-  const transformUserData = (userData: ApiUser): User => ({
-    user_id: userData.id,
-    email: userData.email,
-    username: userData.username,
-    first_name: userData.first_name,
-    last_name: userData.last_name,
-    plan_type: userData.plan_type,
-    email_verified: userData.email_verified,
-    avatar_url: userData.avatar_url,
-    created_at: userData.created_at,
-    updated_at: userData.updated_at,
+  const transformUserData = (apiUser: ApiUser | User): User => ({
+    user_id: 'id' in apiUser ? apiUser.id : apiUser.user_id,
+    email: apiUser.email,
+    username: apiUser.username,
+    first_name: apiUser.first_name,
+    last_name: apiUser.last_name,
+    plan_type: apiUser.plan_type,
+    email_verified: apiUser.email_verified,
+    avatar_url: apiUser.avatar_url,
+    created_at: apiUser.created_at,
+    updated_at: apiUser.updated_at,
   })
 
   const {
@@ -90,7 +90,7 @@ export const useAuth = () => {
   const login = async (email: string, password: string) => {
     try {
       // First, perform the login
-      const loginResponse = await authService.login({ email, password })
+      const loginResponse = await authService.login(email, password)
 
       // Then fetch the full profile
       const profileResponse = await authService.getProfile()
