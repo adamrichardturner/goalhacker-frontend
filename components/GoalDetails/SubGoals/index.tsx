@@ -17,6 +17,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
@@ -40,6 +50,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     subgoalId: null,
     title: '',
   })
+  const [deletingSubgoal, setDeletingSubgoal] = useState<string | null>(null)
   const {
     createSubgoal,
     updateSubgoalStatus,
@@ -87,6 +98,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
   const handleSubgoalDelete = async (subgoalId: string) => {
     try {
       await deleteSubgoal(subgoalId)
+      setDeletingSubgoal(null)
     } catch (error) {
       console.error('Error deleting subgoal:', error)
     }
@@ -125,28 +137,6 @@ export default function SubGoals({ goal }: SubGoalsProps) {
       console.error('Error updating target date:', error)
     }
   }
-
-  const sortedSubgoals = goal.subgoals?.slice().sort((a, b) => {
-    // First, separate completed and non-completed
-    if (a.status === 'completed' && b.status !== 'completed') return 1
-    if (a.status !== 'completed' && b.status === 'completed') return -1
-
-    // Then sort by target date if both are non-completed
-    if (a.status !== 'completed' && b.status !== 'completed') {
-      // If both have target dates, sort by date
-      if (a.target_date && b.target_date) {
-        return (
-          new Date(a.target_date).getTime() - new Date(b.target_date).getTime()
-        )
-      }
-      // If only one has a target date, prioritize the one with a date
-      if (a.target_date) return -1
-      if (b.target_date) return 1
-    }
-
-    // If both are completed or no other sorting criteria applies, maintain current order
-    return 0
-  })
 
   return (
     <div className='space-y-4'>
@@ -212,7 +202,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
 
       {/* Existing Subgoals */}
       <div className='space-y-3'>
-        {sortedSubgoals?.map((subgoal) => (
+        {goal.subgoals?.map((subgoal) => (
           <div
             key={subgoal.subgoal_id}
             className='flex items-center justify-between p-4 border rounded-lg'
@@ -322,7 +312,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                 variant='ghost'
                 size='icon'
                 onClick={() =>
-                  subgoal.subgoal_id && handleSubgoalDelete(subgoal.subgoal_id)
+                  subgoal.subgoal_id && setDeletingSubgoal(subgoal.subgoal_id)
                 }
               >
                 <Trash2 className='h-4 w-4' />
@@ -331,6 +321,34 @@ export default function SubGoals({ goal }: SubGoalsProps) {
           </div>
         ))}
       </div>
+
+      <AlertDialog
+        open={!!deletingSubgoal}
+        onOpenChange={() => setDeletingSubgoal(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Subgoal</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this subgoal? This action cannot
+              be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeletingSubgoal(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                deletingSubgoal && handleSubgoalDelete(deletingSubgoal)
+              }
+              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
