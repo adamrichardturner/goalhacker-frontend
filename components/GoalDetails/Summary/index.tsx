@@ -1,9 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Goal } from '@/types/goal'
+import { EditSummary } from './EditSummary'
 
 export const Summary = ({ goal }: { goal: Goal }) => (
-  <Card className='rounded-lg'>
+  <Card className='rounded-lg relative'>
     <CardContent className='pt-6 space-y-6'>
+      <EditSummary goal={goal} />
       <div>
         <h3 className='font-semibold mb-2'>Aims</h3>
         <p className='text-muted-foreground'>{goal.aims}</p>
