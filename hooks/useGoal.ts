@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { goalsService } from '@/services/goalsService'
 import { Goal, SubgoalStatus } from '@/types/goal'
 import { API_URL } from '@/config'
+import { toast } from 'sonner'
 
 export function useGoal(id?: string) {
   const queryClient = useQueryClient()
@@ -49,34 +50,30 @@ export function useGoal(id?: string) {
       status = 'planned',
     }: {
       title: string
-      target_date?: string
+      target_date?: string | null
       status?: SubgoalStatus
     }) => {
-      if (!goal) throw new Error('Goal not found')
+      if (!goal?.goal_id) throw new Error('Goal not found')
 
-      const newSubgoal = {
-        title,
-        target_date,
-        status,
-        subgoal_id: crypto.randomUUID(),
-      }
-
-      const updatedGoal = {
-        ...goal,
-        subgoals: [...(goal.subgoals || []), newSubgoal],
-      }
-
-      const response = await fetch(`${API_URL}/api/goals/${goal.goal_id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(updatedGoal),
-      })
+      const response = await fetch(
+        `${API_URL}/api/goals/${goal.goal_id}/subgoals`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            title,
+            target_date: target_date || null,
+            status,
+          }),
+        }
+      )
 
       if (!response.ok) {
-        throw new Error('Failed to create subgoal')
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to create subgoal')
       }
 
       return response.json()
@@ -84,48 +81,38 @@ export function useGoal(id?: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
       queryClient.invalidateQueries({ queryKey: ['goals'] })
+      toast.success('Subgoal created successfully')
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to create subgoal')
     },
   })
 
-  const { mutate: updateSubgoal } = useMutation({
+  const { mutate: updateSubgoalStatus } = useMutation({
     mutationFn: async ({
       subgoalId,
       status,
-      target_date,
-      title,
     }: {
       subgoalId: string
-      status?: SubgoalStatus
-      target_date?: string
-      title?: string
+      status: SubgoalStatus
     }) => {
-      if (!goal) throw new Error('Goal not found')
+      if (!goal?.goal_id) throw new Error('Goal not found')
 
-      const updatedGoal = {
-        ...goal,
-        subgoals: goal.subgoals?.map((subgoal) =>
-          subgoal.subgoal_id === subgoalId
-            ? {
-                ...subgoal,
-                ...(status && { status }),
-                ...(target_date && { target_date }),
-                ...(title && { title }),
-              }
-            : subgoal
-        ),
-      }
-
-      const response = await fetch(`${API_URL}/api/goals/${goal.goal_id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(updatedGoal),
-      })
+      const response = await fetch(
+        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}/status`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ status }),
+        }
+      )
 
       if (!response.ok) {
-        throw new Error('Failed to update goal')
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to update subgoal status')
       }
 
       return response.json()
@@ -133,38 +120,115 @@ export function useGoal(id?: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
       queryClient.invalidateQueries({ queryKey: ['goals'] })
+      toast.success('Status updated successfully')
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update status')
+    },
+  })
+
+  const { mutate: updateSubgoalTitle } = useMutation({
+    mutationFn: async ({
+      subgoalId,
+      title,
+    }: {
+      subgoalId: string
+      title: string
+    }) => {
+      if (!goal?.goal_id) throw new Error('Goal not found')
+
+      const response = await fetch(
+        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}/title`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ title }),
+        }
+      )
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to update subgoal title')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+      toast.success('Title updated successfully')
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update title')
+    },
+  })
+
+  const { mutate: updateSubgoalTargetDate } = useMutation({
+    mutationFn: async ({
+      subgoalId,
+      target_date,
+    }: {
+      subgoalId: string
+      target_date: string | null
+    }) => {
+      if (!goal?.goal_id) throw new Error('Goal not found')
+
+      const response = await fetch(
+        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}/target-date`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ target_date }),
+        }
+      )
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to update target date')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+      toast.success('Target date updated successfully')
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update target date')
     },
   })
 
   const { mutate: deleteSubgoal } = useMutation({
     mutationFn: async (subgoalId: string) => {
-      if (!goal) throw new Error('Goal not found')
+      if (!goal?.goal_id) throw new Error('Goal not found')
 
-      const updatedGoal = {
-        ...goal,
-        subgoals: goal.subgoals?.filter(
-          (subgoal) => subgoal.subgoal_id !== subgoalId
-        ),
-      }
-
-      const response = await fetch(`${API_URL}/api/goals/${goal.goal_id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(updatedGoal),
-      })
+      const response = await fetch(
+        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        }
+      )
 
       if (!response.ok) {
-        throw new Error('Failed to update goal')
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to delete subgoal')
       }
-
-      return response.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
       queryClient.invalidateQueries({ queryKey: ['goals'] })
+      toast.success('Subgoal deleted successfully')
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to delete subgoal')
     },
   })
 
@@ -377,7 +441,9 @@ export function useGoal(id?: string) {
     goalsError,
     refetchGoals,
     createSubgoal,
-    updateSubgoal,
+    updateSubgoalStatus,
+    updateSubgoalTitle,
+    updateSubgoalTargetDate,
     deleteSubgoal,
     updateGoal,
     deleteGoal,

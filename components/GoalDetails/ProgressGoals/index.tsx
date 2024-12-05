@@ -2,7 +2,7 @@ import { Goal } from '@/types/goal'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { calculateProgress } from '@/utils/calculateProgress'
-import SubGoals from '@/components/SubGoals'
+import SubGoals from '@/components/GoalDetails/SubGoals'
 
 interface ProgressGoalsProps {
   goal: Goal

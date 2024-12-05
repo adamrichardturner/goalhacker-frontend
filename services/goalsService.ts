@@ -4,7 +4,6 @@ import { API_URL } from '@/config'
 export const goalsService = {
   // Image handling methods
   formatImageUrl(url: string | null | undefined): string | null {
-    console.log('formatImageUrl input:', url)
     if (!url) {
       return null
     }
@@ -12,19 +11,16 @@ export const goalsService = {
     // If it starts with a slash, it's a relative path
     if (url.startsWith('/')) {
       const fullUrl = `${API_URL}${url}`
-      console.log('formatImageUrl output:', fullUrl)
       return fullUrl
     }
 
     try {
       // Check if it's already a valid URL
       new URL(url)
-      console.log('formatImageUrl output:', url)
       return url
     } catch {
       // If not a valid URL and doesn't start with slash, prepend API_URL with slash
       const fullUrl = `${API_URL}/${url}`
-      console.log('formatImageUrl output:', fullUrl)
       return fullUrl
     }
   },
@@ -101,13 +97,10 @@ export const goalsService = {
       const urlObj = new URL(url)
       if (urlObj.origin === API_URL) {
         const stripped = urlObj.pathname
-        console.log('Stripped to:', stripped)
         return stripped
       }
       return url
     } catch {
-      // If URL parsing fails, it's probably a key, not a URL
-      console.log('Not a URL, returning as-is:', url)
       return url
     }
   },
@@ -157,12 +150,10 @@ export const goalsService = {
       }
 
       const rawGoals = await response.json()
-      console.log('Raw goals from API:', rawGoals)
 
       const formattedGoals = rawGoals.map((goal: Goal) =>
         this.formatGoalImages(goal)
       )
-      console.log('Goals after formatting:', formattedGoals)
 
       return formattedGoals
     } catch (error) {
@@ -188,12 +179,7 @@ export const goalsService = {
       }
 
       const rawGoal = await response.json()
-      console.log('Raw goal from API in getGoalById:', rawGoal)
-
-      // Log the goal before and after formatting
-      console.log('Before formatGoalImages:', rawGoal)
       const formattedGoal = this.formatGoalImages(rawGoal)
-      console.log('After formatGoalImages:', formattedGoal)
 
       return formattedGoal
     } catch (error) {
