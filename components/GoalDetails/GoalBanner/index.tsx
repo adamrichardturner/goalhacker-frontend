@@ -1,9 +1,10 @@
 import { Goal } from '@/types/goal'
 import { getPriorityConfig } from '@/utils/goalPriority'
 import { Badge } from '../../ui/badge'
-import { formatDate } from '@/utils/formatDate'
+import { formatDate } from '@/utils/dateFormat'
 import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
+import { useSettings } from '@/hooks/useSettings'
 
 interface GoalBannerProps {
   goal: Goal
@@ -17,7 +18,7 @@ const targetBadgeStyles =
 export default function GoalBanner({ goal }: GoalBannerProps) {
   const statusConfig = getGoalStatus(goal.status)
   const priorityConfig = getPriorityConfig(goal.priority)
-
+  const { settings } = useSettings()
   return (
     <>
       <div
@@ -57,7 +58,7 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
             </Badge>
             {goal.target_date && (
               <Badge className={targetBadgeStyles}>
-                🎯 {formatDate(goal.target_date)}
+                🎯 {formatDate(goal.target_date, settings?.date_format)}
               </Badge>
             )}
           </div>

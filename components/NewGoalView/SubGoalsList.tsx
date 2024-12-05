@@ -9,6 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { cn } from '@/lib/utils'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { useState } from 'react'
+import { formatDate } from '@/utils/dateFormat'
+import { useSettings } from '@/hooks/useSettings'
 
 interface SubGoalsListProps {
   goalData: Partial<Goal>
@@ -21,6 +23,7 @@ export function SubGoalsList({
   updateGoalData,
   isCreating,
 }: SubGoalsListProps) {
+  const { settings } = useSettings()
   const [newSubgoal, setNewSubgoal] = useState<Partial<Subgoal>>({
     goal_id: '',
     title: '',
@@ -67,9 +70,17 @@ export function SubGoalsList({
           />
           <div className='flex items-center gap-2'>
             {!isCreating && subgoal.target_date && (
-              <span className='text-sm text-muted-foreground whitespace-nowrap'>
-                {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
-              </span>
+              <div className='flex items-center gap-2'>
+                <span className='text-sm text-muted-foreground'>
+                  {formatDate(subgoal.target_date, settings?.date_format)}
+                </span>
+                <CalendarIcon
+                  className={cn(
+                    'h-4 w-4 text-muted-foreground',
+                    subgoal.target_date && 'text-primary border rounded-sm'
+                  )}
+                />
+              </div>
             )}
             <Popover>
               <PopoverTrigger asChild>

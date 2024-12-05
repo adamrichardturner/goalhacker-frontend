@@ -25,10 +25,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { useState } from 'react'
-import { formatDate } from '@/utils/formatDate'
+import { formatDate } from '@/utils/dateFormat'
 import { formatTime } from '@/utils/formatTime'
 import ProgressNoteEditor from '../ProgressNote'
 import { Trash2, Pen, ScrollText } from 'lucide-react'
+import { useSettings } from '@/hooks/useSettings'
 
 interface ProgressNotesProps {
   goal: Goal
@@ -43,6 +44,7 @@ export default function ProgressNotes({
   onDeleteNote,
   onAddNote,
 }: ProgressNotesProps) {
+  const { settings } = useSettings()
   const [editingNote, setEditingNote] = useState<string | null>(null)
   const [deletingNote, setDeletingNote] = useState<string | null>(null)
   const [showProgressNote, setShowProgressNote] = useState(false)
@@ -89,7 +91,7 @@ export default function ProgressNotes({
                       <h3 className='font-semibold text-lg'>{note.title}</h3>
                       <span className='text-xs text-muted-foreground'>
                         {note.created_at &&
-                          `${formatDate(note.created_at)} at ${formatTime(note.created_at)}`}
+                          `${formatDate(note.created_at, settings?.date_format)} at ${formatTime(note.created_at)}`}
                       </span>
                     </div>
                   </div>

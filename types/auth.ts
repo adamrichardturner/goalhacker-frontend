@@ -8,6 +8,7 @@ export interface User {
   last_name: string
   plan_type: PlanType
   email_verified: boolean
+  avatar_url?: string | null
   created_at?: string
   updated_at?: string
 }
@@ -25,6 +26,7 @@ export interface ApiUser {
   last_name: string
   plan_type: PlanType
   email_verified: boolean
+  avatar_url?: string | null
   created_at?: string
   updated_at?: string
 }

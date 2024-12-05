@@ -5,6 +5,8 @@ import { getGoalStatus } from '@/utils/goalStatus'
 import { getPriorityConfig } from '@/utils/goalPriority'
 import { Badge } from '../ui/badge'
 import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
+import { formatDate } from '@/utils/dateFormat'
+import { useSettings } from '@/hooks/useSettings'
 
 interface GoalImageProps {
   goal: Goal
@@ -18,19 +20,11 @@ const targetBadgeStyles =
 
 export default function GoalImage({ goal, className = '' }: GoalImageProps) {
   const { imageUrl, isLoading } = useGoalImageDisplay(goal)
-
+  const { settings } = useSettings()
   if (!goal) return null
 
   const statusConfig = getGoalStatus(goal.status)
   const priorityConfig = getPriorityConfig(goal.priority)
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    })
-  }
 
   return (
     <AspectRatio ratio={16 / 9} className={className}>
@@ -74,7 +68,7 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
               </Badge>
               {goal.target_date && (
                 <Badge className={`${targetBadgeStyles} pointer-events-none`}>
-                  🎯 {formatDate(goal.target_date)}
+                  🎯 {formatDate(goal.target_date, settings?.date_format)}
                 </Badge>
               )}
             </div>

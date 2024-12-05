@@ -26,6 +26,7 @@ export const useAuth = () => {
     last_name: userData.last_name,
     plan_type: userData.plan_type,
     email_verified: userData.email_verified,
+    avatar_url: userData.avatar_url,
     created_at: userData.created_at,
     updated_at: userData.updated_at,
   })

@@ -22,6 +22,7 @@ import {
 } from '../ui/sheet'
 import { User } from '@/types/auth'
 import { useAuth } from '@/hooks/useAuth'
+import { API_URL } from '@/config'
 
 interface HeaderProps {
   user: User
@@ -37,9 +38,15 @@ const Header = ({ user, loading }: HeaderProps) => {
     { name: 'Dashboard', href: '/' },
   ]
 
+  const avatarSrc = user.avatar_url
+    ? `${API_URL}${user.avatar_url}`
+    : '/avatar.png'
+
   const handleLogout = async () => {
     await logout()
   }
+
+  console.log(user)
 
   return (
     <header className='w-full bg-white h-[70px] sm:mt-8 sm:rounded-lg p-6 flex justify-between items-center shadow-sm'>
@@ -48,68 +55,48 @@ const Header = ({ user, loading }: HeaderProps) => {
           <Image
             src='/goalhacker-logo.svg'
             alt='GoalHacker'
-            width={126}
-            height={14.46}
+            width={150}
+            height={30}
+            priority
           />
         </Link>
-        <nav className='flex gap-8 items-center'>
-          <div className='flex gap-8 items-center'>
+        <div className='flex items-center gap-8'>
+          <nav className='flex gap-8'>
             {links.map((link) => (
-              <motion.div key={link.name} className='relative'>
-                <Link
-                  href={link.href}
-                  onClick={() => setSelectedLink(link.name)}
-                  className={`transition-colors text-sm duration-200 ease-in-out ${
-                    selectedLink === link.name
-                      ? 'font-[600]'
-                      : 'text-primary hover:text-card-foreground'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-                {selectedLink === link.name && (
-                  <motion.div
-                    className='absolute bottom-0 h-[1px] bg-[#8B5CF6]'
-                    initial={{ width: 0 }}
-                    animate={{ width: '100%' }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                  />
-                )}
-              </motion.div>
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  selectedLink === link.name
+                    ? 'text-primary'
+                    : 'text-muted-foreground'
+                }`}
+                onClick={() => setSelectedLink(link.name)}
+              >
+                {link.name}
+              </Link>
             ))}
-          </div>
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger
-              className='outline-none hover:cursor-pointer'
-              asChild
-            >
-              <Avatar>
-                <AvatarImage src='/profile.jpg' />
-                <AvatarFallback>AT</AvatarFallback>
+          </nav>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className='cursor-pointer'>
+                <AvatarImage src={avatarSrc} alt={user.username} />
+                <AvatarFallback>
+                  {user.username?.[0]?.toUpperCase()}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-48 cursor-pointer'>
-              <DropdownMenuItem>
-                <Link href='/account' className='w-full'>
-                  Account
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href='/settings' className='w-full'>
-                  Settings
-                </Link>
+            <DropdownMenuContent align='end'>
+              <DropdownMenuItem asChild>
+                <Link href='/settings'>Settings</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                disabled={loading}
-                className='cursor-pointer'
-              >
-                {loading ? 'Signing out...' : 'Sign out'}
+              <DropdownMenuItem onClick={handleLogout}>
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </nav>
+        </div>
       </div>
       <div className='sm:hidden flex justify-between items-center w-full'>
         <Link href='/goals'>
