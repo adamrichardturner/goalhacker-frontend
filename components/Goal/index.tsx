@@ -21,13 +21,13 @@ export default function Goal({ goal, className = '' }: GoalProps) {
   return (
     <Link
       href={`/goals/${goal.goal_id}`}
-      className={`flex flex-col sm:flex-row border hover:shadow-lg rounded-2xl hover:border-border-hover transition-shadow sm:h-[200px] ${className}`}
+      className={`flex bg-paper flex-col sm:flex-row border hover:shadow-lg rounded-2xl hover:border-border-hover transition-shadow sm:h-[200px] ${className}`}
     >
       <div className='w-full h-full sm:w-1/2 sm:h-full'>
         <GoalImage goal={goal} className='h-full min-h-[200px]' />
       </div>
       <div className='w-full min-h-[178px] flex-1 sm:w-1/2 flex flex-col justify-between'>
-        <div className='sm:space-y-4 items-center p-4 justify-center h-full my-8 flex-1'>
+        <div className='sm:space-y-4 items-center p-4 justify-center h-full flex-1'>
           <p className='text-sm text-muted-foreground line-clamp-3'>
             {goal.aims}
           </p>

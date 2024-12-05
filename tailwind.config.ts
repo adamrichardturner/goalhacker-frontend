@@ -44,6 +44,7 @@ export default {
         success: 'hsl(var(--success))',
         'success-hover': 'hsl(var(--success-hover))',
         electricPurple: 'hsl(var(--electricPurple))',
+        paper: 'hsl(var(--paper))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

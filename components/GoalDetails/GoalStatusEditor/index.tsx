@@ -57,7 +57,7 @@ export function GoalStatusEditor({
   }
 
   return (
-    <div className='flex flex-col gap-2 bg-card sm:w-[320px] w-full p-4 rounded-lg'>
+    <div className='flex flex-col gap-2 bg-background sm:w-[320px] w-full rounded-lg'>
       <div className='flex items-center gap-2'>
         <Select value={selectedStatus} onValueChange={handleStatusChange}>
           <SelectTrigger className='w-[180px]'>

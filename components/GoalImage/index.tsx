@@ -14,7 +14,7 @@ interface GoalImageProps {
 }
 
 const badgeBaseStyles =
-  'px-2 py-1 font-[500] rounded-full text-[10px] backdrop-blur'
+  'px-2 py-1 font-[500] text-white rounded-full text-[10px] backdrop-blur'
 const targetBadgeStyles =
   'px-2 py-1 rounded-full font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 

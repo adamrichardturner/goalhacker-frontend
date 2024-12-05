@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -23,6 +23,7 @@ import {
 import { User } from '@/types/auth'
 import { useAuth } from '@/hooks/useAuth'
 import { API_URL } from '@/config'
+import { useTheme } from 'next-themes'
 
 interface HeaderProps {
   user: User
@@ -31,8 +32,15 @@ interface HeaderProps {
 
 const Header = ({ user, loading }: HeaderProps) => {
   const { logout } = useAuth()
+  const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [selectedLink, setSelectedLink] = useState('Goals')
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const links = [
     { name: 'Goals', href: '/goals' },
     { name: 'Dashboard', href: '/' },
@@ -42,6 +50,12 @@ const Header = ({ user, loading }: HeaderProps) => {
     ? `${API_URL}${user.avatar_url}`
     : '/avatar.png'
 
+  const logoSrc = !mounted
+    ? '/goalhacker-logo.svg'
+    : theme === 'dark'
+      ? '/goalhacker-logo-dark.svg'
+      : '/goalhacker-logo.svg'
+
   const handleLogout = async () => {
     await logout()
   }
@@ -49,11 +63,11 @@ const Header = ({ user, loading }: HeaderProps) => {
   console.log(user)
 
   return (
-    <header className='w-full bg-white h-[70px] sm:mt-8 sm:rounded-lg p-6 flex justify-between items-center shadow-sm'>
+    <header className='w-full bg-card h-[70px] sm:mt-8 sm:rounded-lg p-6 flex justify-between items-center shadow-sm'>
       <div className='hidden sm:flex w-full justify-between items-center'>
         <Link href='/goals'>
           <Image
-            src='/goalhacker-logo.svg'
+            src={logoSrc}
             alt='GoalHacker'
             width={150}
             height={30}

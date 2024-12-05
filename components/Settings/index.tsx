@@ -98,7 +98,7 @@ export default function Settings() {
   return (
     <div className='space-y-6'>
       {/* Avatar */}
-      <Card>
+      <Card className='bg-paper'>
         <CardHeader>
           <CardTitle>Profile Picture</CardTitle>
           <CardDescription>
@@ -129,7 +129,7 @@ export default function Settings() {
       </Card>
 
       {/* Date Format */}
-      <Card>
+      <Card className='bg-paper'>
         <CardHeader>
           <CardTitle>Date Format</CardTitle>
           <CardDescription>
@@ -160,7 +160,7 @@ export default function Settings() {
       </Card>
 
       {/* Theme */}
-      <Card>
+      <Card className='bg-paper'>
         <CardHeader>
           <CardTitle>Appearance</CardTitle>
           <CardDescription>
@@ -185,7 +185,7 @@ export default function Settings() {
       </Card>
 
       {/* Delete Account */}
-      <Card>
+      <Card className='bg-paper'>
         <CardHeader>
           <CardTitle>Delete Account</CardTitle>
           <CardDescription>
@@ -211,7 +211,9 @@ export default function Settings() {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
+                  Cancel
+                </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={(e) => {
                     e.preventDefault()

@@ -17,7 +17,7 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
         <div className='space-y-6'>
           <div>
             <div className='flex items-center justify-between mb-2'>
-              <h3 className='font-semibold'>Progress</h3>
+              <h3 className='text-2xl font-semibold'>Progress</h3>
               <div className='text-sm text-muted-foreground space-x-2'>
                 <span>
                   {goal.subgoals?.filter((s) => s.status === 'completed')
@@ -42,7 +42,7 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
           </div>
 
           <div>
-            <h3 className='font-semibold mb-3'>Subgoals</h3>
+            <h3 className='font-semibold text-lg mb-3'>Subgoals</h3>
             <SubGoals goal={goal} />
           </div>
         </div>

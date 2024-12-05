@@ -52,7 +52,7 @@ export default function ProgressNotes({
   return (
     <Card>
       <CardHeader className='flex flex-row space-y-0 justify-between items-start'>
-        <CardTitle>Progress Notes</CardTitle>
+        <CardTitle className='text-2xl font-semibold'>Progress Notes</CardTitle>
 
         <Dialog open={showProgressNote} onOpenChange={setShowProgressNote}>
           <DialogTrigger asChild>

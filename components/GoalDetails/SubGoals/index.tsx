@@ -140,6 +140,20 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     }
   }
 
+  const sortedSubgoals = [...(goal.subgoals || [])].sort((a, b) => {
+    // If both have target dates, compare them
+    if (a.target_date && b.target_date) {
+      return (
+        new Date(a.target_date).getTime() - new Date(b.target_date).getTime()
+      )
+    }
+    // If only one has a target date, put the one with date first
+    if (a.target_date) return -1
+    if (b.target_date) return 1
+    // If neither has a target date, maintain their original order
+    return 0
+  })
+
   return (
     <div className='space-y-4'>
       {/* Add new subgoal */}
@@ -179,7 +193,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                 <Button
                   variant='ghost'
                   className={cn(
-                    'h-8 w-8 p-0',
+                    'h-12 w-12 p-0',
                     newSubgoal.target_date && 'border-2 border-electricPurple'
                   )}
                 >
@@ -211,7 +225,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
 
       {/* Existing Subgoals */}
       <div className='space-y-3'>
-        {goal.subgoals?.map((subgoal) => (
+        {sortedSubgoals.map((subgoal) => (
           <div
             key={subgoal.subgoal_id}
             className='flex items-center justify-between p-4 border rounded-lg'
@@ -246,7 +260,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                     onChange={(e) =>
                       setEditing({ ...editing, title: e.target.value })
                     }
-                    className='flex-1'
+                    className='max-w-2/5'
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Escape') {
@@ -269,7 +283,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
               ) : (
                 <span
                   className={cn(
-                    'flex-1',
+                    'flex-1 text-sm pr-2',
                     subgoal.status === 'completed' &&
                       'line-through text-muted-foreground'
                   )}
@@ -279,40 +293,43 @@ export default function SubGoals({ goal }: SubGoalsProps) {
               )}
             </div>
             <div className='flex items-center gap-2'>
-              {subgoal.target_date && (
-                <span className='text-sm text-muted-foreground whitespace-nowrap'>
-                  {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
-                </span>
+              {editing.subgoalId !== subgoal.subgoal_id &&
+                subgoal.target_date && (
+                  <span className='text-sm text-muted-foreground whitespace-nowrap'>
+                    {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
+                  </span>
+                )}
+              {editing.subgoalId !== subgoal.subgoal_id && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      className={cn(
+                        'h-8 w-8 p-0',
+                        subgoal.target_date && 'border-2 border-electricPurple'
+                      )}
+                    >
+                      <CalendarIcon className='h-4 w-4' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-auto p-0' align='start'>
+                    <Calendar
+                      mode='single'
+                      selected={
+                        subgoal.target_date
+                          ? new Date(subgoal.target_date)
+                          : undefined
+                      }
+                      onSelect={(date) =>
+                        subgoal.subgoal_id &&
+                        handleTargetDateChange(subgoal.subgoal_id, date || null)
+                      }
+                      disabled={(date) => date < new Date()}
+                    />
+                  </PopoverContent>
+                </Popover>
               )}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant='ghost'
-                    className={cn(
-                      'h-8 w-8 p-0',
-                      subgoal.target_date && 'border-2 border-electricPurple'
-                    )}
-                  >
-                    <CalendarIcon className='h-4 w-4' />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
-                  <Calendar
-                    mode='single'
-                    selected={
-                      subgoal.target_date
-                        ? new Date(subgoal.target_date)
-                        : undefined
-                    }
-                    onSelect={(date) =>
-                      subgoal.subgoal_id &&
-                      handleTargetDateChange(subgoal.subgoal_id, date || null)
-                    }
-                    disabled={(date) => date < new Date()}
-                  />
-                </PopoverContent>
-              </Popover>
-              {!editing.subgoalId && (
+              {editing.subgoalId !== subgoal.subgoal_id && (
                 <>
                   <Button
                     variant='ghost'
