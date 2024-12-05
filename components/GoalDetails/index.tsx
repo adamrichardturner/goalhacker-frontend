@@ -3,9 +3,11 @@
 import { Goal } from '@/types/goal'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
-import GoalDetailsInfo from '../GoalDetailsInfo'
-import ProgressGoals from '../ProgressGoals'
-import ProgressNotes from '../ProgressNotes'
+import GoalBanner from './GoalBanner'
+import ProgressGoals from './ProgressGoals'
+import ProgressNotes from './ProgressNotes'
+import { Summary } from './Summary'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 
 interface GoalDetailsProps {
   goal: Goal
@@ -51,14 +53,28 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
 
   return (
     <div className='space-y-6'>
-      <GoalDetailsInfo goal={goal} />
-      <ProgressGoals goal={goal} />
-      <ProgressNotes
-        goal={goal}
-        onEditNote={handleProgressNoteEdit}
-        onDeleteNote={handleProgressNoteDelete}
-        onAddNote={handleProgressNoteSave}
-      />
+      <GoalBanner goal={goal} />
+      <Tabs defaultValue='summary' className='w-full'>
+        <TabsList className='grid sm:w-1/2 w-full grid-cols-3 bg-card'>
+          <TabsTrigger value='summary'>Summary</TabsTrigger>
+          <TabsTrigger value='progress'>Progress</TabsTrigger>
+          <TabsTrigger value='notes'>Notes</TabsTrigger>
+        </TabsList>
+        <TabsContent value='summary'>
+          <Summary goal={goal} />
+        </TabsContent>
+        <TabsContent value='progress'>
+          <ProgressGoals goal={goal} />
+        </TabsContent>
+        <TabsContent value='notes'>
+          <ProgressNotes
+            goal={goal}
+            onEditNote={handleProgressNoteEdit}
+            onDeleteNote={handleProgressNoteDelete}
+            onAddNote={handleProgressNoteSave}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

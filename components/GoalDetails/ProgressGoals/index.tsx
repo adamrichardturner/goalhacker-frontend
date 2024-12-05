@@ -1,8 +1,8 @@
 import { Goal } from '@/types/goal'
-import { Card, CardContent } from '../ui/card'
-import { Progress } from '../ui/progress'
-import SubGoals from '../SubGoals'
+import { Card, CardContent } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 import { calculateProgress } from '@/utils/calculateProgress'
+import SubGoals from '@/components/SubGoals'
 
 interface ProgressGoalsProps {
   goal: Goal
@@ -12,7 +12,7 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
   const progress = calculateProgress(goal.subgoals)
 
   return (
-    <Card className='mt-6'>
+    <Card>
       <CardContent className='pt-6'>
         <div className='space-y-6'>
           <div>

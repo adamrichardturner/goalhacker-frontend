@@ -1,19 +1,19 @@
 import { Goal } from '@/types/goal'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '../ui/accordion'
-import { Button } from '../ui/button'
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog'
+} from '@/components/ui/dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +23,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../ui/alert-dialog'
+} from '@/components/ui/alert-dialog'
 import { useState } from 'react'
 import { formatDate } from '@/utils/formatDate'
 import { formatTime } from '@/utils/formatTime'
@@ -48,7 +48,7 @@ export default function ProgressNotes({
   const [showProgressNote, setShowProgressNote] = useState(false)
 
   return (
-    <Card className='mt-6'>
+    <Card>
       <CardHeader className='flex flex-row space-y-0 justify-between items-start'>
         <CardTitle>Progress Notes</CardTitle>
 
