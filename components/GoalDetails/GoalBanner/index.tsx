@@ -12,7 +12,7 @@ interface GoalBannerProps {
 const badgeBaseStyles =
   'px-2 py-1 font-[500] rounded-full text-[10px] backdrop-blur'
 const targetBadgeStyles =
-  'px-2 py-1 rounded-full font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
+  'px-2 py-1 rounded-full pointer-events-none font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 
 export default function GoalBanner({ goal }: GoalBannerProps) {
   const statusConfig = getGoalStatus(goal.status)

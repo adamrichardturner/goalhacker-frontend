@@ -1,6 +1,6 @@
 import { Goal } from '@/types/goal'
 import { Button } from '../../ui/button'
-import { Pen, Trash2 } from 'lucide-react'
+import { CalendarIcon, Pen, Trash2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -28,6 +28,15 @@ import {
   AlertDialogTrigger,
 } from '../../ui/alert-dialog'
 import { useRouter } from 'next/navigation'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
+import { format } from 'date-fns'
 
 interface EditGoalProps {
   goal: Goal
@@ -79,14 +88,14 @@ export function EditGoal({ goal }: EditGoalProps) {
             <Pen className='h-4 w-4 text-white' />
           </Button>
         </DialogTrigger>
-        <DialogContent className='max-w-3xl'>
+        <DialogContent className='max-w-3xl bg-card'>
           <DialogHeader>
             <DialogTitle className='text-xl font-semibold text-primary'>
               Edit Goal
             </DialogTitle>
           </DialogHeader>
           <Tabs defaultValue='details'>
-            <TabsList>
+            <TabsList className='bg-muted-foreground/10 p-2 space-x-2'>
               <TabsTrigger value='details'>Details</TabsTrigger>
               <TabsTrigger value='image'>Background Image</TabsTrigger>
             </TabsList>
@@ -99,31 +108,57 @@ export function EditGoal({ goal }: EditGoalProps) {
                   onChange={(e) =>
                     setEditedGoal({ ...editedGoal, title: e.target.value })
                   }
+                  className='bg-card'
                 />
               </div>
               <div className='space-y-2'>
                 <Label htmlFor='aims'>Aims</Label>
-                <Input
+                <Textarea
                   id='aims'
                   value={editedGoal.aims}
                   onChange={(e) =>
                     setEditedGoal({ ...editedGoal, aims: e.target.value })
                   }
+                  className='bg-card'
                 />
               </div>
-              <div className='space-y-2'>
+              <div className='space-y-2 w-1/2'>
                 <Label htmlFor='target_date'>Target Date</Label>
-                <Input
-                  id='target_date'
-                  type='date'
-                  value={editedGoal.target_date}
-                  onChange={(e) =>
-                    setEditedGoal({
-                      ...editedGoal,
-                      target_date: e.target.value,
-                    })
-                  }
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-full justify-start text-left font-normal',
+                        !editedGoal.target_date && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className='mr-2 h-4 w-4' />
+                      {editedGoal.target_date ? (
+                        format(new Date(editedGoal.target_date), 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-auto p-0' align='start'>
+                    <Calendar
+                      mode='single'
+                      selected={
+                        editedGoal.target_date
+                          ? new Date(editedGoal.target_date)
+                          : undefined
+                      }
+                      onSelect={(selectedDate) =>
+                        setEditedGoal({
+                          ...editedGoal,
+                          target_date: selectedDate?.toISOString() || '',
+                        })
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </TabsContent>
             <TabsContent value='image' className='py-4'>
