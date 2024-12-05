@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { goalsService } from '@/services/goalsService'
-import { Goal, SubgoalStatus } from '@/types/goal'
+import { Goal, Subgoal, SubgoalStatus } from '@/types/goal'
 import { API_URL } from '@/config'
 import { toast } from 'sonner'
 
@@ -78,13 +78,39 @@ export function useGoal(id?: string) {
 
       return response.json()
     },
+    onMutate: async (newSubgoal) => {
+      await queryClient.cancelQueries({ queryKey: ['goal', id] })
+      const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
+
+      if (previousGoal) {
+        const optimisticSubgoal = {
+          subgoal_id: crypto.randomUUID(),
+          goal_id: id!,
+          title: newSubgoal.title,
+          target_date: newSubgoal.target_date || undefined,
+          status: newSubgoal.status || 'planned',
+          order: previousGoal.subgoals?.length || 0,
+        } satisfies Subgoal
+
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...previousGoal,
+          subgoals: [...(previousGoal.subgoals || []), optimisticSubgoal],
+        })
+      }
+
+      return { previousGoal }
+    },
+    onError: (err, newSubgoal, context) => {
+      if (context?.previousGoal) {
+        queryClient.setQueryData(['goal', id], context.previousGoal)
+      }
+      toast.error('Failed to create subgoal')
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['goal', id] })
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Subgoal created successfully')
     },
-    onError: (error) => {
-      toast.error(error.message || 'Failed to create subgoal')
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
     },
   })
 
@@ -430,19 +456,61 @@ export function useGoal(id?: string) {
     },
   })
 
-  const updateSubgoalsOrder = async (
-    updates: { subgoal_id: string; order: number }[]
-  ) => {
-    try {
-      await goalsService.updateSubgoalsOrder(id!, updates)
-      // Invalidate queries to refresh data
+  let reorderTimeout: NodeJS.Timeout | null = null
+
+  const { mutate: updateSubgoalsOrder } = useMutation({
+    mutationFn: async (updates: { subgoal_id: string; order: number }[]) => {
+      if (!id) throw new Error('Goal ID is required')
+
+      // Clear existing timeout
+      if (reorderTimeout) {
+        clearTimeout(reorderTimeout)
+      }
+
+      // Return a promise that resolves when the debounced call completes
+      return new Promise((resolve, reject) => {
+        reorderTimeout = setTimeout(async () => {
+          try {
+            await goalsService.updateSubgoalsOrder(id, updates)
+            resolve(undefined)
+          } catch (error) {
+            reject(error)
+          }
+        }, 500)
+      })
+    },
+    onMutate: async (updates) => {
+      await queryClient.cancelQueries({ queryKey: ['goal', id] })
+      const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
+
+      if (previousGoal) {
+        const reorderedSubgoals = [...(previousGoal.subgoals || [])]
+        updates.forEach(({ subgoal_id, order }) => {
+          const subgoal = reorderedSubgoals.find(
+            (s) => s.subgoal_id === subgoal_id
+          )
+          if (subgoal) subgoal.order = order
+        })
+        reorderedSubgoals.sort((a, b) => (a.order || 0) - (b.order || 0))
+
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...previousGoal,
+          subgoals: reorderedSubgoals,
+        })
+      }
+
+      return { previousGoal }
+    },
+    onError: (err, updates, context) => {
+      if (context?.previousGoal) {
+        queryClient.setQueryData(['goal', id], context.previousGoal)
+      }
+      toast.error('Failed to reorder subgoals')
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
-    } catch (error) {
-      console.error('Error updating subgoals order:', error)
-      throw error
-    }
-  }
+    },
+  })
 
   return {
     goals,

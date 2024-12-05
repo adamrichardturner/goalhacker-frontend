@@ -70,21 +70,38 @@ export default function SubGoals({ goal }: SubGoalsProps) {
 
   const [localSubgoals, setLocalSubgoals] = useState(goal.subgoals || [])
 
-  const handleSubgoalCreate = () => {
+  const handleSubgoalCreate = async () => {
     if (!newSubgoal.title) return
 
+    // Create optimistic subgoal
+    const optimisticSubgoal = {
+      subgoal_id: crypto.randomUUID(),
+      goal_id: goal.goal_id!,
+      title: newSubgoal.title,
+      target_date: newSubgoal.target_date || undefined,
+      status: newSubgoal.status,
+      order: localSubgoals.length,
+    }
+
+    // Update UI immediately
+    setLocalSubgoals([...localSubgoals, optimisticSubgoal])
+
+    // Reset form
+    setNewSubgoal({
+      title: '',
+      target_date: null,
+      status: 'planned',
+    })
+
     try {
-      createSubgoal({
+      await createSubgoal({
         title: newSubgoal.title,
         target_date: newSubgoal.target_date,
         status: newSubgoal.status,
       })
-      setNewSubgoal({
-        title: '',
-        target_date: null,
-        status: 'planned',
-      })
     } catch (error) {
+      // Revert on error
+      setLocalSubgoals(localSubgoals)
       console.error('Error creating subgoal:', error)
     }
   }
@@ -93,9 +110,19 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     subgoalId: string,
     status: SubgoalStatus
   ) => {
+    // Optimistically update local state
+    const previousSubgoals = [...localSubgoals]
+    setLocalSubgoals(
+      localSubgoals.map((sg) =>
+        sg.subgoal_id === subgoalId ? { ...sg, status } : sg
+      )
+    )
+
     try {
       updateSubgoalStatus({ subgoalId, status })
     } catch (error) {
+      // Revert on error
+      setLocalSubgoals(previousSubgoals)
       console.error('Error updating subgoal status:', error)
     }
   }
@@ -107,13 +134,25 @@ export default function SubGoals({ goal }: SubGoalsProps) {
   const handleEditSave = () => {
     if (!editing.subgoalId || !editing.title) return
 
+    // Optimistically update local state
+    const previousSubgoals = [...localSubgoals]
+    setLocalSubgoals(
+      localSubgoals.map((sg) =>
+        sg.subgoal_id === editing.subgoalId
+          ? { ...sg, title: editing.title }
+          : sg
+      )
+    )
+    setEditing({ subgoalId: null, title: '' })
+
     try {
       updateSubgoalTitle({
         subgoalId: editing.subgoalId,
         title: editing.title,
       })
-      setEditing({ subgoalId: null, title: '' })
     } catch (error) {
+      // Revert on error
+      setLocalSubgoals(previousSubgoals)
       console.error('Error updating subgoal title:', error)
     }
   }
@@ -125,10 +164,18 @@ export default function SubGoals({ goal }: SubGoalsProps) {
   const handleDeleteConfirm = () => {
     if (!deletingSubgoalId) return
 
+    // Optimistically remove from local state
+    const previousSubgoals = [...localSubgoals]
+    setLocalSubgoals(
+      localSubgoals.filter((sg) => sg.subgoal_id !== deletingSubgoalId)
+    )
+    setDeletingSubgoalId(null)
+
     try {
       deleteSubgoal(deletingSubgoalId)
-      setDeletingSubgoalId(null)
     } catch (error) {
+      // Revert on error
+      setLocalSubgoals(previousSubgoals)
       console.error('Error deleting subgoal:', error)
     }
   }
@@ -156,6 +203,17 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     } catch (error) {
       setLocalSubgoals(goal.subgoals || [])
       console.error('Failed to update subgoal order:', error)
+    }
+  }
+
+  // Add this function to check if we're in an editing state
+  const isEditing = () => {
+    return editing.subgoalId !== null || !!newSubgoal.target_date
+  }
+
+  const reorderHandler = (reorderedSubgoals: typeof localSubgoals) => {
+    if (!isEditing()) {
+      handleReorder(reorderedSubgoals)
     }
   }
 
@@ -232,14 +290,18 @@ export default function SubGoals({ goal }: SubGoalsProps) {
       <Reorder.Group
         axis='y'
         values={localSubgoals}
-        onReorder={handleReorder}
-        className='space-y-3 cursor-grab'
+        onReorder={reorderHandler}
+        className={cn('space-y-3', !isEditing() && 'cursor-grab')}
       >
         {localSubgoals.map((subgoal) => (
           <Reorder.Item
             key={subgoal.subgoal_id}
             value={subgoal}
-            className='flex items-center justify-between p-4 border rounded-lg'
+            className={cn(
+              'flex items-center justify-between p-4 border rounded-lg',
+              !isEditing() && 'cursor-grab'
+            )}
+            dragListener={!isEditing()}
             style={{ position: 'relative' }}
           >
             <div className='flex items-center gap-3 flex-1'>
@@ -261,7 +323,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
               </Select>
               {editing.subgoalId === subgoal.subgoal_id ? (
                 <form
-                  className='flex-1 flex gap-2'
+                  className='flex-1 flex gap-2 justify-between'
                   onSubmit={(e) => {
                     e.preventDefault()
                     handleEditSave()
@@ -272,7 +334,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                     onChange={(e) =>
                       setEditing({ ...editing, title: e.target.value })
                     }
-                    className='max-w-2/5'
+                    className='w-full'
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Escape') {
@@ -280,17 +342,24 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                       }
                     }}
                   />
-                  <Button type='submit' size='sm'>
-                    Save
-                  </Button>
-                  <Button
-                    type='button'
-                    variant='ghost'
-                    size='sm'
-                    onClick={() => setEditing({ subgoalId: null, title: '' })}
-                  >
-                    Cancel
-                  </Button>
+                  <div className='flex items-center gap-2'>
+                    <Button
+                      type='submit'
+                      size='sm'
+                      className='h-12 w-20 text-sm'
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      className='h-12 w-20 text-sm'
+                      size='lg'
+                      onClick={() => setEditing({ subgoalId: null, title: '' })}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </form>
               ) : (
                 <span
