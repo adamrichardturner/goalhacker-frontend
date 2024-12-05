@@ -13,13 +13,17 @@ import { useState } from 'react'
 interface SubGoalsListProps {
   goalData: Partial<Goal>
   updateGoalData: (data: Partial<Goal>) => void
+  isCreating: boolean
 }
 
-export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
+export function SubGoalsList({
+  goalData,
+  updateGoalData,
+  isCreating,
+}: SubGoalsListProps) {
   const [newSubgoal, setNewSubgoal] = useState<Partial<Subgoal>>({
     goal_id: '',
     title: '',
-
     status: 'planned',
   })
 
@@ -32,6 +36,7 @@ export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
         goal_id: goalData.goal_id || '',
         title: newSubgoal.title,
         status: 'planned' as const,
+        target_date: newSubgoal.target_date,
       },
     ]
 
@@ -40,6 +45,7 @@ export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
       goal_id: '',
       title: '',
       status: 'planned',
+      target_date: undefined,
     })
   }
 
@@ -60,15 +66,22 @@ export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
             placeholder='Enter a sub-goal...'
           />
           <div className='flex items-center gap-2'>
-            {subgoal.target_date && (
-              <span className='text-xs text-muted-foreground'>
-                Due: {format(new Date(subgoal.target_date), 'PPP')}
-              </span>
-            )}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant='ghost' className='h-8 w-8 p-0'>
-                  <CalendarIcon className='h-4 w-4' />
+                <Button
+                  variant='ghost'
+                  className={cn(
+                    'h-12 w-12 p-0',
+                    subgoal.target_date && 'border-2 border-electricPurple'
+                  )}
+                >
+                  {!isCreating && subgoal.target_date ? (
+                    <span className='text-xs'>
+                      {format(new Date(subgoal.target_date), 'MMM d')}
+                    </span>
+                  ) : (
+                    <CalendarIcon className='h-4 w-4' />
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className='w-auto p-0' align='start'>
@@ -110,27 +123,22 @@ export function SubGoalsList({ goalData, updateGoalData }: SubGoalsListProps) {
           }}
         />
         <div className='flex items-center gap-2'>
-          <Button
-            variant='ghost'
-            size='icon'
-            className={cn(
-              'h-8 w-8',
-              !newSubgoal.target_date && 'text-muted bg-card hover:bg-card'
-            )}
-            onClick={() =>
-              setNewSubgoal({ ...newSubgoal, target_date: undefined })
-            }
-          >
-            {newSubgoal.target_date ? (
-              format(new Date(newSubgoal.target_date), 'PPP')
-            ) : (
-              <CalendarIcon className='h-4 w-4' />
-            )}
-          </Button>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant='ghost' className='h-8 w-8 p-0'>
-                <CalendarIcon className='h-4 w-4' />
+              <Button
+                variant='ghost'
+                className={cn(
+                  'h-12 w-12 p-0',
+                  newSubgoal.target_date && 'border-2 border-electricPurple'
+                )}
+              >
+                {!isCreating && newSubgoal.target_date ? (
+                  <span className='text-xs'>
+                    {format(new Date(newSubgoal.target_date), 'MMM d')}
+                  </span>
+                ) : (
+                  <CalendarIcon className='h-4 w-4' />
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className='w-auto p-0' align='start'>

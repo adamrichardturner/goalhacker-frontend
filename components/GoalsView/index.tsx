@@ -15,13 +15,24 @@ interface GoalsViewProps {
   goals?: GoalType[]
   user?: User
   isLoading?: boolean
+  isArchived?: boolean
 }
 
-const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
+const GoalsView = ({
+  goals = [],
+  user,
+  isLoading = false,
+  isArchived = false,
+}: GoalsViewProps) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('All')
   const filters: FilterType[] = ['All', 'Active', 'Completed']
 
-  const filteredGoals = goals.filter((goal) => {
+  const archivedGoals = goals.filter((goal) => goal.status === 'archived')
+  const nonArchivedGoals = goals.filter((goal) => goal.status !== 'archived')
+  const displayGoals = isArchived ? archivedGoals : nonArchivedGoals
+
+  const filteredGoals = displayGoals.filter((goal) => {
+    if (isArchived) return true // Don't apply filters to archived goals
     if (selectedFilter === 'All') return true
     if (selectedFilter === 'Active') return goal.status !== 'completed'
     return goal.status === 'completed'
@@ -35,10 +46,12 @@ const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
             <Skeleton className='h-8 w-64' />
           ) : (
             <h1 className='text-xs sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
-              Welcome, {user?.first_name} 👋
+              {isArchived
+                ? 'Archived Goals'
+                : `Welcome, ${user?.first_name} 👋`}
             </h1>
           )}
-          {goals.length > 0 && (
+          {goals.length > 0 && !isArchived && (
             <Link href='/goals/new'>
               <Button className='bg-electricPurple p-5 hover:bg-electricPurple/95 hover:drop-shadow-sm font-[400] text-white text-xs'>
                 New Goal
@@ -48,7 +61,7 @@ const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
         </div>
       </div>
 
-      {goals.length > 0 && (
+      {goals.length > 0 && !isArchived && (
         <nav className='flex gap-8 items-center border-b border-border'>
           {filters.map((filter) => (
             <button
@@ -85,10 +98,28 @@ const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
               </div>
             </div>
           ))
-        ) : goals.length === 0 ? (
-          <EmptyGoalsState />
+        ) : displayGoals.length === 0 ? (
+          <div className='text-center text-muted-foreground'>
+            {isArchived ? 'No archived goals yet' : <EmptyGoalsState />}
+          </div>
         ) : (
-          filteredGoals.map((goal) => <Goal key={goal.goal_id} goal={goal} />)
+          <>
+            {filteredGoals.map((goal) => (
+              <Goal key={goal.goal_id} goal={goal} />
+            ))}
+            {!isArchived && archivedGoals.length > 0 && (
+              <div className='flex justify-end mt-4'>
+                <Link href='/goals/archived'>
+                  <Button
+                    variant='ghost'
+                    className='text-muted-foreground hover:text-foreground'
+                  >
+                    View Archived Goals ({archivedGoals.length})
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/select'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
 
 interface EditSummaryProps {
   goal: Goal
@@ -37,6 +38,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
   const { updateGoal } = useGoal(goal.goal_id)
   const [isEditing, setIsEditing] = useState(false)
   const [editedGoal, setEditedGoal] = useState({
+    title: goal.title || '',
     aims: goal.aims || '',
     steps_to_completion: goal.steps_to_completion || '',
     measurement_method: goal.measurement_method || '',
@@ -70,15 +72,27 @@ export function EditSummary({ goal }: EditSummaryProps) {
         </DialogHeader>
         <div className='space-y-6 py-4'>
           <div className='space-y-2'>
+            <Label htmlFor='title'>Title</Label>
+            <Input
+              id='title'
+              value={editedGoal.title}
+              onChange={(e) =>
+                setEditedGoal((prev) => ({ ...prev, title: e.target.value }))
+              }
+              placeholder='Enter goal title'
+              className='h-14 text-lg'
+            />
+          </div>
+          <div className='space-y-2'>
             <Label htmlFor='aims'>Aims</Label>
-            <Textarea
+            <Input
               id='aims'
               value={editedGoal.aims}
               onChange={(e) =>
                 setEditedGoal((prev) => ({ ...prev, aims: e.target.value }))
               }
               placeholder='What are you aiming to achieve?'
-              className='min-h-[100px]'
+              className='h-14 text-lg'
             />
           </div>
           <div className='space-y-2'>

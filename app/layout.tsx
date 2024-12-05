@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className={inter.className}>
+      <body className={`${inter.className} overflow-y-scroll`}>
         <Providers>
           <main className='container mx-auto pb-8 w-full flex items-center justify-center'>
             {children}

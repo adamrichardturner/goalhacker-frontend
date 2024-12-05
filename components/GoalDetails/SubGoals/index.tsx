@@ -3,7 +3,6 @@ import { Goal, SubgoalStatus } from '@/types/goal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Calendar } from '@/components/ui/calendar'
-import { format } from 'date-fns'
 import { CalendarIcon, Trash2, Pen } from 'lucide-react'
 import {
   Select,
@@ -29,7 +28,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { useGoal } from '@/hooks/useGoal'
-import { toast } from 'sonner'
 
 interface SubGoalsProps {
   goal: Goal
@@ -41,16 +39,6 @@ interface EditingState {
 }
 
 export default function SubGoals({ goal }: SubGoalsProps) {
-  const [newSubgoal, setNewSubgoal] = useState({
-    status: 'planned' as SubgoalStatus,
-    title: '',
-    target_date: undefined as string | undefined,
-  })
-  const [editing, setEditing] = useState<EditingState>({
-    subgoalId: null,
-    title: '',
-  })
-  const [deletingSubgoal, setDeletingSubgoal] = useState<string | null>(null)
   const {
     createSubgoal,
     updateSubgoalStatus,
@@ -59,62 +47,63 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     deleteSubgoal,
   } = useGoal(goal.goal_id)
 
-  const handleSubgoalCreate = async () => {
-    if (!newSubgoal.title.trim()) {
-      toast.error('Please enter a subgoal title')
-      return
-    }
+  const [newSubgoal, setNewSubgoal] = useState<{
+    title: string
+    target_date?: string | null
+    status: SubgoalStatus
+  }>({
+    title: '',
+    target_date: null,
+    status: 'planned',
+  })
+
+  const [editing, setEditing] = useState<EditingState>({
+    subgoalId: null,
+    title: '',
+  })
+  const [deletingSubgoalId, setDeletingSubgoalId] = useState<string | null>(
+    null
+  )
+
+  const handleSubgoalCreate = () => {
+    if (!newSubgoal.title) return
 
     try {
       createSubgoal({
-        status: newSubgoal.status,
         title: newSubgoal.title,
         target_date: newSubgoal.target_date,
+        status: newSubgoal.status,
       })
       setNewSubgoal({
-        status: 'planned',
         title: '',
-        target_date: undefined,
+        target_date: null,
+        status: 'planned',
       })
     } catch (error) {
       console.error('Error creating subgoal:', error)
     }
   }
 
-  const handleSubgoalStatusChange = async (
+  const handleSubgoalStatusChange = (
     subgoalId: string,
     status: SubgoalStatus
   ) => {
     try {
-      await updateSubgoalStatus({
-        subgoalId,
-        status,
-      })
+      updateSubgoalStatus({ subgoalId, status })
     } catch (error) {
       console.error('Error updating subgoal status:', error)
     }
   }
 
-  const handleSubgoalDelete = async (subgoalId: string) => {
-    try {
-      await deleteSubgoal(subgoalId)
-      setDeletingSubgoal(null)
-    } catch (error) {
-      console.error('Error deleting subgoal:', error)
-    }
+  const handleEditClick = (subgoalId: string, title: string) => {
+    setEditing({ subgoalId, title })
   }
 
-  const handleEditStart = (subgoal: NonNullable<Goal['subgoals']>[number]) => {
-    setEditing({
-      subgoalId: subgoal.subgoal_id ?? null,
-      title: subgoal.title ?? '',
-    })
-  }
+  const handleEditSave = () => {
+    if (!editing.subgoalId || !editing.title) return
 
-  const handleEditSave = async () => {
-    if (!editing.subgoalId) return
     try {
-      await updateSubgoalTitle({
+      updateSubgoalTitle({
         subgoalId: editing.subgoalId,
         title: editing.title,
       })
@@ -124,12 +113,24 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     }
   }
 
-  const handleTargetDateChange = async (
-    subgoalId: string,
-    date: Date | undefined
-  ) => {
+  const handleDeleteClick = (subgoalId: string) => {
+    setDeletingSubgoalId(subgoalId)
+  }
+
+  const handleDeleteConfirm = () => {
+    if (!deletingSubgoalId) return
+
     try {
-      await updateSubgoalTargetDate({
+      deleteSubgoal(deletingSubgoalId)
+      setDeletingSubgoalId(null)
+    } catch (error) {
+      console.error('Error deleting subgoal:', error)
+    }
+  }
+
+  const handleTargetDateChange = (subgoalId: string, date: Date | null) => {
+    try {
+      updateSubgoalTargetDate({
         subgoalId,
         target_date: date?.toISOString() || null,
       })
@@ -140,64 +141,71 @@ export default function SubGoals({ goal }: SubGoalsProps) {
 
   return (
     <div className='space-y-4'>
-      {/* Add new subgoal form */}
+      {/* Add new subgoal */}
       <div className='flex items-center gap-2'>
         <Input
           value={newSubgoal.title}
           onChange={(e) =>
             setNewSubgoal({ ...newSubgoal, title: e.target.value })
           }
-          placeholder='Add a new sub-goal...'
+          placeholder='Add a new subgoal...'
+          className='flex-1'
           onKeyDown={(e) => {
             if (e.key === 'Enter' && newSubgoal.title) {
               handleSubgoalCreate()
             }
           }}
         />
-        <Select
-          value={newSubgoal.status}
-          onValueChange={(value: SubgoalStatus) =>
-            setNewSubgoal({ ...newSubgoal, status: value })
-          }
-        >
-          <SelectTrigger className='w-[140px]'>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='planned'>Planned</SelectItem>
-            <SelectItem value='in_progress'>In Progress</SelectItem>
-            <SelectItem value='completed'>Completed</SelectItem>
-          </SelectContent>
-        </Select>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant='ghost'
-              size='icon'
-              className={cn(newSubgoal.target_date && 'border border-input')}
-            >
-              <CalendarIcon className='h-4 w-4' />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className='w-auto p-0' align='start'>
-            <Calendar
-              mode='single'
-              selected={
-                newSubgoal.target_date
-                  ? new Date(newSubgoal.target_date)
-                  : undefined
-              }
-              onSelect={(date) =>
-                setNewSubgoal({
-                  ...newSubgoal,
-                  target_date: date?.toISOString(),
-                })
-              }
-              disabled={(date) => date < new Date()}
-            />
-          </PopoverContent>
-        </Popover>
-        <Button onClick={handleSubgoalCreate}>Add</Button>
+        <div className='flex items-center gap-2'>
+          <Select
+            value={newSubgoal.status}
+            onValueChange={(value: SubgoalStatus) =>
+              setNewSubgoal({ ...newSubgoal, status: value })
+            }
+          >
+            <SelectTrigger className='w-[140px]'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='planned'>Planned</SelectItem>
+              <SelectItem value='in_progress'>In Progress</SelectItem>
+              <SelectItem value='completed'>Completed</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className='flex items-center gap-2'>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant='ghost'
+                  className={cn(
+                    'h-8 w-8 p-0',
+                    newSubgoal.target_date && 'border-2 border-electricPurple'
+                  )}
+                >
+                  <CalendarIcon className='h-4 w-4' />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className='w-auto p-0' align='start'>
+                <Calendar
+                  mode='single'
+                  selected={
+                    newSubgoal.target_date
+                      ? new Date(newSubgoal.target_date)
+                      : undefined
+                  }
+                  onSelect={(date) =>
+                    setNewSubgoal({
+                      ...newSubgoal,
+                      target_date: date?.toISOString(),
+                    })
+                  }
+                  disabled={(date) => date < new Date()}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <Button onClick={handleSubgoalCreate}>Add</Button>
+        </div>
       </div>
 
       {/* Existing Subgoals */}
@@ -224,7 +232,6 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   <SelectItem value='completed'>Completed</SelectItem>
                 </SelectContent>
               </Select>
-
               {editing.subgoalId === subgoal.subgoal_id ? (
                 <form
                   className='flex-1 flex gap-2'
@@ -269,16 +276,17 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   {subgoal.title}
                 </span>
               )}
-
-              {subgoal.target_date && (
-                <span className='text-sm text-muted-foreground'>
-                  {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
-                </span>
-              )}
-
+            </div>
+            <div className='flex items-center gap-2'>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant='ghost' size='icon'>
+                  <Button
+                    variant='ghost'
+                    className={cn(
+                      'h-8 w-8 p-0',
+                      subgoal.target_date && 'border-2 border-electricPurple'
+                    )}
+                  >
                     <CalendarIcon className='h-4 w-4' />
                   </Button>
                 </PopoverTrigger>
@@ -292,39 +300,46 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                     }
                     onSelect={(date) =>
                       subgoal.subgoal_id &&
-                      handleTargetDateChange(subgoal.subgoal_id, date)
+                      handleTargetDateChange(subgoal.subgoal_id, date || null)
                     }
                     disabled={(date) => date < new Date()}
                   />
                 </PopoverContent>
               </Popover>
-
               {!editing.subgoalId && (
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => handleEditStart(subgoal)}
-                >
-                  <Pen className='h-4 w-4' />
-                </Button>
+                <>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className='h-8 w-8'
+                    onClick={() =>
+                      subgoal.subgoal_id &&
+                      handleEditClick(subgoal.subgoal_id, subgoal.title)
+                    }
+                  >
+                    <Pen className='h-4 w-4' />
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className='h-8 w-8 hover:bg-destructive hover:text-destructive-foreground'
+                    onClick={() =>
+                      subgoal.subgoal_id &&
+                      handleDeleteClick(subgoal.subgoal_id)
+                    }
+                  >
+                    <Trash2 className='h-4 w-4' />
+                  </Button>
+                </>
               )}
-              <Button
-                variant='ghost'
-                size='icon'
-                onClick={() =>
-                  subgoal.subgoal_id && setDeletingSubgoal(subgoal.subgoal_id)
-                }
-              >
-                <Trash2 className='h-4 w-4' />
-              </Button>
             </div>
           </div>
         ))}
       </div>
 
       <AlertDialog
-        open={!!deletingSubgoal}
-        onOpenChange={() => setDeletingSubgoal(null)}
+        open={!!deletingSubgoalId}
+        onOpenChange={() => setDeletingSubgoalId(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -335,13 +350,11 @@ export default function SubGoals({ goal }: SubGoalsProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeletingSubgoal(null)}>
+            <AlertDialogCancel onClick={() => setDeletingSubgoalId(null)}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={() =>
-                deletingSubgoal && handleSubgoalDelete(deletingSubgoal)
-              }
+              onClick={handleDeleteConfirm}
               className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
             >
               Delete

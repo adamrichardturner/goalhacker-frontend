@@ -97,21 +97,23 @@ export function Measure({
                 <li>Monthly savings amount tracked in a spreadsheet</li>
               </ul>
             </div>
-            <Label>How will you measure your progress?</Label>
-            <Textarea
-              placeholder='I will track...'
-              value={goalData.measurement_method || ''}
-              onChange={(e) =>
-                updateGoalData({ measurement_method: e.target.value })
-              }
-              required
-              maxLength={200}
-              className='mt-2 max-h-40 resize-none text-lg'
-            />
+            <div>
+              <Label>How will you measure your progress?</Label>
+              <Textarea
+                placeholder='I will track...'
+                value={goalData.measurement_method || ''}
+                onChange={(e) =>
+                  updateGoalData({ measurement_method: e.target.value })
+                }
+                required
+                maxLength={200}
+                className='max-h-40 resize-none text-lg'
+              />
+            </div>
           </div>
 
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-            <div className='space-y-4'>
+            <div className='space-y-0'>
               <label className='text-sm font-medium'>
                 Will you set a deadline? (Optional)
               </label>
@@ -154,7 +156,7 @@ export function Measure({
               </Popover>
             </div>
 
-            <div className='space-y-4'>
+            <div className='space-y-0'>
               <label className='text-sm font-medium'>
                 How important is this goal?
               </label>
@@ -177,7 +179,7 @@ export function Measure({
           </div>
         </div>
 
-        <div className='flex gap-2'>
+        <div className='flex gap-2 mt-6'>
           <Button onClick={onBack} variant='outline' className='flex-1 h-12'>
             Go Back
           </Button>

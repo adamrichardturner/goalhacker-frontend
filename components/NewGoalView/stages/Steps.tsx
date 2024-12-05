@@ -102,7 +102,11 @@ function Steps({
           </div>
 
           {useSubGoals && (
-            <SubGoalsList goalData={goalData} updateGoalData={updateGoalData} />
+            <SubGoalsList
+              goalData={goalData}
+              updateGoalData={updateGoalData}
+              isCreating={true}
+            />
           )}
         </div>
 
