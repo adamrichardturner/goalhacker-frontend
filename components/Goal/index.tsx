@@ -26,6 +26,11 @@ export default function Goal({ goal, className = '' }: GoalProps) {
       </div>
       <div className='w-full h-[200px] flex-1 sm:w-1/2 flex flex-col justify-between'>
         <div className='sm:space-y-4 items-center p-4 justify-center h-full flex-1'>
+          {goal.category && (
+            <p className='text-sm italic text-muted-foreground mb-2'>
+              {goal.category.name}
+            </p>
+          )}
           <p className='text-sm text-muted-foreground line-clamp-3'>
             {goal.aims}
           </p>

@@ -2,7 +2,6 @@
 
 import { Goal } from '@/types/goal'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { Calendar } from '@/components/ui/calendar'
@@ -21,6 +20,7 @@ import {
 import { cn } from '@/lib/utils'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { Label } from '@/components/ui/label'
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
 
 interface MeasureProps {
   onNext: () => void
@@ -99,15 +99,13 @@ export function Measure({
             </div>
             <div>
               <Label>How will you measure your progress?</Label>
-              <Textarea
+              <RichTextEditor
                 placeholder='I will track...'
                 value={goalData.measurement_method || ''}
-                onChange={(e) =>
-                  updateGoalData({ measurement_method: e.target.value })
+                onChange={(value) =>
+                  updateGoalData({ measurement_method: value })
                 }
-                required
-                maxLength={200}
-                className='max-h-40 resize-none text-lg'
+                className='max-h-40 text-lg'
               />
             </div>
           </div>

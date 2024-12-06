@@ -12,7 +12,6 @@ import { useState } from 'react'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
@@ -29,6 +28,7 @@ import {
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
 
 interface EditSummaryProps {
   goal: Goal
@@ -80,7 +80,6 @@ export function EditSummary({ goal }: EditSummaryProps) {
                 setEditedGoal((prev) => ({ ...prev, title: e.target.value }))
               }
               placeholder='Enter goal title'
-              className='h-14 text-lg'
             />
           </div>
           <div className='space-y-2'>
@@ -92,18 +91,16 @@ export function EditSummary({ goal }: EditSummaryProps) {
                 setEditedGoal((prev) => ({ ...prev, aims: e.target.value }))
               }
               placeholder='What are you aiming to achieve?'
-              className='h-14 text-lg'
             />
           </div>
           <div className='space-y-2'>
             <Label htmlFor='steps'>Steps to Completion</Label>
-            <Textarea
-              id='steps'
+            <RichTextEditor
               value={editedGoal.steps_to_completion}
-              onChange={(e) =>
+              onChange={(value) =>
                 setEditedGoal((prev) => ({
                   ...prev,
-                  steps_to_completion: e.target.value,
+                  steps_to_completion: value,
                 }))
               }
               placeholder='What steps will you take to complete this goal?'
@@ -112,13 +109,12 @@ export function EditSummary({ goal }: EditSummaryProps) {
           </div>
           <div className='space-y-2'>
             <Label htmlFor='measurement'>Measurement Method</Label>
-            <Textarea
-              id='measurement'
+            <RichTextEditor
               value={editedGoal.measurement_method}
-              onChange={(e) =>
+              onChange={(value) =>
                 setEditedGoal((prev) => ({
                   ...prev,
-                  measurement_method: e.target.value,
+                  measurement_method: value,
                 }))
               }
               placeholder='How will you measure progress towards this goal?'
