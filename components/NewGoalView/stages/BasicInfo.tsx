@@ -79,13 +79,14 @@ export function BasicInfo({
               placeholder='Exercise three times a week to improve fitness'
               value={goalData.title || ''}
               onChange={(e) => updateGoalData({ title: e.target.value })}
-              className='text-lg h-12'
+              className='text-md'
               required
             />
           </div>
         </div>
 
-        <div className='space-y-6 pb-2'>
+        <div className='space-y-1 pb-2'>
+          <Label>Category</Label>
           <CategorySelect
             value={goalData.category_id}
             onValueChange={(value) => updateGoalData({ category_id: value })}

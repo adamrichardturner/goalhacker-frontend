@@ -7,6 +7,8 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { ModeToggle } from '@/components/ThemeSwitcher'
 import { motion } from 'framer-motion'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -50,10 +52,20 @@ const slideIn = {
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
+  const { user } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const handleSignIn = () => {
+    if (user) {
+      router.push('/goals')
+    } else {
+      router.push('/login')
+    }
+  }
 
   const logoSrc = !mounted
     ? '/goalhacker-logo.svg'
@@ -75,9 +87,9 @@ export default function LandingPage() {
         >
           <div className='flex items-center gap-4'>
             <ModeToggle />
-            <Link href='/login'>
-              <Button variant='ghost'>Sign in</Button>
-            </Link>
+            <Button variant='ghost' onClick={handleSignIn}>
+              {user ? 'Go to Goals' : 'Sign in'}
+            </Button>
             <Link href='/signup'>
               <Button>Get Started</Button>
             </Link>
@@ -132,17 +144,20 @@ export default function LandingPage() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
-            <Link href='/signup'>
-              <Button
-                size='lg'
-                className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
-              >
-                Register for Beta Access
-              </Button>
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href='/signup'>
+                <Button
+                  size='lg'
+                  className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                >
+                  Register for Beta Access
+                </Button>
+              </Link>
+            </motion.div>
+            <p className='text-sm text-muted-foreground mt-2'>
+              (...Beta access is free!)
+            </p>
           </motion.div>
         </div>
 

@@ -14,14 +14,14 @@ export default function NewGoalPage() {
   }
 
   return (
-    <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='container max-w-3xl flex flex-col gap-2 sm:px-4 w-full'>
       <Header user={user} loading={isLoading} />
       <div className='mb-0 px-4'>
         <Link href='/goals'>
           <Button variant='ghost'>← Back to Goals</Button>
         </Link>
       </div>
-      <main className='flex flex-col gap-4 w-full bg-card sm:p-16 rounded-lg shadow-sm'>
+      <main className='flex flex-col px-4 sm:px-0 gap-4 w-full bg-background rounded-lg shadow-sm'>
         <NewGoalView />
       </main>
     </div>

@@ -186,7 +186,7 @@ const Header = ({ user, loading }: HeaderProps) => {
                   </AvatarFallback>
                 </Avatar>
                 <SheetTitle className='text-sm text-left font-semibold'>
-                  Welcome, {user?.first_name} {user?.last_name}! 👋
+                  Welcome, <br /> {user?.first_name} {user?.last_name}! 👋
                 </SheetTitle>
               </div>
 

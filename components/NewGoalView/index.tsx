@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { goalsService } from '@/services/goalsService'
 import useAuth from '@/hooks/useAuth'
 import { Loading } from '../ui/loading'
+import SmartDialog from '../SmartDialog'
 
 const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
 type Stage = (typeof stages)[number]
@@ -95,7 +96,7 @@ export default function NewGoalView() {
   }
 
   return (
-    <div className='w-full mx-auto'>
+    <div className='w-full mx-auto bg-card px-4 sm:p-12 py-8 rounded-2xl'>
       <div className='w-full'>
         <div className='flex items-center justify-between border-b border-border pb-4'>
           <div>
@@ -104,9 +105,7 @@ export default function NewGoalView() {
               <p className='text-muted-foreground'>
                 Plan your goal for success with the SMART framework.
               </p>
-              <p className='text-muted-foreground'>
-                Click here for more information
-              </p>
+              <SmartDialog />
             </div>
           </div>
         </div>
