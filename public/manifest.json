@@ -1,14 +1,14 @@
 {
-  "name": "GoalHacker",
-  "short_name": "GoalHacker",
+  "name": "Goal Hacker | Track and achieve your goals",
+  "short_name": "Goal Hacker",
   "description": "Track and achieve your goals",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#6D28D9",
+  "theme_color": "#744afc",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/icons/favicon.svg",
       "type": "image/svg+xml",
       "sizes": "any"
     }

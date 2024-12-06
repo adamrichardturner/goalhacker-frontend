@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
@@ -6,6 +6,13 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { Toaster as Sonner } from 'sonner'
 
 const inter = Inter({ subsets: ['latin'] })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#744afc',
+}
 
 export const metadata: Metadata = {
   title: 'Goal Hacker | Track and achieve your goals',
@@ -18,14 +25,8 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'GoalHacker',
+    title: 'Goal Hacker',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
-  themeColor: '#6D28D9',
 }
 
 export default function RootLayout({

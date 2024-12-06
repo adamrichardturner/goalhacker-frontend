@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -59,18 +59,6 @@ const Header = ({ user, loading }: HeaderProps) => {
       ? '/goalhacker-logo-dark.svg'
       : '/goalhacker-logo.svg'
 
-  const burgerSrc = !mounted
-    ? '/burger-menu.svg'
-    : theme === 'dark'
-      ? '/burger-menu-dark.svg'
-      : '/burger-menu.svg'
-
-  const closeBurgerSrc = !mounted
-    ? '/burger-close.svg'
-    : theme === 'dark'
-      ? '/burger-close-dark.svg'
-      : '/burger-close.svg'
-
   const handleLogout = async () => {
     await logout()
   }
@@ -80,12 +68,12 @@ const Header = ({ user, loading }: HeaderProps) => {
       <div className='hidden sm:flex w-full justify-between items-center'>
         <div className='flex items-center gap-4'>
           <Link href='/goals'>
-            <Image
+            <img
               src={logoSrc}
               alt='GoalHacker'
               width={150}
               height={30}
-              priority
+              className='h-[30px]'
             />
           </Link>
           <BetaButton />
@@ -141,10 +129,17 @@ const Header = ({ user, loading }: HeaderProps) => {
       <div className='sm:hidden flex justify-between items-center w-full'>
         <div className='flex items-center gap-4'>
           <Link href='/goals'>
-            <Image src={logoSrc} alt='GoalHacker' width={126} height={14.46} />
+            <img
+              src='/goalhacker-logo.svg'
+              alt='GoalHacker'
+              width={126}
+              height={14.46}
+              className='h-[14.46px]'
+            />
           </Link>
           <BetaButton />
         </div>
+
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger>
             <motion.div
@@ -152,11 +147,11 @@ const Header = ({ user, loading }: HeaderProps) => {
               animate={{ rotate: isOpen ? 90 : 0 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
             >
-              <Image
-                src={isOpen ? closeBurgerSrc : burgerSrc}
+              <img
+                src={isOpen ? '/burger-close.svg' : '/burger-menu.svg'}
                 width={20}
                 height={20}
-                alt={'Burger Menu'}
+                alt='Burger Menu'
                 className='transition-opacity duration-200'
                 style={{
                   opacity: isOpen ? 0.8 : 1,
