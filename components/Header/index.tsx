@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { usePathname } from 'next/navigation'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +37,7 @@ const Header = ({ user, loading }: HeaderProps) => {
   const [mounted, setMounted] = useState(false)
   const [selectedLink, setSelectedLink] = useState('Goals')
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     setMounted(true)
@@ -60,8 +62,6 @@ const Header = ({ user, loading }: HeaderProps) => {
     await logout()
   }
 
-  console.log(user)
-
   return (
     <header className='w-full bg-card h-[70px] sm:mt-8 sm:rounded-lg p-6 flex justify-between items-center shadow-sm'>
       <div className='hidden sm:flex w-full justify-between items-center'>
@@ -77,18 +77,27 @@ const Header = ({ user, loading }: HeaderProps) => {
         <div className='flex items-center gap-8'>
           <nav className='flex gap-8'>
             {links.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  selectedLink === link.name
-                    ? 'text-primary'
-                    : 'text-muted-foreground'
-                }`}
-                onClick={() => setSelectedLink(link.name)}
-              >
-                {link.name}
-              </Link>
+              <motion.div key={link.href} className='relative'>
+                <Link
+                  href={link.href}
+                  className={`text-sm font-medium transition-colors hover:text-primary ${
+                    pathname === link.href
+                      ? 'text-primary'
+                      : 'text-muted-foreground'
+                  }`}
+                  onClick={() => setSelectedLink(link.name)}
+                >
+                  {link.name}
+                </Link>
+                {pathname === link.href && (
+                  <motion.div
+                    className='absolute h-[1.5px] w-full bg-electricPurple'
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                  />
+                )}
+              </motion.div>
             ))}
           </nav>
           <DropdownMenu>

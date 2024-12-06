@@ -23,10 +23,10 @@ export default function GoalsPage() {
       )}
       <div className='flex flex-col gap-4 w-full px-4 sm:px-0 rounded-lg'>
         <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
-          {goalsLoading ? (
+          {userIsLoading || goalsLoading ? (
             <Loading className='h-screen' />
           ) : (
-            <GoalsView goals={goals} user={user} />
+            <GoalsView goals={goals} user={user} isLoading={goalsLoading} />
           )}
         </main>
       </div>
