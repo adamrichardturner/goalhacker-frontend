@@ -133,4 +133,40 @@ export const authService = {
     )
     return response.data
   },
+
+  async forgotPassword(email: string) {
+    try {
+      const response = await api.post<{ success: boolean }>(
+        '/api/users/forgot-password',
+        { email },
+        { withCredentials: true }
+      )
+      return response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.error || 'Failed to send reset password email'
+        )
+      }
+      throw error
+    }
+  },
+
+  async resetPassword(token: string, email: string, newPassword: string) {
+    try {
+      const response = await api.post<{ success: boolean }>(
+        '/api/users/reset-password',
+        { token, email, newPassword },
+        { withCredentials: true }
+      )
+      return response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.error || 'Failed to reset password'
+        )
+      }
+      throw error
+    }
+  },
 }

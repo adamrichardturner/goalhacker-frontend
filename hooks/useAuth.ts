@@ -150,6 +150,38 @@ export const useAuth = () => {
     }
   }
 
+  const forgotPassword = async (email: string) => {
+    try {
+      await authService.forgotPassword(email)
+      toast.success('Password reset email sent! Please check your inbox.')
+      return true
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to send password reset email'
+      )
+      throw error
+    }
+  }
+
+  const resetPassword = async (
+    token: string,
+    email: string,
+    newPassword: string
+  ) => {
+    try {
+      await authService.resetPassword(token, email, newPassword)
+      toast.success('Password reset successful! You can now log in.')
+      router.push('/login')
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to reset password'
+      )
+      throw error
+    }
+  }
+
   return {
     user,
     isLoading,
@@ -161,6 +193,8 @@ export const useAuth = () => {
     signup,
     verifyEmail,
     resendVerificationEmail,
+    forgotPassword,
+    resetPassword,
   }
 }
 

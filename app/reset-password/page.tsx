@@ -8,23 +8,42 @@ import { AuthCard } from '@/components/form-components'
 import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
+import { useSearchParams } from 'next/navigation'
 import { PublicLogo } from '@/components/PublicLogo'
 
-export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+export default function ResetPasswordPage() {
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const { forgotPassword } = useAuth()
+  const { resetPassword } = useAuth()
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')
+  const email = searchParams.get('email')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+
+    if (!token || !email) {
+      setError('Invalid reset link. Please request a new one.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long')
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      await forgotPassword(email)
-      setSubmitted(true)
+      await resetPassword(token, email, password)
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
@@ -36,44 +55,38 @@ export default function ForgotPasswordPage() {
     }
   }
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(email)
-  }
-
-  const isValidForm = email && validateEmail(email)
-
-  if (submitted) {
-    return (
-      <div className='min-h-screen flex flex-col items-center justify-center'>
-        <PublicLogo />
-        <AuthCard
-          title='Check your email'
-          description="We've sent you a password reset link to your email address."
-        >
-          <Link href='/login'>
-            <Button className='w-full'>Return to login</Button>
-          </Link>
-        </AuthCard>
-      </div>
-    )
-  }
+  const isValidForm =
+    password &&
+    confirmPassword &&
+    password === confirmPassword &&
+    password.length >= 8
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center'>
       <PublicLogo />
-      <AuthCard
-        title='Forgot password'
-        description="Enter your email address and we'll send you a reset link"
-      >
+      <AuthCard title='Reset password' description='Enter your new password'>
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='space-y-2'>
             <Input
-              type='email'
-              placeholder='Email'
-              value={email}
+              type='password'
+              placeholder='New password'
+              value={password}
               onChange={(e) => {
-                setEmail(e.target.value)
+                setPassword(e.target.value)
+                setError(null)
+              }}
+              required
+              disabled={isLoading}
+              className={error ? 'border-destructive' : ''}
+            />
+          </div>
+          <div className='space-y-2'>
+            <Input
+              type='password'
+              placeholder='Confirm new password'
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value)
                 setError(null)
               }}
               required
@@ -91,7 +104,7 @@ export default function ForgotPasswordPage() {
             className='w-full'
             disabled={isLoading || !isValidForm}
           >
-            {isLoading ? 'Sending reset link...' : 'Send reset link'}
+            {isLoading ? 'Resetting password...' : 'Reset password'}
           </Button>
           <div className='text-sm text-center'>
             <Link href='/login' className='text-blue-600 hover:underline'>
