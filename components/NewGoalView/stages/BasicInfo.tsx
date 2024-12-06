@@ -79,7 +79,6 @@ export function BasicInfo({
               placeholder='Exercise three times a week to improve fitness'
               value={goalData.title || ''}
               onChange={(e) => updateGoalData({ title: e.target.value })}
-              className='text-md'
               required
             />
           </div>
@@ -95,6 +94,7 @@ export function BasicInfo({
 
         <Button
           variant='default'
+          size='lg'
           onClick={handleNext}
           disabled={!goalData.title}
           className='w-full'

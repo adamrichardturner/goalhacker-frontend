@@ -88,8 +88,8 @@ export function SubGoalsList({
                   variant='outline'
                   size='icon'
                   className={cn(
-                    'h-8 w-8',
-                    subgoal.target_date && 'border-primary'
+                    'h-12 w-12',
+                    subgoal.target_date && 'ring-2 ring-electricPurple'
                   )}
                 >
                   <CalendarIcon className='h-4 w-4' />
@@ -122,6 +122,7 @@ export function SubGoalsList({
 
       <div className='flex items-center gap-2'>
         <Input
+          className='text-sm'
           value={newSubgoal.title}
           onChange={(e) =>
             setNewSubgoal({ ...newSubgoal, title: e.target.value })
@@ -141,7 +142,7 @@ export function SubGoalsList({
                 variant='ghost'
                 className={cn(
                   'h-12 w-12 p-0',
-                  newSubgoal.target_date && 'border-2 border-electricPurple'
+                  newSubgoal.target_date && 'ring-2 ring-electricPurple'
                 )}
               >
                 {!isCreating && newSubgoal.target_date ? (
@@ -182,6 +183,8 @@ export function SubGoalsList({
           }
         }}
         disabled={!newSubgoal.title}
+        className='w-full sm:w-auto'
+        size='lg'
       >
         Add Sub-goal
       </Button>

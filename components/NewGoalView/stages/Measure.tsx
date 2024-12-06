@@ -77,7 +77,7 @@ export function Measure({
   return (
     <div className='space-y-4'>
       <div className='flex flex-col gap-4'>
-        <div className='flex gap-2 justify-between'>
+        <div className='flex gap-2 justify-between pt-6'>
           <div className='text-sm text-muted-foreground space-y-2'>
             <h2 className='text-xl text-primary font-semibold pb-2'>
               Step 3: Measure the goal
@@ -92,7 +92,7 @@ export function Measure({
               <p className='text-sm text-muted-foreground'>
                 Use clear metrics to measure your progress. For example:
               </p>
-              <ul className='text-xs text-muted-foreground list-disc pl-4 space-y-1'>
+              <ul className='text-sm text-muted-foreground list-disc pl-4 space-y-1'>
                 <li>Number of workouts completed per week</li>
                 <li>Monthly savings amount tracked in a spreadsheet</li>
               </ul>
@@ -105,7 +105,7 @@ export function Measure({
                 onChange={(value) =>
                   updateGoalData({ measurement_method: value })
                 }
-                className='max-h-40 text-lg'
+                className='max-h-40'
               />
             </div>
           </div>
@@ -116,13 +116,14 @@ export function Measure({
                 Will you set a deadline? (Optional)
               </label>
               <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger asChild className='w-full h-12'>
                   <Button
-                    variant={'outline'}
+                    variant='outline'
+                    size='lg'
                     className={cn(
-                      'w-full justify-start text-left font-normal',
+                      'w-full justify-start h-12 text-left font-normal',
                       !goalData.target_date &&
-                        'text-muted bg-card hover:bg-card'
+                        'text-muted h-12 bg-card hover:bg-card'
                     )}
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />

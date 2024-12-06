@@ -114,7 +114,7 @@ export default function NewGoalView() {
               <p className='text-muted-foreground'>
                 Plan your goal for success with the SMART framework.
               </p>
-              <div className='flex'>
+              <div className='flex pb-6'>
                 <SmartDialog />
               </div>
             </div>

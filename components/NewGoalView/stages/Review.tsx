@@ -63,7 +63,7 @@ export function Review({
   return (
     <div className='space-y-4'>
       <div className='flex flex-col gap-4'>
-        <div className='flex gap-2 justify-between'>
+        <div className='flex gap-2 pt-6'>
           <div className='text-xs text-muted space-y-2'>
             <h2 className='text-xl text-primary font-semibold'>
               Step 5: Review and Customize

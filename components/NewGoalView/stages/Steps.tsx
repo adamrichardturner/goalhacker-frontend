@@ -2,12 +2,12 @@
 
 import { Goal } from '@/types/goal'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { SubGoalsList } from '../SubGoalsList'
 import { useState } from 'react'
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
 
 interface StepsProps {
   onNext: () => void
@@ -17,7 +17,7 @@ interface StepsProps {
   isLoading?: boolean
 }
 
-function Steps({
+export default function Steps({
   onNext,
   onBack,
   updateGoalData,
@@ -58,7 +58,7 @@ function Steps({
   return (
     <div className='space-y-4'>
       <div className='flex flex-col gap-4'>
-        <div className='flex gap-2'>
+        <div className='flex gap-2 pt-6'>
           <div className='text-sm text-muted-foreground space-y-4'>
             <h2 className='text-xl text-primary font-semibold pb-2'>
               Step 4: What steps will you take?
@@ -76,19 +76,18 @@ function Steps({
           </div>
         </div>
 
-        <div className='space-y-6'>
+        <div className='space-y-6 pt-4'>
           <div className='space-y-2'>
             <label className='text-sm font-medium'>
               What steps will you take to reach this goal?
             </label>
-            <Textarea
+            <RichTextEditor
               placeholder="List the key actions you'll take..."
               value={goalData.steps_to_completion || ''}
-              onChange={(e) =>
-                updateGoalData({ steps_to_completion: e.target.value })
+              onChange={(value) =>
+                updateGoalData({ steps_to_completion: value })
               }
-              required
-              className='mt-2 max-h-40 resize-none'
+              className='mt-2'
             />
           </div>
 
@@ -111,13 +110,19 @@ function Steps({
         </div>
 
         <div className='flex gap-2'>
-          <Button onClick={onBack} variant='outline' className='flex-1'>
+          <Button
+            onClick={onBack}
+            variant='outline'
+            className='flex-1'
+            size='lg'
+          >
             Go Back
           </Button>
           <Button
             onClick={onNext}
             disabled={!goalData.steps_to_completion}
             className='flex-1'
+            size='lg'
           >
             Next Step
           </Button>
@@ -126,6 +131,3 @@ function Steps({
     </div>
   )
 }
-
-export { Steps }
-export default Steps
