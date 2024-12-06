@@ -51,7 +51,7 @@ export function BasicInfo({
   return (
     <div className='space-y-4'>
       <div className='flex flex-col gap-4'>
-        <div className='flex gap-2'>
+        <div className='flex gap-2 pt-6'>
           <div className='text-sm text-muted-foreground space-y-6 pb-6'>
             <h2 className='text-xl text-primary font-semibold pb-2'>
               Step 1: What is your goal?
@@ -86,7 +86,7 @@ export function BasicInfo({
         </div>
 
         <div className='space-y-1 pb-2'>
-          <Label>Category</Label>
+          <Label>Category (Optional)</Label>
           <CategorySelect
             value={goalData.category_id}
             onValueChange={(value) => updateGoalData({ category_id: value })}
@@ -94,9 +94,10 @@ export function BasicInfo({
         </div>
 
         <Button
+          variant='default'
           onClick={handleNext}
           disabled={!goalData.title}
-          className='w-full h-12'
+          className='w-full'
         >
           Next Step
         </Button>

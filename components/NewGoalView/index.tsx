@@ -9,9 +9,16 @@ import { goalsService } from '@/services/goalsService'
 import useAuth from '@/hooks/useAuth'
 import { Loading } from '../ui/loading'
 import SmartDialog from '../SmartDialog'
+import GoalCreationTimeline from './GoalCreationTimeline'
 
-const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
-type Stage = (typeof stages)[number]
+export const stages = [
+  'BasicInfo',
+  'Timeline',
+  'Measure',
+  'Steps',
+  'Review',
+] as const
+export type Stage = (typeof stages)[number]
 
 export default function NewGoalView() {
   const router = useRouter()
@@ -95,55 +102,29 @@ export default function NewGoalView() {
     }
   }
 
+  const goalCreationStage = renderStage()
+
   return (
     <div className='w-full mx-auto bg-card px-4 sm:p-12 py-8 rounded-2xl'>
       <div className='w-full'>
-        <div className='flex items-center justify-between border-b border-border pb-4'>
+        <div className='flex flex-col sm:flex-row items-start justify-between border-b border-border'>
           <div>
             <h1 className='text-xl font-semibold'>Create a new goal</h1>
             <div className='flex flex-col gap-0 text-xs'>
               <p className='text-muted-foreground'>
                 Plan your goal for success with the SMART framework.
               </p>
-              <SmartDialog />
+              <div className='flex'>
+                <SmartDialog />
+              </div>
             </div>
+          </div>
+          <div className='w-full sm:w-auto'>
+            <GoalCreationTimeline stages={stages} currentStage={currentStage} />
           </div>
         </div>
       </div>
-      <div className='flex w-full items-end justify-end pt-2 pb-4'>
-        {stages.map((stage, index) => (
-          <div
-            key={stage}
-            className={`flex items-center ${
-              index < stages.indexOf(currentStage)
-                ? 'text-electricPurple'
-                : index === stages.indexOf(currentStage)
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-            }`}
-          >
-            <div
-              className={`w-4 h-4 text-xs p-2 rounded-full flex items-center justify-center border ${
-                index <= stages.indexOf(currentStage)
-                  ? 'border-electricPurple'
-                  : 'border-muted'
-              }`}
-            >
-              {index + 1}
-            </div>
-            {index < stages.length - 1 && (
-              <div
-                className={`w-full h-[1px] px-2 ${
-                  index < stages.indexOf(currentStage)
-                    ? 'bg-electricPurple'
-                    : 'bg-muted'
-                }`}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-      {renderStage()}
+      {goalCreationStage}
     </div>
   )
 }
