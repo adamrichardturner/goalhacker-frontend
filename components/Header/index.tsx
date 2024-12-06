@@ -25,6 +25,7 @@ import { User } from '@/types/auth'
 import { useAuth } from '@/hooks/useAuth'
 import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
+import BetaButton from './BetaButton'
 
 interface HeaderProps {
   user: User
@@ -58,6 +59,18 @@ const Header = ({ user, loading }: HeaderProps) => {
       ? '/goalhacker-logo-dark.svg'
       : '/goalhacker-logo.svg'
 
+  const burgerSrc = !mounted
+    ? '/burger-menu.svg'
+    : theme === 'dark'
+      ? '/burger-menu-dark.svg'
+      : '/burger-menu.svg'
+
+  const closeBurgerSrc = !mounted
+    ? '/burger-close.svg'
+    : theme === 'dark'
+      ? '/burger-close-dark.svg'
+      : '/burger-close.svg'
+
   const handleLogout = async () => {
     await logout()
   }
@@ -65,15 +78,19 @@ const Header = ({ user, loading }: HeaderProps) => {
   return (
     <header className='w-full bg-card h-[70px] sm:mt-8 sm:rounded-lg p-6 flex justify-between items-center shadow-sm'>
       <div className='hidden sm:flex w-full justify-between items-center'>
-        <Link href='/goals'>
-          <Image
-            src={logoSrc}
-            alt='GoalHacker'
-            width={150}
-            height={30}
-            priority
-          />
-        </Link>
+        <div className='flex items-center gap-4'>
+          <Link href='/goals'>
+            <Image
+              src={logoSrc}
+              alt='GoalHacker'
+              width={150}
+              height={30}
+              priority
+            />
+          </Link>
+          <BetaButton />
+        </div>
+
         <div className='flex items-center gap-8'>
           <nav className='flex gap-8'>
             {links.map((link) => (
@@ -122,14 +139,12 @@ const Header = ({ user, loading }: HeaderProps) => {
         </div>
       </div>
       <div className='sm:hidden flex justify-between items-center w-full'>
-        <Link href='/goals'>
-          <Image
-            src='/goalhacker-logo.svg'
-            alt='GoalHacker'
-            width={126}
-            height={14.46}
-          />
-        </Link>
+        <div className='flex items-center gap-4'>
+          <Link href='/goals'>
+            <Image src={logoSrc} alt='GoalHacker' width={126} height={14.46} />
+          </Link>
+          <BetaButton />
+        </div>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger>
             <motion.div
@@ -138,7 +153,7 @@ const Header = ({ user, loading }: HeaderProps) => {
               transition={{ duration: 0.2, ease: 'easeInOut' }}
             >
               <Image
-                src={isOpen ? '/burger-close.svg' : '/burger-menu.svg'}
+                src={isOpen ? closeBurgerSrc : burgerSrc}
                 width={20}
                 height={20}
                 alt={'Burger Menu'}

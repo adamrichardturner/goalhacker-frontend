@@ -92,3 +92,8 @@ body {
 .prose ol {
   @apply list-decimal pl-6 my-2;
 }
+
+link[rel='icon'] {
+  border-radius: 50%;
+  -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+}
