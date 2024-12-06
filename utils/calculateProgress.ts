@@ -6,18 +6,40 @@ const STATUS_WEIGHTS = {
   completed: 1,
 } as const
 
-export const calculateProgress = (subgoals: Subgoal[] | undefined): number => {
-  if (!subgoals || subgoals.length === 0) return 0
+interface ProgressStats {
+  progressPercentage: number
+  completedCount: number
+  inProgressCount: number
+}
+
+export const calculateProgress = (
+  subgoals: Subgoal[] | undefined
+): ProgressStats => {
+  if (!subgoals || subgoals.length === 0) {
+    return {
+      progressPercentage: 0,
+      completedCount: 0,
+      inProgressCount: 0,
+    }
+  }
 
   const totalSubgoals = subgoals.length
+  let completedCount = 0
+  let inProgressCount = 0
+
   const weightedSum = subgoals.reduce((sum, subgoal) => {
+    if (subgoal.status === 'completed') completedCount++
+    if (subgoal.status === 'in_progress') inProgressCount++
     return sum + STATUS_WEIGHTS[subgoal.status]
   }, 0)
 
   // Calculate percentage (weighted sum / total possible weight) * 100
   // Total possible weight is when all subgoals are completed (weight of 1 each)
-  const progressPercentage = (weightedSum / totalSubgoals) * 100
+  const progressPercentage = Math.round((weightedSum / totalSubgoals) * 100)
 
-  // Round to nearest whole number
-  return Math.round(progressPercentage)
+  return {
+    progressPercentage,
+    completedCount,
+    inProgressCount,
+  }
 }

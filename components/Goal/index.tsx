@@ -2,9 +2,8 @@
 
 import { Goal as GoalType } from '@/types/goal'
 import Link from 'next/link'
-import { Progress } from '@/components/ui/progress'
 import GoalImage from '../GoalImage'
-import { calculateGoalProgress } from '@/utils/goalProgress'
+import GoalProgress from './GoalProgress'
 
 interface GoalProps {
   goal: GoalType
@@ -15,8 +14,7 @@ interface GoalProps {
 export default function Goal({ goal, className = '' }: GoalProps) {
   if (!goal) return null
 
-  const { progress, completedSteps, totalSteps } = calculateGoalProgress(goal)
-  const hasProgress = progress !== null && totalSteps > 0
+  const hasProgress = goal.subgoals?.length
 
   return (
     <Link
@@ -34,17 +32,7 @@ export default function Goal({ goal, className = '' }: GoalProps) {
         </div>
         {hasProgress && (
           <div className='mt-auto p-4'>
-            <div className='flex items-center justify-between mb-2 text-xs'>
-              <span className='text-muted-foreground'>
-                {completedSteps} of {totalSteps} subgoals completed
-              </span>
-              <span className='text-primary'>{progress}%</span>
-            </div>
-            <Progress
-              value={progress}
-              className='h-2'
-              indicatorClassName='bg-electricPurple'
-            />
+            <GoalProgress goal={goal} />
           </div>
         )}
       </div>

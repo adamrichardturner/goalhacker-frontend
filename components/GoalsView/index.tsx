@@ -86,13 +86,13 @@ const GoalsView = ({
     <div className='space-y-6'>
       <div className='flex justify-between items-center'>
         <div className='flex justify-between items-center w-full'>
-          <h1 className='text-xs sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
+          <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
             {isArchived ? 'Archived Goals' : `Welcome, ${user?.first_name} 👋`}
           </h1>
 
           {!isArchived && (
             <Link href='/goals/new'>
-              <Button className='bg-electricPurple p-5 hover:bg-electricPurple/95 hover:drop-shadow-sm font-[400] text-white text-xs'>
+              <Button className='bg-electricPurple p-5 hover:bg-electricPurple/95 hover:drop-shadow-sm font-regular text-white text-xs'>
                 New Goal
               </Button>
             </Link>

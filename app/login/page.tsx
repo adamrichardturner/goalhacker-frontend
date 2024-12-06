@@ -1,19 +1,32 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import useAuth from '@/hooks/useAuth'
+import { useTheme } from 'next-themes'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
   const { login, isLoading } = useAuth()
+  const { theme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const logoSrc = !mounted
+    ? '/goalhacker-logo.svg'
+    : theme === 'dark'
+      ? '/goalhacker-logo-dark.svg'
+      : '/goalhacker-logo.svg'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,7 +53,7 @@ export default function LoginPage() {
   return (
     <div className='min-h-screen flex flex-col items-center justify-center'>
       <Link href='/' className='w-full pb-6 flex justify-center'>
-        <img src='/goalhacker-logo.svg' alt='GoalHacker' className='w-1/2' />
+        <img src={logoSrc} alt='Goal Hacker' className='w-1/2' />
       </Link>
       <AuthCard
         title='Login'

@@ -36,7 +36,6 @@ const Header = ({ user, loading }: HeaderProps) => {
   const { logout } = useAuth()
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [selectedLink, setSelectedLink] = useState('Goals')
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
@@ -49,6 +48,8 @@ const Header = ({ user, loading }: HeaderProps) => {
     { name: 'Dashboard', href: '/dashboard' },
   ]
 
+  const mobileLinks = [...links, { name: 'Settings', href: '/settings' }]
+
   const avatarSrc = user.avatar_url
     ? `${API_URL}${user.avatar_url}`
     : '/avatar.png'
@@ -58,6 +59,18 @@ const Header = ({ user, loading }: HeaderProps) => {
     : theme === 'dark'
       ? '/goalhacker-logo-dark.svg'
       : '/goalhacker-logo.svg'
+
+  const burgerSrc = !mounted
+    ? '/burger-menu.svg'
+    : theme === 'dark'
+      ? '/burger-menu-dark.svg'
+      : '/burger-menu.svg'
+
+  const burgerCloseSrc = !mounted
+    ? '/burger-close.svg'
+    : theme === 'dark'
+      ? '/burger-close-dark.svg'
+      : '/burger-close.svg'
 
   const handleLogout = async () => {
     await logout()
@@ -90,7 +103,6 @@ const Header = ({ user, loading }: HeaderProps) => {
                       ? 'text-primary'
                       : 'text-muted-foreground'
                   }`}
-                  onClick={() => setSelectedLink(link.name)}
                 >
                   {link.name}
                 </Link>
@@ -114,12 +126,21 @@ const Header = ({ user, loading }: HeaderProps) => {
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuItem asChild>
+            <DropdownMenuContent align='end' className='w-48 cursor-pointer'>
+              <DropdownMenuItem asChild className='cursor-pointer'>
                 <Link href='/settings'>Settings</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild className='cursor-pointer'>
+                <Link href='/terms-conditions'>Terms & Conditions</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className='cursor-pointer'>
+                <Link href='/support'>Support</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className='cursor-pointer'
+              >
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -127,19 +148,15 @@ const Header = ({ user, loading }: HeaderProps) => {
         </div>
       </div>
       <div className='sm:hidden flex justify-between items-center w-full'>
-        <div className='flex items-center gap-4'>
-          <Link href='/goals'>
-            <img
-              src='/goalhacker-logo.svg'
-              alt='GoalHacker'
-              width={126}
-              height={14.46}
-              className='h-[14.46px]'
-            />
-          </Link>
-          <BetaButton />
-        </div>
-
+        <Link href='/goals'>
+          <img
+            src={logoSrc}
+            alt='GoalHacker'
+            width={126}
+            height={14.46}
+            className='h-[14.46px]'
+          />
+        </Link>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger>
             <motion.div
@@ -148,7 +165,7 @@ const Header = ({ user, loading }: HeaderProps) => {
               transition={{ duration: 0.2, ease: 'easeInOut' }}
             >
               <img
-                src={isOpen ? '/burger-close.svg' : '/burger-menu.svg'}
+                src={isOpen ? burgerCloseSrc : burgerSrc}
                 width={20}
                 height={20}
                 alt='Burger Menu'
@@ -159,12 +176,14 @@ const Header = ({ user, loading }: HeaderProps) => {
               />
             </motion.div>
           </SheetTrigger>
-          <SheetContent className='top-[70px] sm:hidden flex flex-col justify-between h-[calc(100vh-70px)] bg-[#f7f7f7]'>
+          <SheetContent className='top-[70px] sm:hidden flex flex-col justify-between h-[calc(100vh-70px)] bg-background'>
             <SheetHeader>
               <div className='flex items-center gap-4'>
                 <Avatar>
-                  <AvatarImage src='/profile.jpg' />
-                  <AvatarFallback>AT</AvatarFallback>
+                  <AvatarImage src={avatarSrc} alt={user.username} />
+                  <AvatarFallback>
+                    {user.username?.[0]?.toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <SheetTitle className='text-sm text-left font-semibold'>
                   Welcome, {user?.first_name} {user?.last_name}! 👋
@@ -172,18 +191,17 @@ const Header = ({ user, loading }: HeaderProps) => {
               </div>
 
               <div className='flex pt-8 flex-col items-start gap-8 mt-4'>
-                {links.map((link) => (
+                {mobileLinks.map((link) => (
                   <Link
                     key={link.name}
                     href={link.href}
                     onClick={() => {
-                      setSelectedLink(link.name)
                       setIsOpen(false)
                     }}
-                    className={`text-lg ${
-                      selectedLink === link.name
-                        ? 'font-[600] border-b-2 border-electricPurple'
-                        : 'text-primary hover:text-card-foreground'
+                    className={`text-lg font-medium transition-colors hover:text-primary ${
+                      pathname === link.href
+                        ? 'text-primary border-b-2 border-electricPurple'
+                        : 'text-muted-foreground'
                     }`}
                   >
                     {link.name}
@@ -192,7 +210,10 @@ const Header = ({ user, loading }: HeaderProps) => {
               </div>
             </SheetHeader>
             <SheetFooter className='flex flex-col gap-4'>
-              <span className='text-md text-primary' onClick={handleLogout}>
+              <span
+                className='text-md text-primary cursor-pointer'
+                onClick={handleLogout}
+              >
                 {loading ? 'Signing out...' : 'Sign out'}
               </span>
               <Link href='/support'>Support</Link>

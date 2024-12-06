@@ -9,7 +9,7 @@ interface ProgressGoalsProps {
 }
 
 export default function ProgressGoals({ goal }: ProgressGoalsProps) {
-  const progress = calculateProgress(goal.subgoals)
+  const progress = calculateProgress(goal.subgoals).progressPercentage
 
   return (
     <Card>
