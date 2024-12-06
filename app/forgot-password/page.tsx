@@ -1,20 +1,28 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import Link from 'next/link'
+import { useTheme } from 'next-themes'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { theme } = useTheme()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // TODO: Implement forgot password logic
-    setSubmitted(true)
-  }
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const logoSrc = !mounted
+    ? '/goalhacker-logo.svg'
+    : theme === 'dark'
+      ? '/goalhacker-logo-dark.svg'
+      : '/goalhacker-logo.svg'
 
   if (submitted) {
     return (
@@ -33,6 +41,9 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className='min-h-screen flex items-center justify-center'>
+      <Link href='/' className='w-full pb-6 flex justify-center'>
+        <img src={logoSrc} alt='Goal Hacker' className='h-8 sm:h-12 mb-4' />
+      </Link>
       <AuthCard
         title='Forgot password'
         description="Enter your email address and we'll send you a reset link"
