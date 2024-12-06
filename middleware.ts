@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { config } from '@/config'
 
 const PUBLIC_PATHS = [
   '/',
@@ -15,71 +14,28 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get('goalhacker.sid')?.value
   const { pathname } = request.nextUrl
 
-  // Allow public paths without session
-  if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+  // Check if current path is public
+  const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path))
+
+  // Allow public paths without any checks
+  if (isPublicPath) {
     return NextResponse.next()
   }
 
-  // If no session and not on public path, redirect to login
-  if (!sessionCookie && pathname !== '/') {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  // If there's a session, verify it's still valid
-  if (sessionCookie) {
-    try {
-      const response = await fetch(`${config.API_URL}/api/users/profile`, {
-        credentials: 'include',
-        headers: {
-          Cookie: `goalhacker.sid=${sessionCookie}`,
-        },
-      })
-
-      if (!response.ok) {
-        // Session is invalid, remove cookie and redirect to homepage
-        const redirectResponse = NextResponse.redirect(
-          new URL('/', request.url)
-        )
-        // Delete the cookie with the correct options
-        redirectResponse.cookies.set('goalhacker.sid', '', {
-          maxAge: 0,
-          path: '/',
-          domain: 'localhost',
-          sameSite: 'none',
-          secure: true,
-        })
-        return redirectResponse
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_unused) {
-      // On any error, assume session is invalid
-      const redirectResponse = NextResponse.redirect(new URL('/', request.url))
-      // Delete the cookie with the correct options
-      redirectResponse.cookies.set('goalhacker.sid', '', {
-        maxAge: 0,
-        path: '/',
-        domain: 'localhost',
-        sameSite: 'none',
-        secure: true,
-      })
-      return redirectResponse
-    }
+  // For protected routes, require session
+  if (!sessionCookie) {
+    // Store the original URL to redirect back after login
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('callbackUrl', request.url)
+    return NextResponse.redirect(loginUrl)
   }
 
   return NextResponse.next()
 }
 
-// Middleware configuration for Next.js
 export const middlewareConfig = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
+    // Exclude api routes and static files
     '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
   ],
 }

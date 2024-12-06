@@ -38,22 +38,20 @@ export const useAuth = () => {
     error,
     isSuccess,
     refetch: refetchUser,
-  } = useQuery<User>({
+  } = useQuery<User | null>({
     queryKey: ['user'],
     queryFn: async () => {
+      // Skip the profile check on public paths
+      if (publicPaths.includes(pathname)) {
+        return null
+      }
+
       try {
         const response = await authService.getProfile()
         const transformedUser = transformUserData(response.user)
-
-        if (publicPaths.includes(pathname) && transformedUser) {
-          router.push('/goals')
-        }
         return transformedUser
       } catch (error) {
-        if (
-          (error as Error).message.includes('Unauthorized') &&
-          !publicPaths.includes(pathname)
-        ) {
+        if (!publicPaths.includes(pathname)) {
           router.push('/login')
         }
         throw error
@@ -61,9 +59,7 @@ export const useAuth = () => {
     },
     retry: false,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes
+    enabled: !publicPaths.includes(pathname), // Only run query on protected routes
   })
 
   const signUpMutation = useMutation({
@@ -90,7 +86,7 @@ export const useAuth = () => {
   const login = async (email: string, password: string) => {
     try {
       // First, perform the login
-      const loginResponse = await authService.login(email, password)
+      await authService.login(email, password)
 
       // Then fetch the full profile
       const profileResponse = await authService.getProfile()
@@ -105,7 +101,7 @@ export const useAuth = () => {
       // Navigate to goals page
       router.push('/goals')
 
-      return { ...loginResponse, user: transformedUser }
+      return transformedUser
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed')
       throw error

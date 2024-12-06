@@ -50,6 +50,6 @@ export const goalsService = {
     goalId: string,
     updates: { subgoal_id: string; order: number }[]
   ): Promise<void> {
-    await api.put(`/goals/${goalId}/subgoals/order`, { updates })
+    await api.put(`api/goals/${goalId}/subgoals/reorder`, { updates })
   },
 }
