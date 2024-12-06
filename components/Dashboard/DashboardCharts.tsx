@@ -117,7 +117,7 @@ export default function DashboardCharts({
 
     const typeCount = goals.reduce(
       (acc, goal) => {
-        const type = goal.type || 'Other'
+        const type = goal.category?.name || 'Other'
         acc[type] = (acc[type] || 0) + 1
         return acc
       },
