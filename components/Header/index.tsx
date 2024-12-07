@@ -121,26 +121,30 @@ const Header = ({ user }: HeaderProps) => {
 
         <div className='flex items-center gap-8'>
           <nav className='flex gap-8'>
-            {links.map((link) => (
-              <motion.div key={link.href} className='relative'>
-                <Link
-                  href={link.href}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    pathname === link.href
-                      ? 'text-primary'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-                {pathname === link.href && (
-                  <motion.div
-                    className='absolute h-[1.5px] w-full bg-electricPurple'
-                    layoutId='activeSection'
-                  />
-                )}
-              </motion.div>
-            ))}
+            {links.map((link) => {
+              const isActive =
+                link.href === '/goals'
+                  ? pathname.startsWith('/goals')
+                  : pathname === link.href
+              return (
+                <motion.div key={link.href} className='relative'>
+                  <Link
+                    href={link.href}
+                    className={`text-sm font-medium transition-colors hover:text-primary ${
+                      isActive ? 'text-primary' : 'text-muted-foreground'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                  {isActive && (
+                    <motion.div
+                      className='absolute h-[1.5px] w-full bg-electricPurple'
+                      layoutId='activeSection'
+                    />
+                  )}
+                </motion.div>
+              )
+            })}
           </nav>
 
           <Search />
@@ -229,21 +233,25 @@ const Header = ({ user }: HeaderProps) => {
                 </div>
 
                 <div className='flex pt-8 flex-col items-start gap-8 mt-4'>
-                  {mobileLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`text-lg font-medium transition-colors hover:text-primary flex items-center ${
-                        pathname === link.href
-                          ? 'text-primary'
-                          : 'text-muted-foreground'
-                      }`}
-                    >
-                      <link.icon className='mr-2 h-4 w-4' />
-                      {link.name}
-                    </Link>
-                  ))}
+                  {mobileLinks.map((link) => {
+                    const isActive =
+                      link.href === '/goals'
+                        ? pathname.startsWith('/goals')
+                        : pathname === link.href
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className={`text-lg font-medium transition-colors hover:text-primary flex items-center ${
+                          isActive ? 'text-primary' : 'text-muted-foreground'
+                        }`}
+                      >
+                        <link.icon className='mr-2 h-4 w-4' />
+                        {link.name}
+                      </Link>
+                    )
+                  })}
                   <Link
                     href='/support'
                     onClick={() => setIsOpen(false)}

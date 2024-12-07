@@ -176,8 +176,8 @@ const GoalsView = ({
           </div>
         ) : (
           <>
-            {displayGoals.map((goal) => (
-              <Goal key={goal.goal_id} goal={goal} />
+            {displayGoals.map((goal, index) => (
+              <Goal key={goal.goal_id} goal={goal} index={index} />
             ))}
             {!isArchived && archivedGoals.length > 0 && (
               <div className='flex justify-end mt-4'>

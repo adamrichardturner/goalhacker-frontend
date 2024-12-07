@@ -9,12 +9,16 @@ import ProgressNotes from './ProgressNotes'
 import { Summary } from './Summary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { GoalStatusEditor } from './GoalStatusEditor'
+import { BackToInsights } from '../ui/back-to-insights'
+import { useSearchParams } from 'next/navigation'
 
 interface GoalDetailsProps {
   goal: Goal
 }
 
 export default function GoalDetails({ goal }: GoalDetailsProps) {
+  const searchParams = useSearchParams()
+  const fromInsights = searchParams.get('from') === 'insights'
   const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(
     goal.goal_id
   )
@@ -84,6 +88,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
           </TabsContent>
         </Tabs>
       </div>
+      {fromInsights && <BackToInsights />}
     </div>
   )
 }

@@ -35,7 +35,16 @@ export function Search() {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open)
+        if (!open) {
+          setQuery('')
+          clearSearch()
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button variant='ghost' size='icon' className='h-9 w-9'>
           <SearchIcon className='h-4 w-4' />
@@ -91,7 +100,7 @@ export function Search() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className='w-full text-left px-4 py-3 hover:bg-muted text-sm rounded-md'
+                      className='w-full text-left px-4 py-3 text-sm rounded-md transition-colors hover:bg-paper hover:shadow-sm'
                       onClick={() =>
                         goal.goal_id && handleGoalClick(goal.goal_id)
                       }
