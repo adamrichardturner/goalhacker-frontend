@@ -101,7 +101,7 @@ const GoalsView = ({
       </div>
 
       {nonArchivedGoals.length > 0 && !isArchived && (
-        <nav className='flex gap-8 items-center border-b border-border'>
+        <nav className='flex gap-8 items-center border-border'>
           <div className='hidden sm:flex gap-8 items-center'>
             {filters.map((filter) => {
               const isDisabled = filter !== 'All' && statusCounts[filter] === 0
@@ -132,7 +132,7 @@ const GoalsView = ({
                 setSelectedFilter(value as FilterType)
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className='border-0 shadow-md focus:ring-0'>
                 <SelectValue placeholder='Filter goals' />
               </SelectTrigger>
               <SelectContent>

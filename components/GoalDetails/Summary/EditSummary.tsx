@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { CategorySelect } from '@/components/CategorySelect'
+import { api } from '@/services/api'
 
 interface EditSummaryProps {
   goal: Goal
@@ -48,16 +49,30 @@ export function EditSummary({ goal }: EditSummaryProps) {
     category_id: goal.category?.category_id || '',
   })
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
-      const updatedGoal = {
-        ...editedGoal,
-        category_id: editedGoal.category_id || undefined,
+      // First update the category if it changed
+      if (editedGoal.category_id !== goal.category?.category_id) {
+        await api.patch(`/api/goals/${goal.goal_id}/category`, {
+          category_id: editedGoal.category_id,
+        })
       }
+
+      // Then update other goal fields
+      const updatedGoal = {
+        title: editedGoal.title,
+        aims: editedGoal.aims,
+        steps_to_completion: editedGoal.steps_to_completion,
+        measurement_method: editedGoal.measurement_method,
+        target_date: editedGoal.target_date,
+        priority: editedGoal.priority,
+      }
+
       updateGoal(updatedGoal)
       setIsEditing(false)
       toast.success('Goal summary updated successfully')
-    } catch {
+    } catch (error) {
+      console.error('Error updating goal:', error)
       toast.error('Failed to update goal summary')
     }
   }

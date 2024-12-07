@@ -24,7 +24,7 @@ export const goalsService = {
   },
 
   async updateGoal(goalId: string, goalData: Partial<Goal>): Promise<Goal> {
-    const response = await api.put(`api/goals/${goalId}`, goalData, {
+    const response = await api.patch(`api/goals/${goalId}`, goalData, {
       withCredentials: true,
     })
     return response.data
