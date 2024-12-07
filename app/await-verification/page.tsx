@@ -1,54 +1,37 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { AuthCard } from '@/components/form-components'
-import { Alert } from '@/components/ui/alert'
-import Link from 'next/link'
+import { Suspense } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
+import VerificationClient from './VerificationClient'
 import { PublicLogo } from '@/components/PublicLogo'
 import { Footer } from '@/components/Footer'
-import { useSearchParams } from 'next/navigation'
+
+function VerificationSkeleton() {
+  return (
+    <div className='w-full max-w-md space-y-8 bg-card p-8 rounded-lg shadow-sm'>
+      <div className='space-y-2 text-center'>
+        <Skeleton className='h-8 w-48 mx-auto' />
+        <Skeleton className='h-4 w-64 mx-auto' />
+      </div>
+      <div className='space-y-4'>
+        <Skeleton className='h-16 w-full rounded-lg' />
+        <Skeleton className='h-10 w-full' />
+        <Skeleton className='h-4 w-48 mx-auto' />
+        <div className='pt-4 border-t'>
+          <Skeleton className='h-4 w-64 mx-auto' />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function AwaitVerificationPage() {
-  const searchParams = useSearchParams()
-  const email = searchParams.get('email')
-
-  const handleOpenEmail = () => {
-    window.location.href = 'mailto:'
-  }
-
   return (
     <div className='min-h-screen flex flex-col items-center justify-center'>
       <PublicLogo />
-      <AuthCard
-        title='Verify your email'
-        description='Please check your inbox and click the verification link to activate your account.'
-      >
-        <div className='space-y-4'>
-          <Alert variant='info' className='mb-4'>
-            {email ? (
-              <>We sent a verification link to {email}</>
-            ) : (
-              <>Please check your email for the verification link.</>
-            )}
-          </Alert>
-          <div className='space-y-4'>
-            <Button onClick={handleOpenEmail} className='w-full'>
-              Open Email Client
-            </Button>
-            <p className='text-sm text-center text-muted-foreground'>
-              Can&apos;t find the email? Check your spam folder.
-            </p>
-          </div>
-          <div className='pt-4 border-t'>
-            <p className='text-sm text-center text-muted-foreground'>
-              Already verified?{' '}
-              <Link href='/login' className='text-blue-600 hover:underline'>
-                Sign in to your account
-              </Link>
-            </p>
-          </div>
-        </div>
-      </AuthCard>
+      <Suspense fallback={<VerificationSkeleton />}>
+        <VerificationClient />
+      </Suspense>
       <Footer />
     </div>
   )

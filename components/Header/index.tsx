@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import Link from 'next/link'
@@ -25,7 +24,7 @@ import { User } from '@/types/auth'
 import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
 import BetaButton from './BetaButton'
-import { Logo } from '../Logo'
+import { ClientLogo } from '../Logo'
 import { Search } from '../Search'
 import {
   Settings,
@@ -114,7 +113,7 @@ const Header = ({ user }: HeaderProps) => {
       <div className='hidden sm:flex w-full justify-between items-center'>
         <div className='flex items-center gap-4'>
           <Link href='/goals'>
-            <Logo size='sm' />
+            <ClientLogo size='sm' />
           </Link>
           <BetaButton />
         </div>
@@ -206,7 +205,7 @@ const Header = ({ user }: HeaderProps) => {
       <div className='flex sm:hidden w-full items-center justify-between'>
         <div className='flex items-center gap-4'>
           <Link href='/goals'>
-            <Logo size='sm' />
+            <ClientLogo size='sm' />
           </Link>
           <BetaButton />
         </div>

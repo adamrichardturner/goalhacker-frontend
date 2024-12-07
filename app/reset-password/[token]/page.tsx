@@ -8,11 +8,12 @@ import { PublicLogo } from '@/components/PublicLogo'
 import { useSettings } from '@/hooks/useSettings'
 import { Footer } from '@/components/Footer'
 
-export default function ResetPasswordPage({
-  params,
-}: {
-  params: { token: string }
-}) {
+interface Props {
+  params: Promise<{ token: string }>
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+export default function ResetPasswordPage({ params }: Props) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -33,7 +34,8 @@ export default function ResetPasswordPage({
     }
 
     try {
-      await resetPassword({ token: params.token, password })
+      const { token } = await params // Await the params promise to get the token
+      await resetPassword({ token, password })
     } catch {
       setError('Failed to reset password. Please try again.')
     }

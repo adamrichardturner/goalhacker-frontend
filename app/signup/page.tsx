@@ -1,7 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
@@ -27,7 +26,7 @@ interface RegistrationState {
   password: string
 }
 
-export default function SignupPage() {
+function SignupForm() {
   const [formData, setFormData] = useState<RegistrationState>({
     firstName: '',
     lastName: '',
@@ -162,101 +161,107 @@ export default function SignupPage() {
     Object.keys(errors).length === 0
 
   return (
+    <AuthCard
+      title='Create an account'
+      description='Enter your details to create your account'
+    >
+      <form onSubmit={handleSubmit} className='space-y-4'>
+        {errors.general && (
+          <Alert variant='destructive' className='mb-4 dark:text-white'>
+            {errors.general}
+          </Alert>
+        )}
+        <div className='grid grid-cols-2 gap-4'>
+          <Input
+            type='text'
+            placeholder='First Name'
+            value={formData.firstName}
+            onChange={handleInputChange('firstName')}
+            required
+            disabled={isLoading}
+          />
+          <Input
+            type='text'
+            placeholder='Last Name'
+            value={formData.lastName}
+            onChange={handleInputChange('lastName')}
+            required
+            disabled={isLoading}
+          />
+        </div>
+        <div className='space-y-2'>
+          <Input
+            type='text'
+            placeholder='Username'
+            value={formData.username}
+            onChange={handleInputChange('username')}
+            required
+            disabled={isLoading}
+            className={errors.username ? 'border-destructive' : ''}
+          />
+          {errors.username && (
+            <p className='text-xs text-destructive dark:text-white'>
+              {errors.username}
+            </p>
+          )}
+        </div>
+        <div className='space-y-2'>
+          <Input
+            type='email'
+            placeholder='Email'
+            value={formData.email}
+            onChange={handleInputChange('email')}
+            required
+            disabled={isLoading}
+            className={errors.email ? 'border-destructive' : ''}
+          />
+          {errors.email && (
+            <p className='text-xs text-destructive dark:text-white'>
+              {errors.email}
+            </p>
+          )}
+        </div>
+        <div className='space-y-2'>
+          <Input
+            type='password'
+            placeholder='Password'
+            value={formData.password}
+            onChange={handleInputChange('password')}
+            required
+            disabled={isLoading}
+            className={errors.password ? 'border-destructive' : ''}
+          />
+          {errors.password && (
+            <p className='text-xs text-destructive dark:text-white'>
+              {errors.password}
+            </p>
+          )}
+        </div>
+        <Button
+          type='submit'
+          className='w-full'
+          disabled={isLoading || isSubmitting || !isValidForm}
+        >
+          {isLoading || isSubmitting ? 'Creating account...' : 'Create account'}
+        </Button>
+        <p className='text-sm text-center text-muted-foreground'>
+          Already have an account?{' '}
+          <Link href='/login' className='text-blue-600 hover:underline'>
+            Sign in
+          </Link>
+        </p>
+      </form>
+    </AuthCard>
+  )
+}
+
+export default function SignupPage() {
+  return (
     <div className='min-h-screen flex flex-col items-center justify-center'>
       <PublicLogo />
-      <AuthCard
-        title='Create an account'
-        description='Enter your details to create your account'
-      >
-        <form onSubmit={handleSubmit} className='space-y-4'>
-          {errors.general && (
-            <Alert variant='destructive' className='mb-4 dark:text-white'>
-              {errors.general}
-            </Alert>
-          )}
-          <div className='grid grid-cols-2 gap-4'>
-            <Input
-              type='text'
-              placeholder='First Name'
-              value={formData.firstName}
-              onChange={handleInputChange('firstName')}
-              required
-              disabled={isLoading}
-            />
-            <Input
-              type='text'
-              placeholder='Last Name'
-              value={formData.lastName}
-              onChange={handleInputChange('lastName')}
-              required
-              disabled={isLoading}
-            />
-          </div>
-          <div className='space-y-2'>
-            <Input
-              type='text'
-              placeholder='Username'
-              value={formData.username}
-              onChange={handleInputChange('username')}
-              required
-              disabled={isLoading}
-              className={errors.username ? 'border-destructive' : ''}
-            />
-            {errors.username && (
-              <p className='text-xs text-destructive dark:text-white'>
-                {errors.username}
-              </p>
-            )}
-          </div>
-          <div className='space-y-2'>
-            <Input
-              type='email'
-              placeholder='Email'
-              value={formData.email}
-              onChange={handleInputChange('email')}
-              required
-              disabled={isLoading}
-              className={errors.email ? 'border-destructive' : ''}
-            />
-            {errors.email && (
-              <p className='text-xs text-destructive dark:text-white'>
-                {errors.email}
-              </p>
-            )}
-          </div>
-          <div className='space-y-2'>
-            <Input
-              type='password'
-              placeholder='Password'
-              value={formData.password}
-              onChange={handleInputChange('password')}
-              required
-              disabled={isLoading}
-              className={errors.password ? 'border-destructive' : ''}
-            />
-            {errors.password && (
-              <p className='text-xs text-destructive dark:text-white'>
-                {errors.password}
-              </p>
-            )}
-          </div>
-          <Button
-            type='submit'
-            className='w-full'
-            disabled={isLoading || isSubmitting || !isValidForm}
-          >
-            {isLoading || isSubmitting
-              ? 'Creating account...'
-              : 'Create account'}
-          </Button>
-          <p className='text-sm text-center text-muted-foreground'>
-            Already have an account?{' '}
-            <Link href='/login' className='text-blue-600 hover:underline'>
-              Sign in
-            </Link>
-          </p>
-        </form>
-      </AuthCard>
+      <Suspense fallback={<div>Loading signup form...</div>}>
+        <SignupForm />
+      </Suspense>
       <Footer />
     </div>
   )

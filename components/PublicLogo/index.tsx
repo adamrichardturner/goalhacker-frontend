@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Logo } from '../Logo'
+import { ClientLogo } from '../Logo'
 
 interface PublicLogoProps {
   className?: string
@@ -11,7 +11,7 @@ interface PublicLogoProps {
 export const PublicLogo = ({ className, size = 'md' }: PublicLogoProps) => {
   return (
     <Link href='/' className='w-full pb-6 flex justify-center'>
-      <Logo className={className} size={size} />
+      <ClientLogo className={className} size={size} />
     </Link>
   )
 }

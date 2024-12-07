@@ -10,6 +10,8 @@ import { useLogin } from '@/hooks/auth/useLogin'
 import { PublicLogo } from '@/components/PublicLogo'
 import { Footer } from '@/components/Footer'
 
+export const dynamic = 'force-dynamic' // Disable prerendering for this page
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

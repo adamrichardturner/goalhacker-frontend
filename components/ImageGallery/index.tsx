@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useState, memo, useCallback } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'

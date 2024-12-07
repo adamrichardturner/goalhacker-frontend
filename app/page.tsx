@@ -1,12 +1,13 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Logo } from '@/components/Logo'
+import Logo from '@/components/Logo'
 import { ModeToggle } from '@/components/ThemeSwitcher'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/hooks/auth/useUser'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Suspense } from 'react'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -46,7 +47,7 @@ const slideIn = {
   },
 }
 
-export default function LandingPage() {
+function LandingPageClient() {
   const { user, isLoading } = useUser()
   const year = new Date().getFullYear()
 
@@ -319,5 +320,28 @@ export default function LandingPage() {
         </motion.footer>
       </div>
     </div>
+  )
+}
+
+function HomePageSkeleton() {
+  return (
+    <div className='space-y-4'>
+      <Skeleton className='h-8 w-[200px]' />
+      <div className='grid gap-4'>
+        <Skeleton className='h-[200px] rounded-xl' />
+      </div>
+    </div>
+  )
+}
+
+function HomeContent() {
+  return <LandingPageClient />
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<HomePageSkeleton />}>
+      <HomeContent />
+    </Suspense>
   )
 }

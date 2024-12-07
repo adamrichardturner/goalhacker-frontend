@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { Toaster as Sonner } from 'sonner'
 import { BackToTop } from '@/components/ui/back-to-top'
 import { FloatingInsights } from '@/components/ui/floating-insights'
+import { Suspense } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,7 +39,9 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
         <main className='container mx-auto w-full flex items-center justify-center sm:pt-0 pt-[90px]'>
           {children}
         </main>
-        <FloatingInsights />
+        <Suspense fallback={null}>
+          <FloatingInsights />
+        </Suspense>
         <BackToTop />
       </Providers>
       <Sonner />

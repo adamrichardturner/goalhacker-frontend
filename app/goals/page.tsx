@@ -6,8 +6,9 @@ import Header from '@/components/Header'
 import Loading from '@/components/ui/loading'
 import { useUser } from '@/hooks/auth/useUser'
 import { useGoal } from '@/hooks/useGoal'
+import { Suspense } from 'react'
 
-export default function GoalsPage() {
+function GoalsContent() {
   const { user, isLoading: userIsLoading } = useUser()
   const { goals, isLoading: goalsLoading } = useGoal()
 
@@ -29,5 +30,13 @@ export default function GoalsPage() {
       </div>
       <Footer />
     </div>
+  )
+}
+
+export default function GoalsPage() {
+  return (
+    <Suspense fallback={<Loading className='h-full' />}>
+      <GoalsContent />
+    </Suspense>
   )
 }
