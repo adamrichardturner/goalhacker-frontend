@@ -8,6 +8,8 @@ import GoalDetails from '@/components/GoalDetails'
 import Header from '@/components/Header'
 import useAuth from '@/hooks/useAuth'
 import { Footer } from '@/components/Footer'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 interface GoalPageProps {
   params: Promise<{
@@ -29,8 +31,13 @@ export default function GoalPage({ params }: GoalPageProps) {
   }
 
   return (
-    <div className='container min-h-screen max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='container min-h-screen max-w-3xl flex flex-col gap-2 sm:px-4 w-full'>
       <Header user={user} />
+      <div className='mb-0 px-4'>
+        <Link href='/goals'>
+          <Button variant='ghost'>← Back to Goals</Button>
+        </Link>
+      </div>
       <main className='flex-1'>
         <div className='max-w-5xl mx-auto'>
           {isLoading ? (

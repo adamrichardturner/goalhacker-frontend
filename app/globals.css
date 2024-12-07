@@ -95,10 +95,15 @@ body {
 
 @layer utilities {
   .prose-content {
-    @apply prose max-w-none text-muted-foreground;
+    @apply prose max-w-none;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   .prose-content > * {
-    @apply text-sm leading-5 text-muted-foreground mt-1;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }

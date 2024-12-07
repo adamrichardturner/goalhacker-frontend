@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
-import { useRouter } from 'next/navigation'
 import { Logo } from '@/components/Logo'
 import { ModeToggle } from '@/components/ThemeSwitcher'
 
@@ -48,8 +47,7 @@ const slideIn = {
 }
 
 export default function LandingPage() {
-  const { user, isLoading, hasSessionCookie } = useAuth()
-  const router = useRouter()
+  const { user, isLoading } = useAuth()
   const year = new Date().getFullYear()
 
   return (
@@ -64,22 +62,21 @@ export default function LandingPage() {
         >
           <div className='flex items-center gap-4'>
             <ModeToggle />
-            {isLoading && hasSessionCookie ? (
+            {isLoading ? (
               <Button variant='ghost' disabled>
                 Loading...
               </Button>
             ) : user ? (
-              <Button
-                onClick={() => router.push('/goals')}
-                className='bg-electricPurple hover:bg-electricPurple/90 text-white'
-              >
-                View Goals
-              </Button>
+              <Link href='/goals'>
+                <Button className='bg-electricPurple hover:bg-electricPurple/90 text-white'>
+                  View Goals
+                </Button>
+              </Link>
             ) : (
               <>
-                <Button variant='outline' onClick={() => router.push('/login')}>
-                  Sign in
-                </Button>
+                <Link href='/login'>
+                  <Button variant='outline'>Sign in</Button>
+                </Link>
                 <Link href='/signup'>
                   <Button>Get Started</Button>
                 </Link>
@@ -134,19 +131,41 @@ export default function LandingPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href='/signup'>
-                <Button
-                  size='lg'
-                  className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+            {!user && (
+              <>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Register for Beta Access
-                </Button>
-              </Link>
-            </motion.div>
-            <p className='text-sm text-muted-foreground mt-2'>
-              (...Beta access is free!)
-            </p>
+                  <Link href='/signup'>
+                    <Button
+                      size='lg'
+                      className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                    >
+                      Register for Beta Access
+                    </Button>
+                  </Link>
+                </motion.div>
+                <p className='text-sm text-muted-foreground mt-2'>
+                  (...Beta access is free!)
+                </p>
+              </>
+            )}
+            {user && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link href='/goals'>
+                  <Button
+                    size='lg'
+                    className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                  >
+                    Go to Your Goals
+                  </Button>
+                </Link>
+              </motion.div>
+            )}
           </motion.div>
         </div>
 
@@ -260,11 +279,20 @@ export default function LandingPage() {
           <p className='text-muted-foreground mb-8'>
             Join the beta and be among the first to experience Goal Hacker.
           </p>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href='/signup'>
-              <Button size='lg'>Sign Up for Beta Access</Button>
-            </Link>
-          </motion.div>
+          {!user && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href='/signup'>
+                <Button size='lg'>Sign Up for Beta Access</Button>
+              </Link>
+            </motion.div>
+          )}
+          {user && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href='/goals'>
+                <Button size='lg'>View Your Goals</Button>
+              </Link>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Footer */}

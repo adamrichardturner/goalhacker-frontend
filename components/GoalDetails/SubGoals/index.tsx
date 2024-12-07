@@ -78,14 +78,15 @@ export default function SubGoals({ goal }: SubGoalsProps) {
 
   const [localSubgoals, setLocalSubgoals] = useState(goal.subgoals || [])
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
   const [isDraggable, setIsDraggable] = useState(false)
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  // Add useEffect to handle screen size changes
+  // Handle screen size changes
   useEffect(() => {
     const handleResize = () => {
-      setIsDraggable(window.innerWidth >= 640) // 640px is the sm breakpoint in Tailwind
+      setIsLargeScreen(window.innerWidth >= 640)
     }
 
     // Initial check
@@ -97,6 +98,11 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     // Cleanup
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  // Update draggable state based on screen size and subgoal count
+  useEffect(() => {
+    setIsDraggable(isLargeScreen && localSubgoals.length > 1)
+  }, [isLargeScreen, localSubgoals.length])
 
   const handleSubgoalCreate = async () => {
     if (!newSubgoal.title) return
@@ -277,8 +283,11 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   setNewSubgoal({ ...newSubgoal, status: value })
                 }
               >
-                <SelectTrigger className='w-full h-12'>
-                  <SelectValue placeholder='Select status' />
+                <SelectTrigger className='w-full sm:w-[140px] h-12'>
+                  <SelectValue
+                    placeholder='Status'
+                    className='text-muted-foreground'
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='planned'>Planned</SelectItem>
@@ -323,7 +332,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
             <DialogFooter>
               <Button
                 onClick={handleSubgoalCreateFromDialog}
-                disabled={!newSubgoal.title}
+                disabled={newSubgoal.title.length < 3}
                 className='w-full'
               >
                 Add Subgoal
@@ -356,7 +365,10 @@ export default function SubGoals({ goal }: SubGoalsProps) {
             }
           >
             <SelectTrigger className='w-full sm:w-[140px] h-12'>
-              <SelectValue />
+              <SelectValue
+                placeholder='Status'
+                className='text-muted-foreground'
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value='planned'>Planned</SelectItem>
@@ -398,6 +410,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
             <Button
               className='flex-1 sm:flex-none h-12'
               onClick={handleSubgoalCreate}
+              disabled={newSubgoal.title.length < 3}
             >
               Add
             </Button>
@@ -435,7 +448,10 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                 }
               >
                 <SelectTrigger className='w-full sm:w-[140px] h-12'>
-                  <SelectValue />
+                  <SelectValue
+                    placeholder='Status'
+                    className='text-muted-foreground'
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='planned'>Planned</SelectItem>
