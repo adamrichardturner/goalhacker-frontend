@@ -28,7 +28,7 @@ export const useLogin = () => {
       queryClient.setQueryData(['user'], user)
       setTimeout(() => {
         window.location.href = '/goals'
-      }, 1000)
+      }, 500)
     },
     onError: (error) => {
       const errorMessage = processAuthError(error)

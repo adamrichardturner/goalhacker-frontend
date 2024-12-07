@@ -91,13 +91,14 @@ const GoalsView = ({
           </h1>
 
           <div className='flex items-center gap-4'>
-            {!isArchived && (
-              <Link href='/goals/new'>
-                <Button className='bg-electricPurple p-5 hover:bg-electricPurple/95 hover:drop-shadow-sm font-regular text-white text-xs'>
-                  New Goal
-                </Button>
-              </Link>
-            )}
+            {!isArchived ||
+              (goals.length === 0 && (
+                <Link href='/goals/new'>
+                  <Button className='bg-electricPurple p-5 hover:bg-electricPurple/95 hover:drop-shadow-sm font-regular text-white text-xs'>
+                    New Goal
+                  </Button>
+                </Link>
+              ))}
           </div>
         </div>
       </div>

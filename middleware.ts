@@ -4,19 +4,18 @@ import type { NextRequest } from 'next/server'
 // Add paths that should be protected
 const protectedPaths = ['/dashboard', '/profile', '/goals']
 
-// Add paths that should be accessible only to non-authenticated users
-const authPaths = ['/login', '/signup', '/forgot-password']
-
 // Add paths that should be publicly accessible
 const publicPaths = [
   '/',
-  '/verify-email',
   '/await-verification',
   '/reset-password',
+  '/error',
+  '/404',
+  '/not-found',
 ]
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
   const sessionCookie = request.cookies.get('goalhacker.sid')
   const isAuthenticated = !!sessionCookie?.value
 
@@ -26,6 +25,16 @@ export function middleware(request: NextRequest) {
     pathname.includes('_next') ||
     pathname.includes('static')
   ) {
+    return NextResponse.next()
+  }
+
+  // Handle verify-email access
+  if (pathname === '/verify-email') {
+    const token = searchParams.get('token')
+    const email = searchParams.get('email')
+    if (!token || !email) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
     return NextResponse.next()
   }
 

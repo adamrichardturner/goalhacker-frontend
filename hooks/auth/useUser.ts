@@ -26,6 +26,7 @@ export const useUser = () => {
     '/forgot-password',
     '/reset-password',
     '/verify-email',
+    '/await-verification',
   ]
 
   const {

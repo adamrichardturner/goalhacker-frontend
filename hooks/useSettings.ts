@@ -1,7 +1,10 @@
+'use client'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { settingsService } from '@/services/settingsService'
+import { useState } from 'react'
 
 export type DateFormat =
   | 'MMM d, yyyy'
@@ -12,6 +15,7 @@ export type DateFormat =
 export function useSettings() {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const [isRouting, setIsRouting] = useState(false)
 
   const { data: settings } = useQuery({
     queryKey: ['settings'],
@@ -24,7 +28,7 @@ export function useSettings() {
         settingsService.updateDateFormat(format),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['settings'] })
-        toast.success('Date format updated successfully')
+        toast.success('Date format updated')
       },
       onError: () => {
         toast.error('Failed to update date format')
@@ -37,7 +41,7 @@ export function useSettings() {
         settingsService.updateProfile(data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['user'] })
-        toast.success('Profile updated successfully')
+        toast.success('Profile updated')
       },
       onError: () => {
         toast.error('Failed to update profile')
@@ -51,19 +55,34 @@ export function useSettings() {
         toast.success('Password reset email sent. Please check your inbox.')
       },
       onError: () => {
-        toast.error('Failed to send reset email. Please try again.')
+        toast.error('Failed to send reset email')
       },
     })
 
   const { mutateAsync: resetPassword, isPending: isResettingPassword } =
     useMutation({
-      mutationFn: ({ token, password }: { token: string; password: string }) =>
-        settingsService.resetPassword(token, password),
-      onSuccess: () => {
+      mutationFn: async ({
+        token,
+        password,
+      }: {
+        token: string
+        password: string
+      }) => {
+        setIsRouting(true)
+        await settingsService.resetPassword(token, password)
         toast.success('Password reset successful')
-        router.push('/login')
+
+        // Route to /goals after 1.5s
+        setTimeout(() => {
+          router.push('/goals')
+        }, 1500)
+
+        // Keep button disabled for 3s
+        await new Promise((resolve) => setTimeout(resolve, 3000))
+        setIsRouting(false)
       },
       onError: () => {
+        setIsRouting(false)
         throw new Error('Failed to reset password. Please try again.')
       },
     })
@@ -71,15 +90,9 @@ export function useSettings() {
   const { mutateAsync: deleteAccount, isPending: isDeleting } = useMutation({
     mutationFn: () => settingsService.deleteAccount(),
     onSuccess: () => {
-      // Clear session cookie
-      document.cookie =
-        'goalhacker.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; sameSite=none;'
-      // Clear user data from cache
-      queryClient.setQueryData(['user'], null)
-      // Show success message
-      toast.success('Your account has been deleted')
-      // Redirect to home page
-      router.push('/')
+      queryClient.clear() // Clear all queries
+      toast.success('Account deleted successfully')
+      window.location.href = '/' // Use hard redirect to ensure clean state
     },
     onError: () => {
       toast.error('Failed to delete account')
@@ -91,12 +104,12 @@ export function useSettings() {
     isUpdatingDateFormat,
     isUpdatingProfile,
     isRequestingReset,
-    isResettingPassword,
+    isResettingPassword: isResettingPassword || isRouting,
     isDeleting,
+    deleteAccount,
     updateDateFormat,
     updateProfile,
     requestPasswordReset,
     resetPassword,
-    deleteAccount,
   }
 }

@@ -6,8 +6,12 @@ import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import { PublicLogo } from '@/components/PublicLogo'
 import { Footer } from '@/components/Footer'
+import { useSearchParams } from 'next/navigation'
 
 export default function AwaitVerificationPage() {
+  const searchParams = useSearchParams()
+  const email = searchParams.get('email')
+
   const handleOpenEmail = () => {
     window.location.href = 'mailto:'
   }
@@ -21,9 +25,13 @@ export default function AwaitVerificationPage() {
       >
         <div className='space-y-4'>
           <Alert variant='info' className='mb-4'>
-            We sent you a verification link. Please check your email.
+            {email ? (
+              <>We sent a verification link to {email}</>
+            ) : (
+              <>Please check your email for the verification link.</>
+            )}
           </Alert>
-          <div className='space-y-2'>
+          <div className='space-y-4'>
             <Button onClick={handleOpenEmail} className='w-full'>
               Open Email Client
             </Button>

@@ -38,6 +38,7 @@ export default function SignupPage() {
   const [showCheckEmail, setShowCheckEmail] = useState(false)
   const [errors, setErrors] = useState<ValidationErrors>({})
   const { signup, isLoading } = useSignup()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const validateForm = () => {
     const newErrors: ValidationErrors = {}
@@ -69,8 +70,12 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
+    setIsSubmitting(true)
 
-    if (!validateForm()) return
+    if (!validateForm()) {
+      setIsSubmitting(false)
+      return
+    }
 
     try {
       await signup({
@@ -83,6 +88,8 @@ export default function SignupPage() {
       setShowCheckEmail(true)
     } catch (err) {
       setErrors({ general: processAuthError(err) })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -236,9 +243,11 @@ export default function SignupPage() {
           <Button
             type='submit'
             className='w-full'
-            disabled={isLoading || !isValidForm}
+            disabled={isLoading || isSubmitting || !isValidForm}
           >
-            {isLoading ? 'Creating account...' : 'Create account'}
+            {isLoading || isSubmitting
+              ? 'Creating account...'
+              : 'Create account'}
           </Button>
           <p className='text-sm text-center text-muted-foreground'>
             Already have an account?{' '}

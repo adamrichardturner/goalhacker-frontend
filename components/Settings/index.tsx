@@ -215,36 +215,6 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Password Reset */}
-      <Card className='bg-paper'>
-        <CardHeader>
-          <CardTitle>Password</CardTitle>
-          <CardDescription>
-            We&apos;ll send you an email with a secure link to reset your
-            password
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            variant='outline'
-            onClick={requestPasswordReset}
-            disabled={isRequestingReset || isInCooldown}
-          >
-            {isRequestingReset
-              ? 'Sending Reset Email...'
-              : isInCooldown
-                ? 'Try again in 10 minutes'
-                : 'Send Password Reset Email'}
-          </Button>
-          {isInCooldown && (
-            <p className='text-sm text-muted-foreground mt-2'>
-              For security reasons, you can only request one password reset
-              every 10 minutes.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
       {/* Avatar */}
       <Card className='bg-paper'>
         <CardHeader>
@@ -272,6 +242,36 @@ export default function Settings() {
           </Avatar>
           {isUploadingAvatar && (
             <p className='text-sm text-muted-foreground'>Uploading...</p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Password Reset */}
+      <Card className='bg-paper'>
+        <CardHeader>
+          <CardTitle>Password</CardTitle>
+          <CardDescription>
+            We&apos;ll send you an email with a secure link to reset your
+            password
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant='outline'
+            onClick={requestPasswordReset}
+            disabled={isRequestingReset || isInCooldown}
+          >
+            {isRequestingReset
+              ? 'Sending Reset Email...'
+              : isInCooldown
+                ? 'Try again in 10 minutes'
+                : 'Send Password Reset Email'}
+          </Button>
+          {isInCooldown && (
+            <p className='text-sm text-muted-foreground mt-2'>
+              For security reasons, you can only request one password reset
+              every 10 minutes.
+            </p>
           )}
         </CardContent>
       </Card>
