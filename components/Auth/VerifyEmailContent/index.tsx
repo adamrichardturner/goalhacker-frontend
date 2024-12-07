@@ -1,60 +1,47 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import useAuth from '@/hooks/useAuth'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+import { processAuthError } from '@/utils/auth-errors'
 
-interface VerificationResponse {
-  success: boolean
-  message?: string
-}
+type VerificationStatus = 'loading' | 'success' | 'error'
 
 export default function VerifyEmailContent() {
   const { verifyEmail, resendVerificationEmail } = useAuth()
   const searchParams = useSearchParams()
   const [isResending, setIsResending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<VerificationStatus>('loading')
 
   const email = searchParams.get('email')
   const token = searchParams.get('token')
 
-  const { data, isLoading, error } = useQuery<
-    VerificationResponse,
-    Error,
-    VerificationResponse,
-    [string, string | null, string | null]
-  >({
-    queryKey: ['emailVerification', email, token],
-    queryFn: async () => {
-      if (!email || !token) {
-        return { success: false, message: 'Invalid verification link' }
+  useEffect(() => {
+    const verifyEmailToken = async () => {
+      if (!token || !email) {
+        setError('Invalid verification link')
+        setStatus('error')
+        return
       }
+
       try {
         await verifyEmail(token, email)
-        setTimeout(() => {
-          window.location.href = '/login'
-        }, 2000)
-        return { success: true }
+        setStatus('success')
       } catch (err) {
-        if (err instanceof Error) {
-          return { success: false, message: err.message }
-        }
-        return { success: false, message: 'Verification failed' }
+        setError(processAuthError(err))
+        setStatus('error')
       }
-    },
-    retry: false,
-    enabled: !!email && !!token,
-    staleTime: Infinity,
-    gcTime: Infinity,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  })
+    }
+
+    verifyEmailToken()
+  }, [token, email, verifyEmail])
 
   const resendMutation = useMutation({
     mutationFn: async () => {
@@ -65,18 +52,14 @@ export default function VerifyEmailContent() {
   })
 
   const handleResendVerification = async () => {
-    if (!email || isResending) return
-    setIsResending(true)
-    resendMutation.mutate()
-  }
+    if (!email) return
 
-  const getStatus = () => {
-    if (isLoading) return 'loading'
-    if (data?.success) return 'success'
-    return 'error'
+    try {
+      await resendVerificationEmail(email)
+    } catch (err) {
+      setError(processAuthError(err))
+    }
   }
-
-  const status = getStatus()
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center'>
@@ -101,20 +84,15 @@ export default function VerifyEmailContent() {
       >
         <div className='space-y-4'>
           {status === 'success' && (
-            <Alert variant='success'>
+            <Alert variant='success' className='dark:text-white'>
               Your email has been verified successfully!
             </Alert>
           )}
 
           {status === 'error' && (
             <>
-              <Alert variant='destructive'>
-                {data?.message ||
-                  (!email || !token
-                    ? 'Invalid verification link. Please use the link from your email.'
-                    : error instanceof Error
-                      ? error.message
-                      : 'Verification failed. The link may have expired.')}
+              <Alert variant='destructive' className='dark:text-white'>
+                {error}
               </Alert>
               {email && (
                 <Button

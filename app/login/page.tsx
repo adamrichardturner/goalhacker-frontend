@@ -10,6 +10,7 @@ import Link from 'next/link'
 import useAuth from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
 import { Footer } from '@/components/Footer'
+import { processAuthError } from '@/utils/auth-errors'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -24,11 +25,7 @@ export default function LoginPage() {
     try {
       await login(email, password)
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message)
-      } else {
-        setError('An unexpected error occurred. Please try again.')
-      }
+      setError(processAuthError(err))
     }
   }
 

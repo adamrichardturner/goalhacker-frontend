@@ -48,17 +48,8 @@ const slideIn = {
 }
 
 export default function LandingPage() {
-  const { user } = useAuth()
+  const { user, isLoading, hasSessionCookie } = useAuth()
   const router = useRouter()
-
-  const handleSignIn = () => {
-    if (user) {
-      router.push('/goals')
-    } else {
-      router.push('/login')
-    }
-  }
-
   const year = new Date().getFullYear()
 
   return (
@@ -73,12 +64,27 @@ export default function LandingPage() {
         >
           <div className='flex items-center gap-4'>
             <ModeToggle />
-            <Button variant='ghost' onClick={handleSignIn}>
-              {user ? 'Go to Goals' : 'Sign in'}
-            </Button>
-            <Link href='/signup'>
-              <Button>Get Started</Button>
-            </Link>
+            {isLoading && hasSessionCookie ? (
+              <Button variant='ghost' disabled>
+                Loading...
+              </Button>
+            ) : user ? (
+              <Button
+                onClick={() => router.push('/goals')}
+                className='bg-electricPurple hover:bg-electricPurple/90 text-white'
+              >
+                View Goals
+              </Button>
+            ) : (
+              <>
+                <Button variant='outline' onClick={() => router.push('/login')}>
+                  Sign in
+                </Button>
+                <Link href='/signup'>
+                  <Button>Get Started</Button>
+                </Link>
+              </>
+            )}
           </div>
         </motion.nav>
 
@@ -159,14 +165,14 @@ export default function LandingPage() {
                 'Break complex goals into actionable subgoals. Track progress and celebrate small wins along the way.',
             },
             {
-              title: 'Progress Tracking',
+              title: 'AI-Powered Insights',
               description:
-                'Visual progress bars and statistics help you stay motivated and understand your journey.',
+                'Get personalized advice on goal optimization, progress patterns, and actionable recommendations to improve your success rate.',
             },
             {
-              title: 'Insights Dashboard',
+              title: 'Progress Analytics',
               description:
-                'Get valuable insights about your goal completion patterns and productivity trends.',
+                'Visual dashboards and detailed analytics help you understand your productivity trends and achievement patterns.',
             },
           ].map((feature, index) => (
             <motion.div

@@ -9,6 +9,7 @@ import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
+import { processAuthError } from '@/utils/auth-errors'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -26,11 +27,7 @@ export default function ForgotPasswordPage() {
       await forgotPassword(email)
       setSubmitted(true)
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message)
-      } else {
-        setError('An unexpected error occurred. Please try again.')
-      }
+      setError(processAuthError(err))
     } finally {
       setIsLoading(false)
     }
@@ -82,7 +79,7 @@ export default function ForgotPasswordPage() {
             />
           </div>
           {error && (
-            <Alert variant='destructive' className='mb-0'>
+            <Alert variant='destructive' className='mb-0 dark:text-white'>
               {error}
             </Alert>
           )}

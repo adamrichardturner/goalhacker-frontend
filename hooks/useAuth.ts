@@ -3,13 +3,25 @@ import { authService } from '@/services/authService'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { User, ApiUser, RegisterCredentials } from '@/types/auth'
+import { useState, useEffect } from 'react'
 
 export const useAuth = () => {
   const router = useRouter()
   const pathname = usePathname()
   const queryClient = useQueryClient()
+  const [hasSessionCookie, setHasSessionCookie] = useState(false)
+
+  useEffect(() => {
+    // Check for session cookie existence
+    const cookies = document.cookie.split(';')
+    const hasSession = cookies.some((cookie) =>
+      cookie.trim().startsWith('goalhacker.sid=')
+    )
+    setHasSessionCookie(hasSession)
+  }, [])
 
   const publicPaths = [
+    '/',
     '/login',
     '/signup',
     '/register',
@@ -41,8 +53,8 @@ export const useAuth = () => {
   } = useQuery<User | null>({
     queryKey: ['user'],
     queryFn: async () => {
-      // Skip the profile check on public paths
-      if (publicPaths.includes(pathname)) {
+      // Skip the profile check on public paths if no session cookie exists
+      if (publicPaths.includes(pathname) && !hasSessionCookie) {
         return null
       }
 
@@ -51,6 +63,7 @@ export const useAuth = () => {
         const transformedUser = transformUserData(response.user)
         return transformedUser
       } catch (error) {
+        // Only redirect on protected routes
         if (!publicPaths.includes(pathname)) {
           router.push('/login')
         }
@@ -59,7 +72,7 @@ export const useAuth = () => {
     },
     retry: false,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    enabled: !publicPaths.includes(pathname), // Only run query on protected routes
+    enabled: hasSessionCookie || !publicPaths.includes(pathname), // Only run query if we have a session or on protected routes
   })
 
   const signUpMutation = useMutation({
@@ -188,6 +201,7 @@ export const useAuth = () => {
     isError,
     error,
     isSuccess,
+    hasSessionCookie,
     login,
     logout,
     signup,

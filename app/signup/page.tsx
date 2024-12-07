@@ -9,6 +9,7 @@ import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
+import { processAuthError } from '@/utils/auth-errors'
 
 interface ValidationErrors {
   email?: string
@@ -84,13 +85,7 @@ export default function SignupPage() {
         setShowCheckEmail(true)
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setErrors({ general: err.message })
-      } else {
-        setErrors({
-          general: 'An unexpected error occurred. Please try again.',
-        })
-      }
+      setErrors({ general: processAuthError(err) })
     }
   }
 
@@ -170,7 +165,7 @@ export default function SignupPage() {
       >
         <form onSubmit={handleSubmit} className='space-y-4'>
           {errors.general && (
-            <Alert variant='destructive' className='mb-4'>
+            <Alert variant='destructive' className='mb-4 dark:text-white'>
               {errors.general}
             </Alert>
           )}
@@ -203,7 +198,9 @@ export default function SignupPage() {
               className={errors.username ? 'border-destructive' : ''}
             />
             {errors.username && (
-              <p className='text-xs text-destructive'>{errors.username}</p>
+              <p className='text-xs text-destructive dark:text-white'>
+                {errors.username}
+              </p>
             )}
           </div>
           <div className='space-y-2'>
@@ -217,7 +214,9 @@ export default function SignupPage() {
               className={errors.email ? 'border-destructive' : ''}
             />
             {errors.email && (
-              <p className='text-xs text-destructive'>{errors.email}</p>
+              <p className='text-xs text-destructive dark:text-white'>
+                {errors.email}
+              </p>
             )}
           </div>
           <div className='space-y-2'>
@@ -231,7 +230,9 @@ export default function SignupPage() {
               className={errors.password ? 'border-destructive' : ''}
             />
             {errors.password && (
-              <p className='text-xs text-destructive'>{errors.password}</p>
+              <p className='text-xs text-destructive dark:text-white'>
+                {errors.password}
+              </p>
             )}
           </div>
           <Button
