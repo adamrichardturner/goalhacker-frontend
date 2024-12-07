@@ -74,6 +74,10 @@ export default function NewGoalView() {
     }
   }
 
+  const handleNavigateToStep = (stepIndex: number) => {
+    setCurrentStage(stages[stepIndex - 1])
+  }
+
   if (userLoading) {
     return <Loading className='h-screen' />
   }
@@ -98,7 +102,12 @@ export default function NewGoalView() {
       case 'Steps':
         return <NewGoalStages.Steps {...props} />
       case 'Review':
-        return <NewGoalStages.Review {...props} />
+        return (
+          <NewGoalStages.Review
+            {...props}
+            onNavigateToStep={handleNavigateToStep}
+          />
+        )
     }
   }
 
@@ -120,7 +129,12 @@ export default function NewGoalView() {
             </div>
           </div>
           <div className='w-full sm:w-auto'>
-            <GoalCreationTimeline stages={stages} currentStage={currentStage} />
+            <GoalCreationTimeline
+              stages={stages}
+              currentStage={currentStage}
+              onNavigateToStep={handleNavigateToStep}
+              goalData={goalData}
+            />
           </div>
         </div>
       </div>

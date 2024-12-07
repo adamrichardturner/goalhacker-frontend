@@ -4,6 +4,7 @@ import { Goal as GoalType } from '@/types/goal'
 import Link from 'next/link'
 import GoalImage from '../GoalImage'
 import GoalProgress from './GoalProgress'
+import { useCategory } from '@/hooks/useCategory'
 
 interface GoalProps {
   goal: GoalType
@@ -12,9 +13,17 @@ interface GoalProps {
 }
 
 export default function Goal({ goal, className = '' }: GoalProps) {
-  if (!goal) return null
+  const { categories } = useCategory()
+  const hasProgress = goal.subgoals?.length > 0
 
-  const hasProgress = goal.subgoals?.length
+  console.log(goal)
+
+  // First try to get the category from the goal object, if not found, try to find it in categories
+  const category =
+    goal.category ||
+    (goal.category_id
+      ? categories.find((c) => c.category_id === goal.category_id)
+      : null)
 
   return (
     <Link
@@ -26,14 +35,16 @@ export default function Goal({ goal, className = '' }: GoalProps) {
       </div>
       <div className='w-full h-[200px] flex-1 sm:w-1/2 flex flex-col justify-between'>
         <div className='sm:space-y-4 items-center p-4 justify-center h-full flex-1'>
-          {goal.category && (
-            <p className='text-sm italic text-muted-foreground mb-2'>
-              {goal.category.name}
-            </p>
-          )}
           <p className='text-sm text-muted-foreground line-clamp-3'>
             {goal.aims}
           </p>
+        </div>
+        <div className='p-4'>
+          {category && (
+            <p className='text-sm italic text-muted-foreground mb-2'>
+              {category.name}
+            </p>
+          )}
         </div>
         {hasProgress && (
           <div className='mt-auto p-4'>

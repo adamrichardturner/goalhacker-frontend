@@ -29,6 +29,7 @@ import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
+import { CategorySelect } from '@/components/CategorySelect'
 
 interface EditSummaryProps {
   goal: Goal
@@ -44,11 +45,16 @@ export function EditSummary({ goal }: EditSummaryProps) {
     measurement_method: goal.measurement_method || '',
     target_date: goal.target_date || undefined,
     priority: goal.priority || 'medium',
+    category_id: goal.category?.category_id || '',
   })
 
   const handleSave = () => {
     try {
-      updateGoal(editedGoal)
+      const updatedGoal = {
+        ...editedGoal,
+        category_id: editedGoal.category_id || undefined,
+      }
+      updateGoal(updatedGoal)
       setIsEditing(false)
       toast.success('Goal summary updated successfully')
     } catch {
@@ -179,6 +185,16 @@ export function EditSummary({ goal }: EditSummaryProps) {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className='space-y-2'>
+            <Label>Category</Label>
+            <CategorySelect
+              value={editedGoal.category_id}
+              onValueChange={(value) =>
+                setEditedGoal((prev) => ({ ...prev, category_id: value }))
+              }
+            />
           </div>
         </div>
         <div className='flex justify-end gap-2'>

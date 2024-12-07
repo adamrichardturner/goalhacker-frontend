@@ -15,6 +15,7 @@ interface ReviewProps {
   isSubmitting?: boolean
   isLoading?: boolean
   updateGoalData: (data: Partial<Goal>) => void
+  onNavigateToStep: (step: number) => void
 }
 
 export function Review({
@@ -24,6 +25,7 @@ export function Review({
   isSubmitting,
   isLoading = false,
   updateGoalData,
+  onNavigateToStep,
 }: ReviewProps) {
   if (isLoading) {
     return (
@@ -73,45 +75,108 @@ export function Review({
         </div>
 
         <div className='space-y-6'>
-          <div className='space-y-2'>
-            <h3 className='text-sm font-medium'>Goal Details</h3>
-            <div className='space-y-2 text-sm'>
-              <p>
-                <strong>Title:</strong> {goalData.title}
-              </p>
-              <p>
-                <strong>Aims:</strong> {goalData.aims}
-              </p>
-              <p>
-                <strong>How to measure:</strong> {goalData.measurement_method}
-              </p>
-              <p>
-                <strong>Steps to completion:</strong>{' '}
-                {goalData.steps_to_completion}
-              </p>
-              {goalData.target_date && (
-                <p>
-                  <strong>Target Date:</strong>{' '}
-                  {format(new Date(goalData.target_date), 'PPP')}
+          <div className='bg-card rounded-lg p-6 space-y-4 border'>
+            <div className='grid gap-4'>
+              <div
+                onClick={() => onNavigateToStep(1)}
+                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+              >
+                <label className='text-sm font-medium text-primary cursor-pointer'>
+                  Title
+                </label>
+                <p className='text-base text-muted-foreground'>
+                  {goalData.title}
                 </p>
-              )}
-              <p>
-                <strong>Priority:</strong>{' '}
-                <span className='capitalize'>{goalData.priority}</span>
-              </p>
+              </div>
+
+              <div
+                onClick={() => onNavigateToStep(2)}
+                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+              >
+                <label className='text-sm font-medium text-primary cursor-pointer'>
+                  Aims
+                </label>
+                <p className='text-base text-muted-foreground'>
+                  {goalData.aims}
+                </p>
+              </div>
+
+              <div
+                onClick={() => onNavigateToStep(3)}
+                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+              >
+                <label className='text-sm font-medium text-primary cursor-pointer'>
+                  How to measure
+                </label>
+                <div
+                  className='text-base text-muted-foreground'
+                  dangerouslySetInnerHTML={{
+                    __html: goalData.measurement_method || '',
+                  }}
+                />
+              </div>
+
+              <div
+                onClick={() => onNavigateToStep(4)}
+                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+              >
+                <label className='text-sm font-medium text-primary cursor-pointer'>
+                  Steps to completion
+                </label>
+                <div
+                  className='text-base text-muted-foreground'
+                  dangerouslySetInnerHTML={{
+                    __html: goalData.steps_to_completion || '',
+                  }}
+                />
+              </div>
+
+              <div className='grid grid-cols-2 gap-4'>
+                {goalData.target_date && (
+                  <div
+                    onClick={() => onNavigateToStep(3)}
+                    className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                  >
+                    <label className='text-sm font-medium text-primary'>
+                      Target Date
+                    </label>
+                    <p className='text-base text-muted-foreground'>
+                      {format(new Date(goalData.target_date), 'PPP')}
+                    </p>
+                  </div>
+                )}
+
+                <div
+                  onClick={() => onNavigateToStep(3)}
+                  className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                >
+                  <label className='text-sm font-medium text-primary'>
+                    Priority
+                  </label>
+                  <p className='text-base text-muted-foreground capitalize'>
+                    {goalData.priority}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
           {goalData.subgoals && goalData.subgoals.length > 0 && (
-            <div className='space-y-2'>
-              <h3 className='text-sm font-medium'>Sub-goals</h3>
-              <div className='space-y-2'>
+            <div
+              onClick={() => onNavigateToStep(4)}
+              className='bg-card rounded-lg p-6 space-y-4 border cursor-pointer hover:bg-accent/50 transition-colors'
+            >
+              <h3 className='text-lg font-semibold'>Sub-goals</h3>
+              <div className='grid gap-3'>
                 {goalData.subgoals?.map((subgoal, index) => (
-                  <div key={index} className='flex items-center gap-2'>
-                    <span>{subgoal.title}</span>
+                  <div
+                    key={index}
+                    className='flex flex-col sm:flex-row sm:items-center sm:justify-between'
+                  >
+                    <span className='font-medium'>{subgoal.title}</span>
                     {subgoal.target_date && (
-                      <span className='text-xs text-muted-foreground'>
-                        (Due: {format(new Date(subgoal.target_date), 'PPP')})
+                      <span className='text-xs text-muted-foreground self-end sm:self-auto'>
+                        Due: {format(new Date(subgoal.target_date), 'PPP')}
                       </span>
                     )}
                   </div>
@@ -120,12 +185,14 @@ export function Review({
             </div>
           )}
 
-          <div className='space-y-2'>
-            <h3 className='text-sm font-medium'>Add a Motivational Image</h3>
-            <p className='text-xs text-muted'>
-              Choose an image that represents your goal and will keep you
-              motivated.
-            </p>
+          <div className='bg-card rounded-lg p-6 space-y-4 border'>
+            <div className='space-y-2'>
+              <h3 className='text-lg font-semibold'>Motivational Image</h3>
+              <p className='text-sm text-muted-foreground'>
+                Choose an image that represents your goal and will keep you
+                motivated.
+              </p>
+            </div>
 
             <ImageGallery
               onImageSelect={handleImageSelect}
@@ -138,11 +205,15 @@ export function Review({
           </div>
         </div>
 
-        <div className='flex gap-2'>
-          <Button onClick={onBack} variant='outline' className='flex-1'>
+        <div className='flex gap-2 pt-4'>
+          <Button onClick={onBack} variant='outline' className='flex-1 h-12'>
             Go Back
           </Button>
-          <Button onClick={onSubmit} disabled={isSubmitting} className='flex-1'>
+          <Button
+            onClick={onSubmit}
+            disabled={isSubmitting}
+            className='flex-1 h-12'
+          >
             {isSubmitting ? 'Creating Goal...' : 'Create Goal'}
           </Button>
         </div>

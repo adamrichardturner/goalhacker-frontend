@@ -3,7 +3,7 @@ import { Progress } from '../../ui/progress'
 import { Goal } from '@/types/goal'
 
 const GoalProgress = ({ goal }: { goal: Goal }) => {
-  if (!goal.subgoals?.length) return null
+  if (!goal.subgoals?.length || goal.subgoals?.length === 0) return null
 
   const { progressPercentage, completedCount, inProgressCount } =
     calculateProgress(goal.subgoals)
