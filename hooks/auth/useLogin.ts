@@ -1,13 +1,17 @@
+'use client'
+
 import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/services/authService'
 import { processAuthError } from '@/utils/auth-errors'
 import { useQueryClient } from '@tanstack/react-query'
 import { transformUserData } from '@/utils/transform-user'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export const useLogin = () => {
   const queryClient = useQueryClient()
   const [loginError, setLoginError] = useState<string | null>(null)
+  const router = useRouter()
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -27,7 +31,7 @@ export const useLogin = () => {
     onSuccess: (user) => {
       queryClient.setQueryData(['user'], user)
       setTimeout(() => {
-        window.location.href = '/goals'
+        router.push('/goals')
       }, 500)
     },
     onError: (error) => {
