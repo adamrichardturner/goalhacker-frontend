@@ -4,7 +4,6 @@ import { EditSummary } from './EditSummary'
 import { Badge } from '@/components/ui/badge'
 
 export const Summary = ({ goal }: { goal: Goal }) => {
-  console.log(goal)
   return (
     <Card className='rounded-xl relative'>
       <CardContent className='pt-6 space-y-6'>

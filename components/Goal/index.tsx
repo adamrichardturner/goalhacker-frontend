@@ -19,9 +19,6 @@ export default function Goal({ goal, className = '', index = 0 }: GoalProps) {
   const { categories } = useCategory()
   const hasProgress = (goal.subgoals?.length ?? 0) > 0
 
-  console.log(goal)
-
-  // First try to get the category from the goal object, if not found, try to find it in categories
   const category =
     goal.category ||
     (goal.category_id
