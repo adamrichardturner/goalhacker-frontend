@@ -28,8 +28,12 @@ export default function ResetPasswordForm() {
     setIsRouting(true)
     try {
       await resetPasswordConfirm({ token, email, password })
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      window.location.href = '/login'
+      // Route to /goals after 1.5s
+      setTimeout(() => {
+        window.location.href = '/goals'
+      }, 1500)
+      // Keep button disabled for 3s
+      await new Promise((resolve) => setTimeout(resolve, 3000))
     } catch {
       // Error handled by hook
     } finally {
