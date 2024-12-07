@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSearch } from '@/hooks/useSearch'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 export function Search() {
   const [isOpen, setIsOpen] = useState(false)
@@ -51,62 +52,64 @@ export function Search() {
             autoFocus
           />
         </div>
-        <ScrollArea className='min-h-[100px] -mx-4 px-4'>
-          <AnimatePresence mode='wait'>
-            {isLoading ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className='flex items-center justify-center py-4'
-              >
-                <Loader2 className='h-4 w-4 animate-spin' />
-              </motion.div>
-            ) : error ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className='text-sm text-destructive py-3'
-              >
-                {error}
-              </motion.div>
-            ) : results.length > 0 ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className='space-y-1'
-              >
-                {results.map((goal) => (
-                  <motion.button
-                    key={goal.goal_id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className='w-full text-left px-4 py-3 hover:bg-muted text-sm rounded-md'
-                    onClick={() =>
-                      goal.goal_id && handleGoalClick(goal.goal_id)
-                    }
-                  >
-                    {goal.title}
-                  </motion.button>
-                ))}
-              </motion.div>
-            ) : (
-              query.trim() && (
+        <ErrorBoundary fallback={<div>Error</div>}>
+          <ScrollArea className='min-h-[100px] -mx-4 px-4'>
+            <AnimatePresence mode='wait'>
+              {isLoading ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className='text-sm text-muted-foreground py-3'
+                  className='flex items-center justify-center py-4'
                 >
-                  No goals found
+                  <Loader2 className='h-4 w-4 animate-spin' />
                 </motion.div>
-              )
-            )}
-          </AnimatePresence>
-        </ScrollArea>
+              ) : error ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className='text-sm text-destructive py-3'
+                >
+                  {error}
+                </motion.div>
+              ) : results.length > 0 ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className='space-y-1'
+                >
+                  {results.map((goal) => (
+                    <motion.button
+                      key={goal.goal_id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className='w-full text-left px-4 py-3 hover:bg-muted text-sm rounded-md'
+                      onClick={() =>
+                        goal.goal_id && handleGoalClick(goal.goal_id)
+                      }
+                    >
+                      {goal.title}
+                    </motion.button>
+                  ))}
+                </motion.div>
+              ) : (
+                query.trim() && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className='text-sm text-muted-foreground py-3'
+                  >
+                    No goals found
+                  </motion.div>
+                )
+              )}
+            </AnimatePresence>
+          </ScrollArea>
+        </ErrorBoundary>
       </DialogContent>
     </Dialog>
   )

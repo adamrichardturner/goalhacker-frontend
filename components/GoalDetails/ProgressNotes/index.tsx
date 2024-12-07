@@ -51,21 +51,16 @@ export default function ProgressNotes({
 
   return (
     <Card>
-      <CardHeader className='flex flex-row space-y-0 justify-between items-start'>
-        <CardTitle className='text-2xl font-semibold'>Progress Notes</CardTitle>
+      <CardHeader className='flex flex-row justify-between items-center'>
+        <CardTitle className='text-xl sm:text-2xl font-semibold'>
+          Progress Notes
+        </CardTitle>
 
         <Dialog open={showProgressNote} onOpenChange={setShowProgressNote}>
           <DialogTrigger asChild>
-            <Button
-              variant='outline'
-              size='sm'
-              className='flex items-center gap-2 mt-0 pt-0'
-            >
-              <ScrollText className='h-4 w-4' />
-              Add Progress Note
-            </Button>
+            <Button size='md'>Add Note</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className='sm:max-w-[600px]'>
             <DialogHeader>
               <DialogTitle>Add Progress Note</DialogTitle>
             </DialogHeader>
@@ -77,7 +72,7 @@ export default function ProgressNotes({
         </Dialog>
       </CardHeader>
       <CardContent>
-        {goal.progress_notes && goal.progress_notes.length > 0 && (
+        {goal.progress_notes && goal.progress_notes.length > 0 ? (
           <Accordion type='single' collapsible className='space-y-4'>
             {goal.progress_notes.map((note, index) => (
               <AccordionItem
@@ -86,8 +81,8 @@ export default function ProgressNotes({
                 className='border rounded-lg'
               >
                 <AccordionTrigger className='hover:no-underline px-4 w-full'>
-                  <div className='flex items-center justify-between w-full'>
-                    <div className='flex items-center gap-4'>
+                  <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2'>
+                    <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4'>
                       <h3 className='font-semibold text-lg'>{note.title}</h3>
                       <span className='text-xs text-muted-foreground'>
                         {note.created_at &&
@@ -107,29 +102,36 @@ export default function ProgressNotes({
                         variant='ghost'
                         size='sm'
                         onClick={() => setDeletingNote(note.note_id || '')}
-                        className='text-destructive hover:text-destructive'
+                        className='bg-accent hover:bg-accent/80 text-destructive hover:text-destructive'
                       >
-                        <Trash2 className='h-4 w-4 mr-2' />
-                        Delete
+                        <Trash2 className='h-4 w-4' />
                       </Button>
                     )}
                     <Button
                       variant='ghost'
                       size='sm'
                       onClick={() => setEditingNote(note.note_id || '')}
+                      className='bg-accent hover:bg-accent/80'
                     >
-                      <Pen className='h-4 w-4 mr-2' />
-                      Edit
+                      <Pen className='h-4 w-4' />
                     </Button>
                   </div>
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
+        ) : (
+          <div className='flex flex-col items-center justify-center py-8 text-center space-y-2'>
+            <ScrollText className='h-12 w-12 text-muted-foreground' />
+            <p className='text-muted-foreground'>No progress notes yet.</p>
+            <p className='text-sm text-muted-foreground'>
+              Click &quot;Add Note&quot; to track your progress and milestones.
+            </p>
+          </div>
         )}
 
         <Dialog open={!!editingNote} onOpenChange={() => setEditingNote(null)}>
-          <DialogContent>
+          <DialogContent className='sm:max-w-[600px]'>
             <DialogHeader>
               <DialogTitle>Edit Progress Note</DialogTitle>
             </DialogHeader>

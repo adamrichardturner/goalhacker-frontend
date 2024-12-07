@@ -20,22 +20,22 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           <EditSummary goal={goal} />
         </div>
         <div>
-          <h3 className='text-2xl font-semibold mb-2'>Aims</h3>
-          <p className='text-muted-foreground text-base sm:text-sm'>
-            {goal.aims}
-          </p>
+          <h3 className='sm:text-2xl font-semibold mb-2'>Aims</h3>
+          <p className='text-muted-foreground text-sm'>{goal.aims}</p>
         </div>
         <div>
-          <h3 className='text-2xl font-semibold mb-2'>Steps to Completion</h3>
+          <h3 className='sm:text-2xl font-semibold mb-2'>
+            Steps to Completion
+          </h3>
           <div
-            className='prose prose-sm max-w-none'
+            className='prose-content'
             dangerouslySetInnerHTML={{ __html: goal.steps_to_completion }}
           />
         </div>
         <div>
-          <h3 className='text-2xl font-semibold mb-2'>Measurement Method</h3>
+          <h3 className='sm:text-2xl font-semibold mb-2'>Measurement Method</h3>
           <div
-            className='prose prose-sm max-w-none'
+            className='prose-content'
             dangerouslySetInnerHTML={{ __html: goal.measurement_method }}
           />
         </div>

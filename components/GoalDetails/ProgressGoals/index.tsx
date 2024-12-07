@@ -10,28 +10,30 @@ interface ProgressGoalsProps {
 
 export default function ProgressGoals({ goal }: ProgressGoalsProps) {
   const progress = calculateProgress(goal.subgoals).progressPercentage
+  const completedCount =
+    goal.subgoals?.filter((s) => s.status === 'completed').length || 0
+  const inProgressCount =
+    goal.subgoals?.filter((s) => s.status === 'in_progress').length || 0
+
+  const Stats = () => (
+    <div className='text-muted-foreground space-x-2'>
+      <span>{completedCount} completed</span>
+      <span>•</span>
+      <span>{inProgressCount} in progress</span>
+      <span>•</span>
+      <span>{progress}%</span>
+    </div>
+  )
 
   return (
     <Card>
       <CardContent className='pt-6'>
         <div className='space-y-6'>
-          <div>
-            <div className='flex items-center justify-between mb-2'>
-              <h3 className='text-2xl font-semibold'>Progress</h3>
-              <div className='text-sm text-muted-foreground space-x-2'>
-                <span>
-                  {goal.subgoals?.filter((s) => s.status === 'completed')
-                    .length || 0}{' '}
-                  completed
-                </span>
-                <span>•</span>
-                <span>
-                  {goal.subgoals?.filter((s) => s.status === 'in_progress')
-                    .length || 0}{' '}
-                  in progress
-                </span>
-                <span>•</span>
-                <span>{progress}%</span>
+          <div className='space-y-2'>
+            <div className='flex items-center justify-between'>
+              <h3 className='sm:text-2xl font-semibold'>Progress</h3>
+              <div className='hidden sm:block text-sm'>
+                <Stats />
               </div>
             </div>
             <Progress
@@ -39,10 +41,13 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
               className='h-2'
               indicatorClassName='bg-electricPurple rounded-lg'
             />
+            <div className='sm:hidden text-xs'>
+              <Stats />
+            </div>
           </div>
 
           <div>
-            <h3 className='font-semibold text-lg mb-3'>Subgoals</h3>
+            <h3 className='text-sm sm:text-lg font-semibold mb-3'>Subgoals</h3>
             <SubGoals goal={goal} />
           </div>
         </div>

@@ -92,3 +92,13 @@ body {
 .prose ol {
   @apply list-decimal pl-6 my-2;
 }
+
+@layer utilities {
+  .prose-content {
+    @apply prose max-w-none text-muted-foreground;
+  }
+
+  .prose-content > * {
+    @apply text-sm leading-5 text-muted-foreground mt-1;
+  }
+}

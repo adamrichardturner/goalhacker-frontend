@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Goal, SubgoalStatus } from '@/types/goal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,6 +26,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { useGoal } from '@/hooks/useGoal'
 import { format } from 'date-fns'
@@ -69,6 +77,26 @@ export default function SubGoals({ goal }: SubGoalsProps) {
   )
 
   const [localSubgoals, setLocalSubgoals] = useState(goal.subgoals || [])
+
+  const [isDraggable, setIsDraggable] = useState(false)
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  // Add useEffect to handle screen size changes
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDraggable(window.innerWidth >= 640) // 640px is the sm breakpoint in Tailwind
+    }
+
+    // Initial check
+    handleResize()
+
+    // Add event listener
+    window.addEventListener('resize', handleResize)
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handleSubgoalCreate = async () => {
     if (!newSubgoal.title) return
@@ -217,31 +245,117 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     }
   }
 
+  const handleSubgoalCreateFromDialog = async () => {
+    await handleSubgoalCreate()
+    setIsDialogOpen(false)
+  }
+
   return (
     <div className='space-y-4'>
-      {/* Add new subgoal */}
-      <div className='flex items-center gap-2'>
+      {/* Mobile Add Button + Dialog */}
+      <div className='sm:hidden'>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className='w-full'>Add Subgoal</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Subgoal</DialogTitle>
+            </DialogHeader>
+            <div className='space-y-4 py-4'>
+              <Input
+                value={newSubgoal.title}
+                onChange={(e) =>
+                  setNewSubgoal({ ...newSubgoal, title: e.target.value })
+                }
+                placeholder='Enter subgoal title...'
+                className='h-12'
+              />
+              <Select
+                value={newSubgoal.status}
+                onValueChange={(value: SubgoalStatus) =>
+                  setNewSubgoal({ ...newSubgoal, status: value })
+                }
+              >
+                <SelectTrigger className='w-full h-12'>
+                  <SelectValue placeholder='Select status' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='planned'>Planned</SelectItem>
+                  <SelectItem value='in_progress'>In Progress</SelectItem>
+                  <SelectItem value='completed'>Completed</SelectItem>
+                </SelectContent>
+              </Select>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant='ghost'
+                    className={cn(
+                      'h-12 w-full bg-accent justify-start',
+                      newSubgoal.target_date && 'border-2 border-electricPurple'
+                    )}
+                  >
+                    <CalendarIcon className='h-4 w-4 mr-2' />
+                    {newSubgoal.target_date
+                      ? format(new Date(newSubgoal.target_date), 'MMM d, yyyy')
+                      : 'Set target date'}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className='w-auto p-0' align='start'>
+                  <Calendar
+                    mode='single'
+                    selected={
+                      newSubgoal.target_date
+                        ? new Date(newSubgoal.target_date)
+                        : undefined
+                    }
+                    onSelect={(date) =>
+                      setNewSubgoal({
+                        ...newSubgoal,
+                        target_date: date?.toISOString(),
+                      })
+                    }
+                    disabled={(date) => date < new Date()}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={handleSubgoalCreateFromDialog}
+                disabled={!newSubgoal.title}
+                className='w-full'
+              >
+                Add Subgoal
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Desktop Add Form */}
+      <div className='hidden sm:flex flex-col sm:flex-row gap-3'>
         <Input
           value={newSubgoal.title}
           onChange={(e) =>
             setNewSubgoal({ ...newSubgoal, title: e.target.value })
           }
           placeholder='Add a new subgoal...'
-          className='flex-1'
+          className='flex-1 h-12'
           onKeyDown={(e) => {
             if (e.key === 'Enter' && newSubgoal.title) {
               handleSubgoalCreate()
             }
           }}
         />
-        <div className='flex items-center gap-2'>
+        <div className='flex flex-col sm:flex-row gap-3 sm:items-center'>
           <Select
             value={newSubgoal.status}
             onValueChange={(value: SubgoalStatus) =>
               setNewSubgoal({ ...newSubgoal, status: value })
             }
           >
-            <SelectTrigger className='w-[140px]'>
+            <SelectTrigger className='w-full sm:w-[140px] h-12'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -250,13 +364,13 @@ export default function SubGoals({ goal }: SubGoalsProps) {
               <SelectItem value='completed'>Completed</SelectItem>
             </SelectContent>
           </Select>
-          <div className='flex items-center gap-2'>
+          <div className='flex gap-2 justify-between sm:justify-start'>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant='ghost'
                   className={cn(
-                    'h-12 w-12 p-0',
+                    'h-12 w-12 bg-accent',
                     newSubgoal.target_date && 'border-2 border-electricPurple'
                   )}
                 >
@@ -281,30 +395,38 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                 />
               </PopoverContent>
             </Popover>
+            <Button
+              className='flex-1 sm:flex-none h-12'
+              onClick={handleSubgoalCreate}
+            >
+              Add
+            </Button>
           </div>
-          <Button onClick={handleSubgoalCreate}>Add</Button>
         </div>
       </div>
 
-      {/* Existing Subgoals */}
+      {/* Existing Subgoals - responsive layout */}
       <Reorder.Group
         axis='y'
         values={localSubgoals}
         onReorder={reorderHandler}
-        className={cn('space-y-3', !isEditing() && 'cursor-grab')}
+        className={cn(
+          'space-y-3',
+          isDraggable && !isEditing() && 'cursor-grab'
+        )}
       >
         {localSubgoals.map((subgoal) => (
           <Reorder.Item
             key={subgoal.subgoal_id}
             value={subgoal}
             className={cn(
-              'flex items-center justify-between p-4 border rounded-lg',
-              !isEditing() && 'cursor-grab'
+              'flex flex-col sm:flex-row gap-3 p-4 border rounded-lg',
+              isDraggable && !isEditing() && 'cursor-grab'
             )}
-            dragListener={!isEditing()}
+            dragListener={isDraggable && !isEditing()}
             style={{ position: 'relative' }}
           >
-            <div className='flex items-center gap-3 flex-1'>
+            <div className='flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1'>
               <Select
                 value={subgoal.status}
                 onValueChange={(value: SubgoalStatus) =>
@@ -312,7 +434,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   handleSubgoalStatusChange(subgoal.subgoal_id, value)
                 }
               >
-                <SelectTrigger className='w-[140px]'>
+                <SelectTrigger className='w-full sm:w-[140px] h-12'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -323,7 +445,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
               </Select>
               {editing.subgoalId === subgoal.subgoal_id ? (
                 <form
-                  className='flex-1 flex gap-2 justify-between'
+                  className='flex-1 flex flex-col sm:flex-row gap-3 w-full'
                   onSubmit={(e) => {
                     e.preventDefault()
                     handleEditSave()
@@ -334,7 +456,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                     onChange={(e) =>
                       setEditing({ ...editing, title: e.target.value })
                     }
-                    className='w-full'
+                    className='flex-1 h-12'
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Escape') {
@@ -342,19 +464,15 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                       }
                     }}
                   />
-                  <div className='flex items-center gap-2'>
-                    <Button
-                      type='submit'
-                      size='sm'
-                      className='h-12 w-20 text-sm'
-                    >
+                  <div className='flex gap-2 justify-end sm:justify-start'>
+                    <Button type='submit' size='sm' className='h-12'>
                       Save
                     </Button>
                     <Button
                       type='button'
                       variant='ghost'
-                      className='h-12 w-20 text-sm'
-                      size='lg'
+                      size='sm'
+                      className='h-12'
                       onClick={() => setEditing({ subgoalId: null, title: '' })}
                     >
                       Cancel
@@ -364,7 +482,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
               ) : (
                 <span
                   className={cn(
-                    'flex-1 text-sm pr-2',
+                    'flex-1 text-sm',
                     subgoal.status === 'completed' &&
                       'line-through text-muted-foreground'
                   )}
@@ -373,49 +491,50 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                 </span>
               )}
             </div>
-            <div className='flex items-center gap-2'>
-              {editing.subgoalId !== subgoal.subgoal_id &&
-                subgoal.target_date && (
-                  <span className='text-sm text-muted-foreground whitespace-nowrap'>
-                    {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
-                  </span>
-                )}
-              {editing.subgoalId !== subgoal.subgoal_id && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant='ghost'
-                      className={cn(
-                        'h-8 w-8 p-0',
-                        subgoal.target_date && 'border-2 border-electricPurple'
-                      )}
-                    >
-                      <CalendarIcon className='h-4 w-4' />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className='w-auto p-0' align='start'>
-                    <Calendar
-                      mode='single'
-                      selected={
-                        subgoal.target_date
-                          ? new Date(subgoal.target_date)
-                          : undefined
-                      }
-                      onSelect={(date) =>
-                        subgoal.subgoal_id &&
-                        handleTargetDateChange(subgoal.subgoal_id, date || null)
-                      }
-                      disabled={(date) => date < new Date()}
-                    />
-                  </PopoverContent>
-                </Popover>
-              )}
+            <div className='flex items-center gap-2 justify-end sm:justify-start'>
               {editing.subgoalId !== subgoal.subgoal_id && (
                 <>
+                  {subgoal.target_date && (
+                    <span className='text-sm text-muted-foreground whitespace-nowrap'>
+                      {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
+                    </span>
+                  )}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='ghost'
+                        className={cn(
+                          'h-12 w-12 p-0 bg-accent',
+                          subgoal.target_date &&
+                            'border-2 border-electricPurple'
+                        )}
+                      >
+                        <CalendarIcon className='h-4 w-4' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <Calendar
+                        mode='single'
+                        selected={
+                          subgoal.target_date
+                            ? new Date(subgoal.target_date)
+                            : undefined
+                        }
+                        onSelect={(date) =>
+                          subgoal.subgoal_id &&
+                          handleTargetDateChange(
+                            subgoal.subgoal_id,
+                            date || null
+                          )
+                        }
+                        disabled={(date) => date < new Date()}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-8 w-8'
+                    className='h-12 w-12 bg-accent hover:bg-accent/80'
                     onClick={() =>
                       subgoal.subgoal_id &&
                       handleEditClick(subgoal.subgoal_id, subgoal.title)
@@ -426,7 +545,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-8 w-8 hover:bg-destructive hover:text-destructive-foreground'
+                    className='h-12 w-12 bg-accent hover:bg-accent/80'
                     onClick={() =>
                       subgoal.subgoal_id &&
                       handleDeleteClick(subgoal.subgoal_id)

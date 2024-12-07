@@ -1,31 +1,36 @@
-import axios, { AxiosError } from 'axios'
-import { ApiError } from '@/types/api'
+import axios from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
-
-export const api = axios.create({
-  baseURL: API_URL,
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 })
 
-// Add request interceptor for auth
-api.interceptors.request.use((config) => {
-  console.log('Making request to:', config.url)
-  console.log('Request headers:', config.headers)
-  return config
-})
-
-// Add response interceptor for error handling
+// Add a response interceptor
 api.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<ApiError>) => {
-    return Promise.reject({
-      message: error.response?.data?.message || 'An error occurred',
-      status: error.response?.status || 500,
-      errors: error.response?.data?.errors,
-    })
+  (error) => {
+    if (error.response) {
+      // Server responded with a status code outside the 2xx range
+      if (error.response.status === 401) {
+        // Handle unauthorized - redirect to login
+        window.location.href = '/login'
+        return Promise.reject(error)
+      }
+
+      if (error.response.status >= 500) {
+        // Server errors - redirect to error page
+        window.location.href = '/error'
+        return Promise.reject(error)
+      }
+    } else if (error.request) {
+      // Request was made but no response received (network error)
+      window.location.href = '/error'
+      return Promise.reject(error)
+    }
+
+    // Something else happened in setting up the request
+    return Promise.reject(error)
   }
 )
+
+export { api }

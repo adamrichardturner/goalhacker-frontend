@@ -5,8 +5,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useState } from 'react'
-import { Bold, Italic, List, ListOrdered, Strikethrough } from 'lucide-react'
+import UnderlineExtension from '@tiptap/extension-underline'
+import { useState, useRef } from 'react'
+import {
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Strikethrough,
+  Underline,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
@@ -28,9 +36,16 @@ export default function ProgressNoteEditor({
     title: false,
     content: false,
   })
+  const editorContainerRef = useRef<HTMLDivElement>(null)
+
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, UnderlineExtension],
     content: initialContent,
+    editorProps: {
+      attributes: {
+        class: 'outline-none',
+      },
+    },
   })
 
   const handleSubmit = () => {
@@ -59,6 +74,12 @@ export default function ProgressNoteEditor({
     setTitle('')
     setErrors({ title: false, content: false })
     onCancel()
+  }
+
+  const handleContainerClick = (e: React.MouseEvent) => {
+    if (e.target === editorContainerRef.current) {
+      editor?.chain().focus().run()
+    }
   }
 
   return (
@@ -116,6 +137,15 @@ export default function ProgressNoteEditor({
               type='button'
               variant='ghost'
               size='sm'
+              onClick={() => editor?.chain().focus().toggleUnderline().run()}
+              className={editor?.isActive('underline') ? 'bg-muted' : ''}
+            >
+              <Underline className='h-4 w-4' />
+            </Button>
+            <Button
+              type='button'
+              variant='ghost'
+              size='sm'
               onClick={() => editor?.chain().focus().toggleStrike().run()}
               className={editor?.isActive('strike') ? 'bg-muted' : ''}
             >
@@ -141,10 +171,14 @@ export default function ProgressNoteEditor({
               <ListOrdered className='h-4 w-4' />
             </Button>
           </div>
-          <div className='p-4'>
+          <div
+            ref={editorContainerRef}
+            className='p-4 min-h-[200px] cursor-text'
+            onClick={handleContainerClick}
+          >
             <EditorContent
               editor={editor}
-              className='prose prose-sm max-w-none min-h-[200px]'
+              className='prose prose-sm max-w-none'
               onFocus={() => {
                 if (editor?.getHTML().trim()) {
                   setErrors((prev) => ({ ...prev, content: false }))

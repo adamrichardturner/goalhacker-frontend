@@ -134,7 +134,7 @@ const GoalsView = ({
                 setSelectedFilter(value as FilterType)
               }
             >
-              <SelectTrigger className='border-0 shadow-md focus:ring-0'>
+              <SelectTrigger className='border-0 shadow-sm focus:ring-0'>
                 <SelectValue placeholder='Filter goals' />
               </SelectTrigger>
               <SelectContent>

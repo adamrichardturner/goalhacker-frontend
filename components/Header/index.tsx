@@ -112,7 +112,7 @@ const Header = ({ user }: HeaderProps) => {
               <Avatar className='h-8 w-8'>
                 <AvatarImage src={avatarSrc} alt={user.first_name || ''} />
                 <AvatarFallback>
-                  {user.first_name?.[0]?.toUpperCase()}
+                  {user.first_name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
@@ -130,9 +130,12 @@ const Header = ({ user }: HeaderProps) => {
       </div>
 
       <div className='flex sm:hidden w-full items-center justify-between'>
-        <Link href='/goals'>
-          <Logo size='sm' />
-        </Link>
+        <div className='flex items-center gap-4'>
+          <Link href='/goals'>
+            <Logo size='sm' />
+          </Link>
+          <BetaButton />
+        </div>
 
         <div className='flex items-center gap-4'>
           <Search />
@@ -150,33 +153,46 @@ const Header = ({ user }: HeaderProps) => {
                 />
               </button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className='top-[70px] sm:hidden flex flex-col justify-between h-[calc(100vh-70px)] bg-background'>
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <div className='flex items-center gap-4'>
+                  <Avatar>
+                    <AvatarImage src={avatarSrc} alt={user.first_name || ''} />
+                    <AvatarFallback>
+                      {user.first_name?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <SheetTitle className='text-sm text-left font-semibold'>
+                    Welcome, <br /> {user.first_name}! 👋
+                  </SheetTitle>
+                </div>
+
+                <div className='flex pt-8 flex-col items-start gap-8 mt-4'>
+                  {mobileLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`text-lg font-medium transition-colors hover:text-primary ${
+                        pathname === link.href
+                          ? 'text-primary border-b-2 border-electricPurple'
+                          : 'text-muted-foreground'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </div>
               </SheetHeader>
-              <nav className='flex flex-col gap-4 mt-8'>
-                {mobileLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`text-lg font-medium transition-colors hover:text-primary ${
-                      pathname === link.href
-                        ? 'text-primary'
-                        : 'text-muted-foreground'
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </nav>
-              <SheetFooter className='absolute bottom-8 w-full pr-6'>
-                <button
+              <SheetFooter className='flex flex-col gap-4'>
+                <div
                   onClick={handleLogout}
-                  className='w-full text-left text-lg font-medium text-muted-foreground hover:text-primary transition-colors'
+                  className='text-md text-primary cursor-pointer'
                 >
-                  Log out
-                </button>
+                  Sign out
+                </div>
+                <Link href='/support'>Support</Link>
+                <Link href='/terms-conditions'>Terms & Conditions</Link>
               </SheetFooter>
             </SheetContent>
           </Sheet>
