@@ -103,7 +103,7 @@ const GoalsView = ({
       </div>
 
       {nonArchivedGoals.length > 0 && !isArchived && (
-        <nav className='flex gap-8 items-center border-border'>
+        <nav className='flex gap-8 items-center border-border border-b pb-4'>
           <div className='hidden sm:flex gap-8 items-center'>
             {filters.map((filter) => {
               const isDisabled = filter !== 'All' && statusCounts[filter] === 0

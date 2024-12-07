@@ -71,7 +71,14 @@ export function useSettings() {
   const { mutateAsync: deleteAccount, isPending: isDeleting } = useMutation({
     mutationFn: () => settingsService.deleteAccount(),
     onSuccess: () => {
+      // Clear session cookie
+      document.cookie =
+        'goalhacker.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; sameSite=none;'
+      // Clear user data from cache
+      queryClient.setQueryData(['user'], null)
+      // Show success message
       toast.success('Your account has been deleted')
+      // Redirect to home page
       router.push('/')
     },
     onError: () => {

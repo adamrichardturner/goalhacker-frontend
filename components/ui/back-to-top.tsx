@@ -40,7 +40,7 @@ export function BackToTop() {
         className='h-10 w-10 rounded-full bg-primary hover:bg-primary/90 transition-all'
         aria-label='Back to top'
       >
-        <ArrowUp className='h-4 w-4 text-white' />
+        <ArrowUp className='h-4 w-4 text-white dark:text-black' />
       </Button>
     </motion.div>
   )

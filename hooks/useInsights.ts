@@ -6,6 +6,7 @@ import {
 } from '@/services/insightsService'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import useAuth from './useAuth'
 
 interface ApiError {
   message: string
@@ -16,21 +17,26 @@ interface ApiError {
 export function useInsights(forceGenerate = false) {
   const queryClient = useQueryClient()
   const router = useRouter()
+  const { user, hasSessionCookie, isLoading: isAuthLoading } = useAuth()
 
   const {
     data: currentData,
-    isLoading,
+    isLoading: isInsightsLoading,
     error,
   } = useQuery<InsightResponse, ApiError>({
     queryKey: ['insights', forceGenerate],
     queryFn: () => insightsService.getInsights(forceGenerate),
     retry: false,
+    enabled: !isAuthLoading && !!user && hasSessionCookie,
   })
 
-  const { data: historyData } = useQuery<{ insights: Insight[] }>({
+  const { data: historyData, isLoading: isHistoryLoading } = useQuery<{
+    insights: Insight[]
+  }>({
     queryKey: ['insights-history'],
     queryFn: () => insightsService.getInsightHistory(),
     retry: false,
+    enabled: !isAuthLoading && !!user && hasSessionCookie,
   })
 
   const generateMutation = useMutation({
@@ -57,6 +63,10 @@ export function useInsights(forceGenerate = false) {
   }
 
   const generateNewInsights = () => {
+    if (!user || !hasSessionCookie) {
+      router.push('/login')
+      return
+    }
     generateMutation.mutate()
   }
 
@@ -64,7 +74,7 @@ export function useInsights(forceGenerate = false) {
     insight: currentData?.insight ?? null,
     remainingGenerations: currentData?.remainingGenerations ?? 0,
     insightHistory: historyData?.insights ?? [],
-    isLoading,
+    isLoading: isAuthLoading || isInsightsLoading || isHistoryLoading,
     error,
     generateNewInsights,
     isGenerating: generateMutation.isPending,
