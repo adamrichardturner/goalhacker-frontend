@@ -22,7 +22,7 @@ export default function DashboardPage() {
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
-        <Header user={user} loading={userIsLoading} />
+        <Header user={user} />
       )}
       <div className='flex flex-col gap-6 w-full px-4 sm:px-0'>
         <div className='grid grid-cols-1 gap-6'>

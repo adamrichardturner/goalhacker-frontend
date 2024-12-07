@@ -268,12 +268,20 @@ export default function LandingPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
         >
-          <p>
-            © {year} Goal Hacker. All rights reserved.{' '}
-            <Link href='/terms-conditions' className='hover:text-primary'>
-              Terms & Conditions
-            </Link>
-          </p>
+          <div className='flex flex-col items-center justify-center gap-1'>
+            <p className='text-xs sm:text-sm'>
+              © {year} Goal Hacker. All rights reserved.
+            </p>
+            <div className='flex items-center gap-2 text-xs sm:text-sm'>
+              <Link href='/terms-conditions' className='hover:text-primary'>
+                Terms & Conditions
+              </Link>
+              {' | '}
+              <Link href='/privacy-policy' className='hover:text-primary'>
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
         </motion.footer>
       </div>
     </div>

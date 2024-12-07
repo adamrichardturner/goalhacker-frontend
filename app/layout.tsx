@@ -4,6 +4,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Toaster as Sonner } from 'sonner'
+import { BackToTop } from '@/components/ui/back-to-top'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -39,9 +40,10 @@ export default function RootLayout({
       <body className={`${inter.className} overflow-y-scroll`}>
         <ThemeProvider>
           <Providers>
-            <main className='container mx-auto pb-8 w-full flex items-center justify-center'>
+            <main className='container mx-auto pb-8 w-full flex items-center justify-center sm:pt-0 pt-[90px]'>
               {children}
             </main>
+            <BackToTop />
           </Providers>
           <Sonner />
         </ThemeProvider>
