@@ -166,17 +166,6 @@ export default function Settings() {
             <CardTitle>Profile Information</CardTitle>
             <CardDescription>Update your personal information</CardDescription>
           </div>
-          <div className='flex items-center gap-2'>
-            <Label htmlFor='edit-name' className='text-sm'>
-              Edit Name
-            </Label>
-            <Switch
-              id='edit-name'
-              checked={isEditingName}
-              onCheckedChange={setIsEditingName}
-              disabled={isUpdatingProfile}
-            />
-          </div>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='grid grid-cols-2 gap-4'>
@@ -199,14 +188,30 @@ export default function Settings() {
               />
             </div>
           </div>
-          <Button
-            onClick={handleProfileUpdate}
-            disabled={
-              !isEditingName || isUpdatingProfile || (!firstName && !lastName)
-            }
-          >
-            {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
-          </Button>
+          <div className='flex justify-between gap-2'>
+            <Button
+              onClick={handleProfileUpdate}
+              disabled={
+                !isEditingName || isUpdatingProfile || (!firstName && !lastName)
+              }
+            >
+              {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
+            </Button>
+            <div className='flex flex-col items-end gap-1 w-[100px]'>
+              <Label
+                htmlFor='edit-name'
+                className='text-xs text-muted-foreground'
+              >
+                Edit Name
+              </Label>
+              <Switch
+                id='edit-name'
+                checked={isEditingName}
+                onCheckedChange={setIsEditingName}
+                disabled={isUpdatingProfile}
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
 

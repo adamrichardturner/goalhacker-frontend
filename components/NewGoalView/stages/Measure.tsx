@@ -121,7 +121,7 @@ export function Measure({
                     variant='outline'
                     size='lg'
                     className={cn(
-                      'w-full justify-start h-12 text-left font-normal',
+                      'w-full justify-start h-12 text-left font-normal dark:text-white',
                       !goalData.target_date &&
                         'text-muted h-12 bg-card hover:bg-card'
                     )}
@@ -134,7 +134,7 @@ export function Measure({
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
+                <PopoverContent className='w-auto p-0 bg-paper' align='start'>
                   <Calendar
                     mode='single'
                     selected={

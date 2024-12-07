@@ -163,19 +163,28 @@ const Header = ({ user }: HeaderProps) => {
               className='w-56 mt-5'
               sideOffset={5}
             >
-              <DropdownMenuItem asChild className='cursor-pointer py-3'>
+              <DropdownMenuItem
+                asChild
+                className={`cursor-pointer py-3 ${pathname === '/settings' ? 'bg-accent' : ''}`}
+              >
                 <Link href='/settings' className='flex items-center'>
                   <Settings className='mr-2 h-4 w-4' />
                   Settings
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild className='cursor-pointer py-3'>
+              <DropdownMenuItem
+                asChild
+                className={`cursor-pointer py-3 ${pathname === '/support' ? 'bg-accent' : ''}`}
+              >
                 <Link href='/support' className='flex items-center'>
                   <HelpCircle className='mr-2 h-4 w-4' />
                   Support
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild className='cursor-pointer py-3'>
+              <DropdownMenuItem
+                asChild
+                className={`cursor-pointer py-3 ${pathname === '/terms-conditions' ? 'bg-accent' : ''}`}
+              >
                 <Link href='/terms-conditions' className='flex items-center'>
                   <FileText className='mr-2 h-4 w-4' />
                   Terms & Conditions

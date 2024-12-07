@@ -166,7 +166,7 @@ export default function GoalInsights() {
               Daily Generations
             </p>
             <Progress
-              value={(remainingGenerations / 2) * 100}
+              value={remainingGenerations * (100 / 3)}
               className='w-32 h-2'
             />
             <p className='text-xs text-muted-foreground mt-2'>
@@ -215,7 +215,7 @@ export default function GoalInsights() {
               Daily Generations
             </p>
             <Progress
-              value={(remainingGenerations / 3) * 100}
+              value={remainingGenerations * (100 / 3)}
               className='w-32 h-2'
             />
             <p className='text-xs text-muted-foreground mt-2'>
@@ -258,7 +258,7 @@ export default function GoalInsights() {
           </div>
           <div className='flex items-center gap-2'>
             <Progress
-              value={(remainingGenerations / 3) * 100}
+              value={remainingGenerations * (100 / 3)}
               className='w-16 h-1.5'
             />
             <span className='text-xs text-muted-foreground'>

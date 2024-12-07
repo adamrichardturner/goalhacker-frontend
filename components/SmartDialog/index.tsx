@@ -17,7 +17,7 @@ export const SmartDialog = () => {
           Click here for more information
         </div>
       </DialogTrigger>
-      <DialogContent className='w-full 2xl:max-w-[60vw] h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-w-[90vw] 2xl:max-w-[60vw] h-[80vh] overflow-y-auto'>
         <SmartFramework />
         <DialogClose asChild>
           <Button

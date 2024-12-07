@@ -36,7 +36,7 @@ export default function Goal({ goal, className = '', index = 0 }: GoalProps) {
     >
       <Link
         href={`/goals/${goal.goal_id}`}
-        className={`flex bg-paper h-[400px] flex-col sm:flex-row rounded-2xl sm:h-[200px] ${className}`}
+        className={`flex bg-paper flex-col sm:flex-row rounded-2xl sm:h-[200px] ${className}`}
       >
         <Card className='flex flex-col sm:flex-row border hover:shadow-lg w-full rounded-2xl hover:border-border-hover transition-shadow sm:h-[200px]'>
           <div className='w-full h-[200px] sm:w-1/2 sm:h-full'>
