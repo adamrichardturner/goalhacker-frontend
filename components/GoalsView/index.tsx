@@ -157,7 +157,7 @@ const GoalsView = ({
 
       <div className='grid grid-cols-1 gap-4'>
         {delayedLoading ? (
-          Array.from({ length: 2 }).map((_, index) => (
+          Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className='h-[200px] bg-paper border rounded-2xl'>
               <div className='flex h-full'>
                 <Skeleton className='w-1/2 h-full rounded-l-2xl' />

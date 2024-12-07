@@ -7,6 +7,7 @@ import { use } from 'react'
 import GoalDetails from '@/components/GoalDetails'
 import Header from '@/components/Header'
 import useAuth from '@/hooks/useAuth'
+import { Footer } from '@/components/Footer'
 
 interface GoalPageProps {
   params: Promise<{
@@ -48,6 +49,7 @@ export default function GoalPage({ params }: GoalPageProps) {
           ) : null}
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

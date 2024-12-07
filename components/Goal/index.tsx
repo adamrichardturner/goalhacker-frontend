@@ -14,7 +14,7 @@ interface GoalProps {
 
 export default function Goal({ goal, className = '' }: GoalProps) {
   const { categories } = useCategory()
-  const hasProgress = goal.subgoals?.length > 0
+  const hasProgress = (goal.subgoals?.length ?? 0) > 0
 
   console.log(goal)
 
@@ -33,24 +33,24 @@ export default function Goal({ goal, className = '' }: GoalProps) {
       <div className='w-full h-[200px] sm:w-1/2 sm:h-full'>
         <GoalImage goal={goal} className='h-full min-h-[200px]' />
       </div>
-      <div className='w-full h-[200px] flex-1 sm:w-1/2 flex flex-col justify-between'>
-        <div className='sm:space-y-4 items-center p-4 justify-center h-full flex-1'>
+      <div className='w-full h-[200px] flex-1 sm:w-1/2 flex flex-col'>
+        <div className='sm:space-y-4 items-center p-4 justify-center flex-1'>
           <p className='text-sm text-muted-foreground line-clamp-3'>
             {goal.aims}
           </p>
         </div>
-        <div className='p-4'>
+        <div className='mt-auto'>
           {category && (
-            <p className='text-sm italic text-muted-foreground mb-2'>
-              {category.name}
-            </p>
+            <div className='px-4 mb-2'>
+              <p className='text-sm italic text-muted-foreground'>
+                {category.name}
+              </p>
+            </div>
           )}
-        </div>
-        {hasProgress && (
-          <div className='mt-auto p-4'>
-            <GoalProgress goal={goal} />
+          <div className='min-h-12 p-4'>
+            {hasProgress && <GoalProgress goal={goal} />}
           </div>
-        )}
+        </div>
       </div>
     </Link>
   )

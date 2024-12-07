@@ -1,5 +1,6 @@
 'use client'
 
+import { Footer } from '@/components/Footer'
 import GoalsView from '@/components/GoalsView'
 import Header from '@/components/Header'
 import Loading from '@/components/ui/loading'
@@ -15,21 +16,22 @@ export default function GoalsPage() {
   }
 
   return (
-    <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='container max-w-3xl min-h-screen flex flex-col gap-6 sm:px-4 w-full'>
       {userIsLoading ? (
-        <Loading className='h-screen' />
+        <Loading className='h-full' />
       ) : (
         <Header user={user} loading={userIsLoading} />
       )}
       <div className='flex flex-col gap-4 w-full px-4 sm:px-0 rounded-lg'>
         <main className='flex flex-col gap-4 w-full bg-card px-4 py-6 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
           {userIsLoading || goalsLoading ? (
-            <Loading className='h-screen' />
+            <Loading className='h-full' />
           ) : (
             <GoalsView goals={goals} user={user} isLoading={goalsLoading} />
           )}
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

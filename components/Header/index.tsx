@@ -26,6 +26,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
 import BetaButton from './BetaButton'
+import { Logo } from '../Logo'
 
 interface HeaderProps {
   user: User
@@ -54,12 +55,6 @@ const Header = ({ user, loading }: HeaderProps) => {
     ? `${API_URL}${user.avatar_url}`
     : '/avatar.png'
 
-  const logoSrc = !mounted
-    ? '/goalhacker-logo.svg'
-    : theme === 'dark'
-      ? '/goalhacker-logo-dark.svg'
-      : '/goalhacker-logo.svg'
-
   const burgerSrc = !mounted
     ? '/burger-menu.svg'
     : theme === 'dark'
@@ -81,13 +76,7 @@ const Header = ({ user, loading }: HeaderProps) => {
       <div className='hidden sm:flex w-full justify-between items-center'>
         <div className='flex items-center gap-4'>
           <Link href='/goals'>
-            <img
-              src={logoSrc}
-              alt='GoalHacker'
-              width={150}
-              height={30}
-              className='h-[30px]'
-            />
+            <Logo size='sm' />
           </Link>
           <BetaButton />
         </div>
@@ -148,15 +137,12 @@ const Header = ({ user, loading }: HeaderProps) => {
         </div>
       </div>
       <div className='sm:hidden flex justify-between items-center w-full'>
-        <Link href='/goals'>
-          <img
-            src={logoSrc}
-            alt='GoalHacker'
-            width={126}
-            height={14.46}
-            className='h-[14.46px]'
-          />
-        </Link>
+        <div className='flex items-center gap-4'>
+          <Link href='/goals'>
+            <Logo size='sm' />
+          </Link>
+          <BetaButton />
+        </div>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger>
             <motion.div

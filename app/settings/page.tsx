@@ -4,6 +4,7 @@ import Settings from '@/components/Settings'
 import useAuth from '@/hooks/useAuth'
 import Loading from '@/components/ui/loading'
 import Header from '@/components/Header'
+import { Footer } from '@/components/Footer'
 
 export default function SettingsPage() {
   const { user, isLoading: userIsLoading } = useAuth()
@@ -25,6 +26,7 @@ export default function SettingsPage() {
           <Settings />
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

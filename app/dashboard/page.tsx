@@ -1,6 +1,7 @@
 'use client'
 
 import DashboardCharts from '@/components/Dashboard/DashboardCharts'
+import { Footer } from '@/components/Footer'
 import Header from '@/components/Header'
 import Loading from '@/components/ui/loading'
 import useAuth from '@/hooks/useAuth'
@@ -30,6 +31,7 @@ export default function GoalsPage() {
           )}
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

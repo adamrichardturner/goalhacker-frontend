@@ -3,12 +3,11 @@
 
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
-import { ModeToggle } from '@/components/ThemeSwitcher'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
+import { Logo } from '@/components/Logo'
+import { ModeToggle } from '@/components/ThemeSwitcher'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -38,26 +37,19 @@ const scaleIn = {
 }
 
 const slideIn = {
-  hidden: { x: -60, opacity: 0 },
+  hidden: { y: 20, opacity: 0 },
   visible: {
-    x: 0,
+    y: 0,
     opacity: 1,
     transition: {
-      type: 'spring',
-      stiffness: 100,
+      duration: 0.6,
     },
   },
 }
 
 export default function LandingPage() {
-  const [mounted, setMounted] = useState(false)
-  const { theme } = useTheme()
   const { user } = useAuth()
   const router = useRouter()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleSignIn = () => {
     if (user) {
@@ -66,12 +58,6 @@ export default function LandingPage() {
       router.push('/login')
     }
   }
-
-  const logoSrc = !mounted
-    ? '/goalhacker-logo.svg'
-    : theme === 'dark'
-      ? '/goalhacker-logo-dark.svg'
-      : '/goalhacker-logo.svg'
 
   const year = new Date().getFullYear()
 
@@ -97,10 +83,8 @@ export default function LandingPage() {
         </motion.nav>
 
         <div className='text-center max-w-3xl flex flex-col gap-4 mx-auto mb-16 py-10'>
-          <motion.img
-            src={logoSrc}
-            alt='Goal Hacker'
-            className='h-8 sm:h-12 mb-4'
+          <motion.div
+            className='flex justify-center'
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{
@@ -108,7 +92,9 @@ export default function LandingPage() {
               stiffness: 200,
               damping: 20,
             }}
-          />
+          >
+            <Logo className='text-3xl sm:text-4xl' />
+          </motion.div>
           <motion.h1
             className='text-4xl sm:text-6xl font-bold mb-6'
             initial={{ y: 20, opacity: 0 }}
@@ -118,14 +104,11 @@ export default function LandingPage() {
             Transform Your Goals into{' '}
             <motion.span
               className='text-electricPurple inline-block'
-              animate={{
-                scale: [1, 1.05, 1],
-                rotate: [0, 1, 0],
-              }}
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
               transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: 'reverse',
+                duration: 0.6,
+                ease: 'easeOut',
               }}
             >
               Achievements
@@ -285,7 +268,12 @@ export default function LandingPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
         >
-          <p>© {year} Goal Hacker. All rights reserved.</p>
+          <p>
+            © {year} Goal Hacker. All rights reserved.{' '}
+            <Link href='/terms-conditions' className='hover:text-primary'>
+              Terms & Conditions
+            </Link>
+          </p>
         </motion.footer>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
 import useAuth from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
+import { Footer } from '@/components/Footer'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -99,6 +100,7 @@ export default function LoginPage() {
           </Button>
         </form>
       </AuthCard>
+      <Footer />
     </div>
   )
 }

@@ -5,6 +5,7 @@ import NewGoalView from '@/components/NewGoalView'
 import useAuth from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { Footer } from '@/components/Footer'
 
 export default function NewGoalPage() {
   const { user, isLoading } = useAuth()
@@ -24,6 +25,7 @@ export default function NewGoalPage() {
       <main className='flex flex-col px-4 sm:px-0 gap-4 w-full bg-background rounded-lg shadow-sm'>
         <NewGoalView />
       </main>
+      <Footer />
     </div>
   )
 }

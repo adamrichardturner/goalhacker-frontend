@@ -59,6 +59,7 @@ export function Review({
     updateGoalData({
       ...goalData,
       image_url: image.url,
+      default_image_key: image.id,
     })
   }
 
@@ -197,8 +198,12 @@ export function Review({
             <ImageGallery
               onImageSelect={handleImageSelect}
               selectedImage={
-                goalData.image_url
-                  ? { id: goalData.image_url, url: goalData.image_url }
+                goalData.image_url && goalData.default_image_key
+                  ? {
+                      id: goalData.default_image_key,
+                      url: goalData.image_url,
+                      category: 'default',
+                    }
                   : undefined
               }
             />
