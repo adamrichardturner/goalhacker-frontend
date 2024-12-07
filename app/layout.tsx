@@ -40,7 +40,7 @@ export default function RootLayout({
       <body className={`${inter.className} overflow-y-scroll`}>
         <ThemeProvider>
           <Providers>
-            <main className='container mx-auto pb-8 w-full flex items-center justify-center sm:pt-0 pt-[90px]'>
+            <main className='container mx-auto w-full flex items-center justify-center sm:pt-0 pt-[90px]'>
               {children}
             </main>
             <BackToTop />

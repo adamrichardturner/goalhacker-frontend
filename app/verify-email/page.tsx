@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import { AuthCard } from '@/components/form-components'
 import Loading from '@/components/ui/loading'
 import VerifyEmailContent from '@/components/Auth/VerifyEmailContent'
+import { Footer } from '@/components/Footer'
 
 export default function VerifyEmailPage() {
   return (
@@ -20,6 +21,7 @@ export default function VerifyEmailPage() {
       >
         <VerifyEmailContent />
       </Suspense>
+      <Footer />
     </div>
   )
 }

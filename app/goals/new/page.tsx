@@ -8,15 +8,15 @@ import Link from 'next/link'
 import { Footer } from '@/components/Footer'
 
 export default function NewGoalPage() {
-  const { user, isLoading } = useAuth()
+  const { user } = useAuth()
 
   if (!user) {
     return null
   }
 
   return (
-    <div className='container max-w-3xl flex flex-col gap-2 sm:px-4 w-full'>
-      <Header user={user} loading={isLoading} />
+    <div className='container min-h-screen max-w-3xl flex flex-col gap-2 sm:px-4 w-full'>
+      <Header user={user} />
       <div className='mb-0 px-4'>
         <Link href='/goals'>
           <Button variant='ghost'>← Back to Goals</Button>

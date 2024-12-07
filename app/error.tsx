@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'
 import { Logo } from '@/components/Logo'
+import { Footer } from '@/components/Footer'
 
 export default function Error({
   error,
@@ -42,6 +43,7 @@ export default function Error({
           </Button>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

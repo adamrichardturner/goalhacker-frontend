@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import Logo from '@/components/Logo'
+import { Footer } from '@/components/Footer'
 
 export default function NotFound() {
   return (
@@ -44,6 +45,7 @@ export default function NotFound() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

@@ -18,7 +18,7 @@ export default function SettingsPage() {
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
-        <Header user={user} loading={userIsLoading} />
+        <Header user={user} />
       )}
       <div className='flex flex-col gap-4 w-full sm:px-0 rounded-lg'>
         <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm'>

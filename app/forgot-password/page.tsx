@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
 import { processAuthError } from '@/utils/auth-errors'
+import { Footer } from '@/components/Footer'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -97,6 +98,7 @@ export default function ForgotPasswordPage() {
           </div>
         </form>
       </AuthCard>
+      <Footer />
     </div>
   )
 }

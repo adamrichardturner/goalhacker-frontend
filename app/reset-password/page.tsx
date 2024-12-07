@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { settingsService } from '@/services/settingsService'
 import { toast } from 'sonner'
+import { Footer } from '@/components/Footer'
 
 export default function ResetPassword() {
   const searchParams = useSearchParams()
@@ -26,7 +27,7 @@ export default function ResetPassword() {
 
   if (!token || !email) {
     return (
-      <div className='container max-w-lg py-10'>
+      <div className='container min-h-screen max-w-lg py-10'>
         <Card className='bg-paper'>
           <CardHeader>
             <CardTitle>Invalid Reset Link</CardTitle>
@@ -36,6 +37,7 @@ export default function ResetPassword() {
             </CardDescription>
           </CardHeader>
         </Card>
+        <Footer />
       </div>
     )
   }
@@ -67,7 +69,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className='container max-w-lg py-10'>
+    <div className='container min-h-screen max-w-lg py-10'>
       <Card className='bg-paper'>
         <CardHeader>
           <CardTitle>Reset Your Password</CardTitle>
@@ -117,6 +119,7 @@ export default function ResetPassword() {
           </form>
         </CardContent>
       </Card>
+      <Footer />
     </div>
   )
 }

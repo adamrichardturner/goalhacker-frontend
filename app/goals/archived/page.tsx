@@ -17,11 +17,11 @@ export default function ArchivedGoalsPage() {
   }
 
   return (
-    <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='container min-h-screen max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
-        <Header user={user} loading={userIsLoading} />
+        <Header user={user} />
       )}
       <div className='mb-0 px-4'>
         <Link href='/goals'>

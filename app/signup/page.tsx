@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
 import { processAuthError } from '@/utils/auth-errors'
+import { Footer } from '@/components/Footer'
 
 interface ValidationErrors {
   email?: string
@@ -144,6 +145,7 @@ export default function SignupPage() {
             </div>
           </div>
         </AuthCard>
+        <Footer />
       </div>
     )
   }
@@ -250,6 +252,7 @@ export default function SignupPage() {
           </p>
         </form>
       </AuthCard>
+      <Footer />
     </div>
   )
 }

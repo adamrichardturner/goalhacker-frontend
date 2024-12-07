@@ -269,16 +269,16 @@ export default function LandingPage() {
 
         {/* Footer */}
         <motion.footer
-          className='text-center text-sm text-muted-foreground py-8'
+          className='text-center text-xs text-muted-foreground py-8'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
         >
           <div className='flex flex-col items-center justify-center gap-1'>
-            <p className='text-xs sm:text-sm'>
+            <p className='text-xs'>
               © {year} Goal Hacker. All rights reserved.
             </p>
-            <div className='flex items-center gap-2 text-xs sm:text-sm'>
+            <div className='flex items-center gap-2 text-xs'>
               <Link href='/terms-conditions' className='hover:text-primary'>
                 Terms & Conditions
               </Link>

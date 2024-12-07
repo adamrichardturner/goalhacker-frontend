@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
 import { PublicLogo } from '@/components/PublicLogo'
 import { useSettings } from '@/hooks/useSettings'
+import { Footer } from '@/components/Footer'
 
 export default function ResetPasswordPage({
   params,
@@ -84,6 +85,7 @@ export default function ResetPasswordPage({
           </Button>
         </form>
       </div>
+      <Footer />
     </div>
   )
 }

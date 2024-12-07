@@ -68,6 +68,7 @@ export default function SupportPage() {
                   type='text'
                   required
                   placeholder='Your name'
+                  className='bg-paper'
                 />
               </div>
 
@@ -79,6 +80,7 @@ export default function SupportPage() {
                   type='email'
                   required
                   placeholder='your@email.com'
+                  className='bg-paper'
                 />
               </div>
 
@@ -90,6 +92,7 @@ export default function SupportPage() {
                   type='text'
                   required
                   placeholder='What is your inquiry about?'
+                  className='bg-paper'
                 />
               </div>
 
@@ -100,7 +103,7 @@ export default function SupportPage() {
                   name='message'
                   required
                   placeholder='Please describe your issue or question in detail'
-                  className='min-h-[150px]'
+                  className='min-h-[150px] bg-paper'
                 />
               </div>
 

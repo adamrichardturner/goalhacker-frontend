@@ -18,7 +18,7 @@ interface GoalPageProps {
 export default function GoalPage({ params }: GoalPageProps) {
   const { id } = use(params)
   const { goal, isLoading, isError } = useGoal(id)
-  const { user, isLoading: userLoading } = useAuth()
+  const { user } = useAuth()
 
   if (isError) {
     notFound()
@@ -29,8 +29,8 @@ export default function GoalPage({ params }: GoalPageProps) {
   }
 
   return (
-    <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
-      <Header user={user} loading={userLoading} />
+    <div className='container min-h-screen max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+      <Header user={user} />
       <main className='flex-1'>
         <div className='max-w-5xl mx-auto'>
           {isLoading ? (
