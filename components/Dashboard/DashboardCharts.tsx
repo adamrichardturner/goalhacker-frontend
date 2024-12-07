@@ -16,6 +16,7 @@ import {
   CartesianGrid,
 } from 'recharts'
 import Loading from '../ui/loading'
+import { Sparkles } from 'lucide-react'
 
 interface DashboardChartsProps {
   goals: Goal[]
@@ -51,48 +52,6 @@ const getCategoryDistribution = (goals: Goal[]) => {
       category,
       count,
     }))
-}
-
-const getMonthlyProgress = (goals: Goal[]) => {
-  const last6Months = Array.from({ length: 6 }, (_, i) => {
-    const date = new Date()
-    date.setMonth(date.getMonth() - i)
-    return {
-      month: date.toLocaleString('default', { month: 'short' }),
-      timestamp: date.getTime(),
-    }
-  }).reverse()
-
-  return last6Months.map(({ month, timestamp }) => {
-    const monthStart = new Date(timestamp)
-    monthStart.setDate(1)
-    monthStart.setHours(0, 0, 0, 0)
-
-    const monthEnd = new Date(timestamp)
-    monthEnd.setMonth(monthEnd.getMonth() + 1)
-    monthEnd.setDate(0)
-    monthEnd.setHours(23, 59, 59, 999)
-
-    const completed = goals.filter((goal) => {
-      const updatedDate = new Date(goal.updated_at)
-      return (
-        goal.status === 'completed' &&
-        updatedDate >= monthStart &&
-        updatedDate <= monthEnd
-      )
-    }).length
-
-    const started = goals.filter((goal) => {
-      const createdDate = new Date(goal.created_at)
-      return createdDate >= monthStart && createdDate <= monthEnd
-    }).length
-
-    return {
-      name: month,
-      'Goals Completed': completed,
-      'Goals Started': started,
-    }
-  })
 }
 
 const RADIAN = Math.PI / 180
@@ -136,6 +95,26 @@ export default function DashboardCharts({
     return <Loading className='h-[400px]' />
   }
 
+  const hasEnoughData =
+    goals.length > 0 &&
+    goals.some((goal) => goal.progress > 0 || goal.status === 'completed')
+
+  if (!hasEnoughData) {
+    return (
+      <Card className='h-[400px]'>
+        <CardContent className='h-full flex flex-col items-center justify-center text-center p-6'>
+          <Sparkles className='h-12 w-12 text-muted-foreground mb-4' />
+          <h3 className='text-lg font-medium mb-2'>Analytics Coming Soon!</h3>
+          <p className='text-sm text-muted-foreground max-w-[500px]'>
+            Start working on your goals and check back here to see insightful
+            analytics about your progress. Complete tasks, update your progress,
+            or mark goals as completed to unlock these charts.
+          </p>
+        </CardContent>
+      </Card>
+    )
+  }
+
   const goalStats = Object.entries(ALL_STATUSES).map(([status]) => ({
     status,
     name: ALL_STATUSES[status as keyof typeof ALL_STATUSES].name,
@@ -149,7 +128,6 @@ export default function DashboardCharts({
   }))
 
   const categoryData = getCategoryDistribution(goals)
-  const monthlyProgress = getMonthlyProgress(goals)
 
   return (
     <div className='grid gap-6'>
@@ -170,7 +148,6 @@ export default function DashboardCharts({
                   innerRadius={45}
                   outerRadius={110}
                   fill='#8884d8'
-                  paddingAngle={5}
                   dataKey='value'
                 >
                   {goalStats.map((entry, index) => (
@@ -213,7 +190,6 @@ export default function DashboardCharts({
                     innerRadius={45}
                     outerRadius={110}
                     fill='#8884d8'
-                    paddingAngle={5}
                     dataKey='value'
                   >
                     {priorityStats.map((entry, index) => (
@@ -240,37 +216,22 @@ export default function DashboardCharts({
 
         <Card>
           <CardHeader>
-            <CardTitle>Subgoal Status</CardTitle>
+            <CardTitle>Category Distribution</CardTitle>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='h-[300px] w-full'>
               <ResponsiveContainer width='100%' height='100%'>
-                <BarChart data={goals} layout='vertical'>
+                <BarChart data={categoryData} layout='vertical'>
                   <CartesianGrid strokeDasharray='3 3' />
                   <XAxis type='number' />
                   <YAxis
-                    dataKey='title'
+                    dataKey='category'
                     type='category'
                     width={150}
                     tick={{ fontSize: 12 }}
-                    tickFormatter={(value) =>
-                      value.length > 20 ? `${value.substring(0, 20)}...` : value
-                    }
                   />
-                  <Tooltip />
-                  <Legend />
-                  <Bar
-                    dataKey='completed_subgoals'
-                    name='Completed'
-                    stackId='a'
-                    fill='#4ade80'
-                  />
-                  <Bar
-                    dataKey='incomplete_subgoals'
-                    name='Incomplete'
-                    stackId='a'
-                    fill='#fb923c'
-                  />
+                  <Tooltip formatter={(value) => [`${value} Goals`, 'Count']} />
+                  <Bar dataKey='count' fill='hsl(217, 91%, 60%)' />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -280,43 +241,27 @@ export default function DashboardCharts({
 
       <Card>
         <CardHeader>
-          <CardTitle>Monthly Progress</CardTitle>
+          <CardTitle>Subgoal Status</CardTitle>
         </CardHeader>
         <CardContent className='pt-6'>
           <div className='h-[300px] w-full'>
             <ResponsiveContainer width='100%' height='100%'>
-              <BarChart data={monthlyProgress}>
-                <CartesianGrid strokeDasharray='3 3' />
-                <XAxis dataKey='name' />
-                <YAxis />
-                <Tooltip formatter={(value) => [`${value} Goals`, '']} />
-                <Legend />
-                <Bar dataKey='Goals Completed' fill='#4ade80' />
-                <Bar dataKey='Goals Started' fill='#fb923c' />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Category</CardTitle>
-        </CardHeader>
-        <CardContent className='pt-6'>
-          <div className='h-[300px] w-full'>
-            <ResponsiveContainer width='100%' height='100%'>
-              <BarChart data={categoryData} layout='vertical'>
+              <BarChart data={goals} layout='vertical'>
                 <CartesianGrid strokeDasharray='3 3' />
                 <XAxis type='number' />
                 <YAxis
-                  dataKey='category'
+                  dataKey='title'
                   type='category'
                   width={150}
                   tick={{ fontSize: 12 }}
                 />
-                <Tooltip formatter={(value) => [`${value} Goals`, '']} />
-                <Bar dataKey='count' fill='#8884d8' name='Goals' />
+                <Tooltip />
+                <Bar
+                  dataKey='completion_rate'
+                  fill='hsl(217, 91%, 60%)'
+                  name='Completion Rate'
+                  unit='%'
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

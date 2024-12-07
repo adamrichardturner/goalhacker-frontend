@@ -5,7 +5,11 @@ export interface GoalStats {
   byStatus: Record<string, number>
   byPriority: Record<string, number>
   byCategory: Record<string, number>
-  completionRates: Array<{ title: string; completion: number }>
+  completionRates: Array<{
+    goal_id: string
+    title: string
+    completion: number
+  }>
 }
 
 export interface Insight {

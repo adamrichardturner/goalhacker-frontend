@@ -9,7 +9,7 @@ import useAuth from '@/hooks/useAuth'
 import { useGoal } from '@/hooks/useGoal'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-export default function InsightsPage() {
+export default function DashboardPage() {
   const { user, isLoading: userIsLoading } = useAuth()
   const { goals, isLoading: goalsLoading } = useGoal()
 
