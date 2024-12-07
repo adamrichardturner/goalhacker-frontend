@@ -14,18 +14,12 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  LineChart,
-  Line,
 } from 'recharts'
+import Loading from '../ui/loading'
 
-interface CustomLabelProps {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
-  name: string
+interface DashboardChartsProps {
+  goals: Goal[]
+  isLoading: boolean
 }
 
 const ALL_STATUSES = {
@@ -35,189 +29,208 @@ const ALL_STATUSES = {
   archived: { name: 'Archived', color: 'hsl(215, 16%, 47%)' },
 }
 
-export default function DashboardCharts({
-  goals,
-  isLoading,
-}: {
-  goals: Goal[]
-  isLoading: boolean
-}) {
-  const calculateSubgoalStats = () => {
-    if (!goals) return []
+const PRIORITIES = {
+  low: { name: 'Low', color: 'hsl(142, 76%, 36%)' },
+  medium: { name: 'Medium', color: 'hsl(45, 93%, 47%)' },
+  high: { name: 'High', color: 'hsl(0, 84%, 60%)' },
+}
 
-    const stats = {
-      planned: 0,
-      in_progress: 0,
-      completed: 0,
-      archived: 0,
-    }
+const getCategoryDistribution = (goals: Goal[]) => {
+  const categoryCount = goals.reduce(
+    (acc, goal) => {
+      const category = goal.category?.name || 'Uncategorized'
+      acc[category] = (acc[category] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
 
-    goals.forEach((goal) => {
-      goal.subgoals?.forEach((subgoal) => {
-        stats[subgoal.status as keyof typeof stats]++
-      })
-    })
-
-    // Only include statuses with values > 0
-    return Object.entries(stats)
-      .filter(([, value]) => value > 0)
-      .map(([key, value]) => ({
-        name: ALL_STATUSES[key as keyof typeof ALL_STATUSES].name,
-        value,
-        status: key,
-      }))
-  }
-
-  const renderCustomizedLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-  }: CustomLabelProps) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5
-    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180))
-    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180))
-
-    return (
-      <text
-        x={x}
-        y={y}
-        fill='white'
-        textAnchor='middle'
-        dominantBaseline='central'
-        className='text-xs font-medium'
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    )
-  }
-
-  const calculateGoalProgress = () => {
-    if (!goals) return []
-
-    return goals.map((goal) => {
-      const total = goal.subgoals?.length || 0
-      const completed =
-        goal.subgoals?.filter((sg) => sg.status === 'completed').length || 0
-      const percentage = total ? (completed / total) * 100 : 0
-
-      return {
-        name: goal.title,
-        progress: Math.round(percentage),
-        completed,
-        total,
-      }
-    })
-  }
-
-  const calculateGoalsByType = () => {
-    if (!goals) return []
-
-    const typeCount = goals.reduce(
-      (acc, goal) => {
-        const type = goal.category?.name || 'Other'
-        acc[type] = (acc[type] || 0) + 1
-        return acc
-      },
-      {} as Record<string, number>
-    )
-
-    return Object.entries(typeCount).map(([type, count]) => ({
-      type,
+  return Object.entries(categoryCount)
+    .sort((a, b) => b[1] - a[1])
+    .map(([category, count]) => ({
+      category,
       count,
     }))
+}
+
+const getMonthlyProgress = (goals: Goal[]) => {
+  const last6Months = Array.from({ length: 6 }, (_, i) => {
+    const date = new Date()
+    date.setMonth(date.getMonth() - i)
+    return {
+      month: date.toLocaleString('default', { month: 'short' }),
+      timestamp: date.getTime(),
+    }
+  }).reverse()
+
+  return last6Months.map(({ month, timestamp }) => {
+    const monthStart = new Date(timestamp)
+    monthStart.setDate(1)
+    monthStart.setHours(0, 0, 0, 0)
+
+    const monthEnd = new Date(timestamp)
+    monthEnd.setMonth(monthEnd.getMonth() + 1)
+    monthEnd.setDate(0)
+    monthEnd.setHours(23, 59, 59, 999)
+
+    const completed = goals.filter((goal) => {
+      const updatedDate = new Date(goal.updated_at)
+      return (
+        goal.status === 'completed' &&
+        updatedDate >= monthStart &&
+        updatedDate <= monthEnd
+      )
+    }).length
+
+    const started = goals.filter((goal) => {
+      const createdDate = new Date(goal.created_at)
+      return createdDate >= monthStart && createdDate <= monthEnd
+    }).length
+
+    return {
+      name: month,
+      'Goals Completed': completed,
+      'Goals Started': started,
+    }
+  })
+}
+
+const RADIAN = Math.PI / 180
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+}: {
+  cx: number
+  cy: number
+  midAngle: number
+  innerRadius: number
+  outerRadius: number
+  percent: number
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+  const x = cx + radius * Math.cos(-midAngle * RADIAN)
+  const y = cy + radius * Math.sin(-midAngle * RADIAN)
+
+  return percent === 0 ? null : (
+    <text
+      x={x}
+      y={y}
+      fill='white'
+      textAnchor='middle'
+      dominantBaseline='central'
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  )
+}
+
+export default function DashboardCharts({
+  goals,
+  isLoading = false,
+}: DashboardChartsProps) {
+  if (isLoading || !goals) {
+    return <Loading className='h-[400px]' />
   }
 
-  if (isLoading) {
-    return (
-      <div className='flex items-center justify-center min-h-[400px]'>
-        <div className='text-lg'>Loading...</div>
-      </div>
-    )
-  }
+  const goalStats = Object.entries(ALL_STATUSES).map(([status]) => ({
+    status,
+    name: ALL_STATUSES[status as keyof typeof ALL_STATUSES].name,
+    value: goals.filter((goal) => goal.status === status).length,
+  }))
 
-  const data = calculateSubgoalStats()
-  const progressData = calculateGoalProgress()
-  const typeData = calculateGoalsByType()
+  const priorityStats = Object.entries(PRIORITIES).map(([priority]) => ({
+    priority,
+    name: PRIORITIES[priority as keyof typeof PRIORITIES].name,
+    value: goals.filter((goal) => goal.priority === priority).length,
+  }))
+
+  const categoryData = getCategoryDistribution(goals)
+  const monthlyProgress = getMonthlyProgress(goals)
 
   return (
     <div className='grid gap-6'>
-      <div className='grid gap-6 md:grid-cols-2'>
+      <Card>
+        <CardHeader>
+          <CardTitle>Goal Status</CardTitle>
+        </CardHeader>
+        <CardContent className='pt-6'>
+          <div className='h-[300px] w-full'>
+            <ResponsiveContainer width='100%' height='100%'>
+              <PieChart>
+                <Pie
+                  data={goalStats}
+                  cx='50%'
+                  cy='50%'
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  innerRadius={45}
+                  outerRadius={110}
+                  fill='#8884d8'
+                  paddingAngle={5}
+                  dataKey='value'
+                >
+                  {goalStats.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        ALL_STATUSES[entry.status as keyof typeof ALL_STATUSES]
+                          .color
+                      }
+                    />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => [`${value} Goals`, '']} />
+                <Legend
+                  formatter={(value) =>
+                    `${value} (${goalStats.find((s) => s.name === value)?.value || 0})`
+                  }
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         <Card>
           <CardHeader>
-            <CardTitle>Subgoal Status Distribution</CardTitle>
+            <CardTitle>Priority</CardTitle>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='h-[300px] w-full'>
               <ResponsiveContainer width='100%' height='100%'>
-                <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <PieChart>
                   <Pie
-                    data={data}
+                    data={priorityStats}
                     cx='50%'
                     cy='50%'
                     labelLine={false}
                     label={renderCustomizedLabel}
-                    outerRadius='80%'
-                    innerRadius='40%'
+                    innerRadius={45}
+                    outerRadius={110}
                     fill='#8884d8'
+                    paddingAngle={5}
                     dataKey='value'
                   >
-                    {data.map((entry) => (
+                    {priorityStats.map((entry, index) => (
                       <Cell
-                        key={`cell-${entry.status}`}
+                        key={`cell-${index}`}
                         fill={
-                          ALL_STATUSES[
-                            entry.status as keyof typeof ALL_STATUSES
-                          ].color
+                          PRIORITIES[entry.priority as keyof typeof PRIORITIES]
+                            .color
                         }
-                        className='stroke-background hover:opacity-80'
                       />
                     ))}
                   </Pie>
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <div className='rounded-lg border bg-background p-2 shadow-sm'>
-                            <div className='flex flex-col gap-1'>
-                              <span className='text-[0.70rem] uppercase text-muted-foreground'>
-                                {payload[0].name}
-                              </span>
-                              <span className='font-bold text-muted-foreground'>
-                                {payload[0].value} Subgoals
-                              </span>
-                            </div>
-                          </div>
-                        )
-                      }
-                      return null
-                    }}
-                  />
+                  <Tooltip formatter={(value) => [`${value} Goals`, '']} />
                   <Legend
-                    verticalAlign='bottom'
-                    content={() => (
-                      <div className='mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4'>
-                        {Object.entries(ALL_STATUSES).map(
-                          ([key, { name, color }]) => (
-                            <div
-                              key={`legend-${key}`}
-                              className='flex items-center gap-2'
-                            >
-                              <div
-                                className='h-3 w-3 rounded-full'
-                                style={{ backgroundColor: color }}
-                              />
-                              <span className='text-sm text-muted-foreground whitespace-nowrap'>
-                                {name}{' '}
-                                {data.find((d) => d.status === key)?.value || 0}
-                              </span>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    )}
+                    formatter={(value) =>
+                      `${value} (${priorityStats.find((s) => s.name === value)?.value || 0})`
+                    }
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -227,47 +240,36 @@ export default function DashboardCharts({
 
         <Card>
           <CardHeader>
-            <CardTitle>Goals by Type</CardTitle>
+            <CardTitle>Subgoal Status</CardTitle>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='h-[300px] w-full'>
               <ResponsiveContainer width='100%' height='100%'>
-                <BarChart
-                  data={typeData}
-                  margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray='3 3'
-                    className='stroke-muted'
+                <BarChart data={goals} layout='vertical'>
+                  <CartesianGrid strokeDasharray='3 3' />
+                  <XAxis type='number' />
+                  <YAxis
+                    dataKey='title'
+                    type='category'
+                    width={150}
+                    tick={{ fontSize: 12 }}
+                    tickFormatter={(value) =>
+                      value.length > 20 ? `${value.substring(0, 20)}...` : value
+                    }
                   />
-                  <XAxis
-                    dataKey='type'
-                    className='text-sm text-muted-foreground'
-                  />
-                  <YAxis className='text-sm text-muted-foreground' />
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <div className='rounded-lg border bg-background p-2 shadow-sm'>
-                            <div className='flex flex-col gap-1'>
-                              <span className='text-[0.70rem] uppercase text-muted-foreground'>
-                                {payload[0].payload.type}
-                              </span>
-                              <span className='font-bold text-muted-foreground'>
-                                {payload[0].value} Goals
-                              </span>
-                            </div>
-                          </div>
-                        )
-                      }
-                      return null
-                    }}
+                  <Tooltip />
+                  <Legend />
+                  <Bar
+                    dataKey='completed_subgoals'
+                    name='Completed'
+                    stackId='a'
+                    fill='#4ade80'
                   />
                   <Bar
-                    dataKey='count'
-                    fill='hsl(217, 91%, 60%)'
-                    radius={[4, 4, 0, 0]}
+                    dataKey='incomplete_subgoals'
+                    name='Incomplete'
+                    stackId='a'
+                    fill='#fb923c'
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -278,59 +280,44 @@ export default function DashboardCharts({
 
       <Card>
         <CardHeader>
-          <CardTitle>Goal Progress Overview</CardTitle>
+          <CardTitle>Monthly Progress</CardTitle>
         </CardHeader>
         <CardContent className='pt-6'>
           <div className='h-[300px] w-full'>
             <ResponsiveContainer width='100%' height='100%'>
-              <LineChart
-                data={progressData}
-                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-              >
-                <CartesianGrid strokeDasharray='3 3' className='stroke-muted' />
-                <XAxis
-                  dataKey='name'
-                  className='text-sm text-muted-foreground'
-                  angle={-45}
-                  textAnchor='end'
-                  height={60}
-                />
+              <BarChart data={monthlyProgress}>
+                <CartesianGrid strokeDasharray='3 3' />
+                <XAxis dataKey='name' />
+                <YAxis />
+                <Tooltip formatter={(value) => [`${value} Goals`, '']} />
+                <Legend />
+                <Bar dataKey='Goals Completed' fill='#4ade80' />
+                <Bar dataKey='Goals Started' fill='#fb923c' />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Category</CardTitle>
+        </CardHeader>
+        <CardContent className='pt-6'>
+          <div className='h-[300px] w-full'>
+            <ResponsiveContainer width='100%' height='100%'>
+              <BarChart data={categoryData} layout='vertical'>
+                <CartesianGrid strokeDasharray='3 3' />
+                <XAxis type='number' />
                 <YAxis
-                  className='text-sm text-muted-foreground'
-                  domain={[0, 100]}
-                  tickFormatter={(value) => `${value}%`}
+                  dataKey='category'
+                  type='category'
+                  width={150}
+                  tick={{ fontSize: 12 }}
                 />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload
-                      return (
-                        <div className='rounded-lg border bg-background p-2 shadow-sm'>
-                          <div className='flex flex-col gap-1'>
-                            <span className='text-[0.70rem] uppercase text-muted-foreground'>
-                              {data.name}
-                            </span>
-                            <span className='font-bold text-muted-foreground'>
-                              {data.progress}% Complete
-                            </span>
-                            <span className='text-sm text-muted-foreground'>
-                              {data.completed} of {data.total} subgoals
-                            </span>
-                          </div>
-                        </div>
-                      )
-                    }
-                    return null
-                  }}
-                />
-                <Line
-                  type='monotone'
-                  dataKey='progress'
-                  stroke='hsl(142, 76%, 36%)'
-                  strokeWidth={2}
-                  dot={{ fill: 'hsl(142, 76%, 36%)' }}
-                />
-              </LineChart>
+                <Tooltip formatter={(value) => [`${value} Goals`, '']} />
+                <Bar dataKey='count' fill='#8884d8' name='Goals' />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </CardContent>

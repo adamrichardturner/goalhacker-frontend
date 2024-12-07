@@ -46,7 +46,7 @@ const Header = ({ user, loading }: HeaderProps) => {
 
   const links = [
     { name: 'Goals', href: '/goals' },
-    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Insights', href: '/insights' },
   ]
 
   const mobileLinks = [...links, { name: 'Settings', href: '/settings' }]
