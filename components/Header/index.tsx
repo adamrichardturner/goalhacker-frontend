@@ -27,13 +27,13 @@ import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
 import BetaButton from './BetaButton'
 import { Logo } from '../Logo'
+import { Search } from '../Search'
 
 interface HeaderProps {
   user: User
-  loading: boolean
 }
 
-const Header = ({ user, loading }: HeaderProps) => {
+const Header = ({ user }: HeaderProps) => {
   const { logout } = useAuth()
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -98,115 +98,89 @@ const Header = ({ user, loading }: HeaderProps) => {
                 {pathname === link.href && (
                   <motion.div
                     className='absolute h-[1.5px] w-full bg-electricPurple'
-                    initial={{ width: 0 }}
-                    animate={{ width: '100%' }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    layoutId='activeSection'
                   />
                 )}
               </motion.div>
             ))}
           </nav>
+
+          <Search />
+
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar className='cursor-pointer'>
-                <AvatarImage src={avatarSrc} alt={user.username} />
+            <DropdownMenuTrigger className='focus:outline-none'>
+              <Avatar className='h-8 w-8'>
+                <AvatarImage src={avatarSrc} alt={user.first_name || ''} />
                 <AvatarFallback>
-                  {user.username?.[0]?.toUpperCase()}
+                  {user.first_name?.[0]?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-48 cursor-pointer'>
-              <DropdownMenuItem asChild className='cursor-pointer'>
+            <DropdownMenuContent align='end'>
+              <DropdownMenuItem asChild>
                 <Link href='/settings'>Settings</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild className='cursor-pointer'>
-                <Link href='/terms-conditions'>Terms & Conditions</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className='cursor-pointer'>
-                <Link href='/support'>Support</Link>
-              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className='cursor-pointer'
-              >
+              <DropdownMenuItem onClick={handleLogout}>
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
-      <div className='sm:hidden flex justify-between items-center w-full'>
-        <div className='flex items-center gap-4'>
-          <Link href='/goals'>
-            <Logo size='sm' />
-          </Link>
-          <BetaButton />
-        </div>
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger>
-            <motion.div
-              initial={false}
-              animate={{ rotate: isOpen ? 90 : 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-            >
-              <img
-                src={isOpen ? burgerCloseSrc : burgerSrc}
-                width={20}
-                height={20}
-                alt='Burger Menu'
-                className='transition-opacity duration-200'
-                style={{
-                  opacity: isOpen ? 0.8 : 1,
-                }}
-              />
-            </motion.div>
-          </SheetTrigger>
-          <SheetContent className='top-[70px] sm:hidden flex flex-col justify-between h-[calc(100vh-70px)] bg-background'>
-            <SheetHeader>
-              <div className='flex items-center gap-4'>
-                <Avatar>
-                  <AvatarImage src={avatarSrc} alt={user.username} />
-                  <AvatarFallback>
-                    {user.username?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <SheetTitle className='text-sm text-left font-semibold'>
-                  Welcome, <br /> {user?.first_name} {user?.last_name}! 👋
-                </SheetTitle>
-              </div>
 
-              <div className='flex pt-8 flex-col items-start gap-8 mt-4'>
+      <div className='flex sm:hidden w-full items-center justify-between'>
+        <Link href='/goals'>
+          <Logo size='sm' />
+        </Link>
+
+        <div className='flex items-center gap-4'>
+          <Search />
+
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className='focus:outline-none'
+              >
+                <img
+                  src={isOpen ? burgerCloseSrc : burgerSrc}
+                  alt='Menu'
+                  className='w-6 h-6'
+                />
+              </button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <nav className='flex flex-col gap-4 mt-8'>
                 {mobileLinks.map((link) => (
                   <Link
-                    key={link.name}
+                    key={link.href}
                     href={link.href}
-                    onClick={() => {
-                      setIsOpen(false)
-                    }}
                     className={`text-lg font-medium transition-colors hover:text-primary ${
                       pathname === link.href
-                        ? 'text-primary border-b-2 border-electricPurple'
+                        ? 'text-primary'
                         : 'text-muted-foreground'
                     }`}
+                    onClick={() => setIsOpen(false)}
                   >
                     {link.name}
                   </Link>
                 ))}
-              </div>
-            </SheetHeader>
-            <SheetFooter className='flex flex-col gap-4'>
-              <span
-                className='text-md text-primary cursor-pointer'
-                onClick={handleLogout}
-              >
-                {loading ? 'Signing out...' : 'Sign out'}
-              </span>
-              <Link href='/support'>Support</Link>
-              <Link href='/terms-conditions'>Terms & Conditions</Link>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
+              </nav>
+              <SheetFooter className='absolute bottom-8 w-full pr-6'>
+                <button
+                  onClick={handleLogout}
+                  className='w-full text-left text-lg font-medium text-muted-foreground hover:text-primary transition-colors'
+                >
+                  Log out
+                </button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   )
