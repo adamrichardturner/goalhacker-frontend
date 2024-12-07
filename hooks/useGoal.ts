@@ -261,25 +261,18 @@ export function useGoal(id?: string) {
   })
 
   const { mutate: updateGoal } = useMutation({
-    mutationFn: async (data: Partial<Goal>) => {
-      const response = await fetch(`${API_URL}/api/goals/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to update goal')
-      }
-
-      return response.json()
+    mutationFn: async (goalData: Partial<Goal>) => {
+      if (!id) throw new Error('Goal ID is required')
+      return goalsService.updateGoal(id, goalData)
     },
     onSuccess: () => {
+      // Invalidate both the individual goal and the goals list
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
       queryClient.invalidateQueries({ queryKey: ['goals'] })
+    },
+    onError: (error) => {
+      toast.error('Failed to update goal')
+      console.error('Error updating goal:', error)
     },
   })
 
