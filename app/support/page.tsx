@@ -11,12 +11,9 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Footer } from '@/components/Footer'
 import { useEffect } from 'react'
+import { Alert } from '@/components/ui/alert'
 
-const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID
-
-if (!FORMSPREE_ID) {
-  throw new Error('NEXT_PUBLIC_FORMSPREE_ID is not defined')
-}
+const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID || ''
 
 export default function SupportPage() {
   const router = useRouter()
@@ -31,6 +28,45 @@ export default function SupportPage() {
       toast.error('Failed to send message. Please try again.')
     }
   }, [state.succeeded, state.errors, router])
+
+  if (!FORMSPREE_ID) {
+    return (
+      <div className='min-h-screen flex flex-col'>
+        <div className='max-w-2xl mx-auto px-4 py-8 flex-1 w-full'>
+          <Button
+            variant='ghost'
+            className='mb-8'
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className='w-4 h-4 mr-2' />
+            Back
+          </Button>
+
+          <h1 className='text-3xl font-bold mb-8'>Support</h1>
+
+          <div className='space-y-8'>
+            <section>
+              <h2 className='text-2xl font-semibold mb-4'>Contact Us</h2>
+              <p className='mb-4 text-muted-foreground'>
+                Need help with Goal Hacker? You can reach us directly at{' '}
+                <Link
+                  href='mailto:support@goalhacker.app'
+                  className='text-electricPurple hover:underline'
+                >
+                  support@goalhacker.app
+                </Link>
+              </p>
+              <Alert variant='destructive'>
+                The contact form is temporarily unavailable. Please email us
+                directly.
+              </Alert>
+            </section>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    )
+  }
 
   return (
     <div className='min-h-screen flex flex-col'>
