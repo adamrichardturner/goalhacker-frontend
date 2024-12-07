@@ -36,12 +36,11 @@ export function BackToTop() {
     >
       <Button
         size='icon'
-        variant='outline'
         onClick={scrollToTop}
-        className='h-10 w-10 rounded-full shadow-md hover:shadow-lg transition-shadow'
+        className='h-10 w-10 rounded-full bg-electricPurple hover:bg-electricPurple/90 transition-all'
         aria-label='Back to top'
       >
-        <ArrowUp className='h-4 w-4' />
+        <ArrowUp className='h-4 w-4 text-white' />
       </Button>
     </motion.div>
   )

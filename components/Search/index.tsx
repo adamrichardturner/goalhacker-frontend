@@ -1,7 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Search as SearchIcon, Loader2 } from 'lucide-react'
+import {
+  Search as SearchIcon,
+  Loader2,
+  SearchX,
+  Search as SearchLucide,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -53,7 +58,7 @@ export function Search() {
           />
         </div>
         <ErrorBoundary fallback={<div>Error</div>}>
-          <ScrollArea className='min-h-[100px] -mx-4 px-4'>
+          <ScrollArea className='min-h-[200px] -mx-4 px-4'>
             <AnimatePresence mode='wait'>
               {isLoading ? (
                 <motion.div
@@ -95,17 +100,30 @@ export function Search() {
                     </motion.button>
                   ))}
                 </motion.div>
+              ) : query.trim() ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className='flex flex-col items-center justify-center gap-2 py-8 text-muted-foreground'
+                >
+                  <SearchX className='h-8 w-8' />
+                  <p className='text-sm'>No goals found</p>
+                  <p className='text-xs'>
+                    Try searching with different keywords
+                  </p>
+                </motion.div>
               ) : (
-                query.trim() && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className='text-sm text-muted-foreground py-3'
-                  >
-                    No goals found
-                  </motion.div>
-                )
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className='flex flex-col items-center justify-center gap-2 py-8 text-muted-foreground'
+                >
+                  <SearchLucide className='h-8 w-8' />
+                  <p className='text-sm'>Search your goals</p>
+                  <p className='text-xs'>Type to start searching...</p>
+                </motion.div>
               )}
             </AnimatePresence>
           </ScrollArea>
