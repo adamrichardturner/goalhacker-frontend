@@ -6,50 +6,34 @@ import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 import { useSearchParams } from 'next/navigation'
+import { usePasswordReset } from '@/hooks/auth/usePasswordReset'
 
 export default function ResetPasswordForm() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const { resetPassword } = useAuth()
+  const [isRouting, setIsRouting] = useState(false)
+  const { resetPasswordConfirm, isLoading, error } = usePasswordReset()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const email = searchParams.get('email')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setError(null)
 
     if (!token || !email) {
-      setError('Invalid reset link. Please request a new one.')
-      return
+      return // Or handle invalid token/email case
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
-
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long')
-      return
-    }
-
-    setIsLoading(true)
-
+    setIsRouting(true)
     try {
-      await resetPassword(token, email, password)
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message)
-      } else {
-        setError('An unexpected error occurred. Please try again.')
-      }
+      await resetPasswordConfirm({ token, email, password })
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      window.location.href = '/login'
+    } catch {
+      // Error handled by hook
     } finally {
-      setIsLoading(false)
+      setIsRouting(false)
     }
   }
 
@@ -69,10 +53,9 @@ export default function ResetPasswordForm() {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value)
-              setError(null)
             }}
             required
-            disabled={isLoading}
+            disabled={isLoading || isRouting}
             className={error ? 'border-destructive' : ''}
           />
         </div>
@@ -83,10 +66,9 @@ export default function ResetPasswordForm() {
             value={confirmPassword}
             onChange={(e) => {
               setConfirmPassword(e.target.value)
-              setError(null)
             }}
             required
-            disabled={isLoading}
+            disabled={isLoading || isRouting}
             className={error ? 'border-destructive' : ''}
           />
         </div>
@@ -98,9 +80,9 @@ export default function ResetPasswordForm() {
         <Button
           type='submit'
           className='w-full'
-          disabled={isLoading || !isValidForm}
+          disabled={isLoading || isRouting || !isValidForm}
         >
-          {isLoading ? 'Resetting password...' : 'Reset password'}
+          {isLoading || isRouting ? 'Resetting password...' : 'Reset password'}
         </Button>
         <div className='text-sm text-center'>
           <Link href='/login' className='text-blue-600 hover:underline'>

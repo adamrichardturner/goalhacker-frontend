@@ -5,10 +5,10 @@ import { goalsService } from '@/services/goalsService'
 import { Goal, Subgoal, SubgoalStatus } from '@/types/goal'
 import { API_URL } from '@/config'
 import { toast } from 'sonner'
-import useAuth from './useAuth'
+import { useUser } from './auth/useUser'
 
 export function useGoal(id?: string) {
-  const { user } = useAuth()
+  const { user } = useUser()
   const queryClient = useQueryClient()
 
   const {

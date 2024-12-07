@@ -95,7 +95,7 @@ export default function GoalInsights() {
 
   if (isLoading) {
     return (
-      <Card className='bg-gradient-to-br from-background to-muted/20'>
+      <Card className='bg-paper'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Sparkles className='h-5 w-5 text-primary' />
@@ -130,7 +130,7 @@ export default function GoalInsights() {
 
   if (!hasEnoughData) {
     return (
-      <Card className='bg-gradient-to-br from-background to-muted/20'>
+      <Card className='bg-paper'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Sparkles className='h-5 w-5 text-primary' />

@@ -7,17 +7,17 @@ import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
 import { processAuthError } from '@/utils/auth-errors'
 import { Footer } from '@/components/Footer'
+import { usePasswordReset } from '@/hooks/auth/usePasswordReset'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const { forgotPassword } = useAuth()
+  const { forgotPasswordRequest } = usePasswordReset()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
     setIsLoading(true)
 
     try {
-      await forgotPassword(email)
+      await forgotPasswordRequest(email)
       setSubmitted(true)
     } catch (err) {
       setError(processAuthError(err))

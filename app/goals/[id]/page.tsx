@@ -6,10 +6,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { use } from 'react'
 import GoalDetails from '@/components/GoalDetails'
 import Header from '@/components/Header'
-import useAuth from '@/hooks/useAuth'
 import { Footer } from '@/components/Footer'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useUser } from '@/hooks/auth/useUser'
 
 interface GoalPageProps {
   params: Promise<{
@@ -20,7 +20,7 @@ interface GoalPageProps {
 export default function GoalPage({ params }: GoalPageProps) {
   const { id } = use(params)
   const { goal, isLoading, isError } = useGoal(id)
-  const { user } = useAuth()
+  const { user } = useUser()
 
   if (isError) {
     notFound()

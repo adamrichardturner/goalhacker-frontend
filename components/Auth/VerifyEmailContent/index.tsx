@@ -7,57 +7,56 @@ import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
-import useAuth from '@/hooks/useAuth'
-import { useMutation } from '@tanstack/react-query'
+import { useEmailVerification } from '@/hooks/auth/useEmailVerification'
 import { processAuthError } from '@/utils/auth-errors'
 
 type VerificationStatus = 'loading' | 'success' | 'error'
 
 export default function VerifyEmailContent() {
-  const { verifyEmail, resendVerificationEmail } = useAuth()
-  const searchParams = useSearchParams()
   const [isResending, setIsResending] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [hasVerified, setHasVerified] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<VerificationStatus>('loading')
+  const { verifyEmail, resendVerification } = useEmailVerification()
+  const searchParams = useSearchParams()
 
   const email = searchParams.get('email')
   const token = searchParams.get('token')
 
   useEffect(() => {
     const verifyEmailToken = async () => {
-      if (!token || !email) {
-        setError('Invalid verification link')
-        setStatus('error')
+      if (!token || !email || hasVerified) {
         return
       }
+
+      setIsVerifying(true)
+      setHasVerified(true)
 
       try {
         await verifyEmail(token, email)
         setStatus('success')
+        // Delay redirect to show success message
+        await new Promise((resolve) => setTimeout(resolve, 1100))
+        window.location.href = '/login'
       } catch (err) {
         setError(processAuthError(err))
         setStatus('error')
+      } finally {
+        setIsVerifying(false)
       }
     }
 
     verifyEmailToken()
-  }, [token, email, verifyEmail])
-
-  const resendMutation = useMutation({
-    mutationFn: async () => {
-      if (!email) throw new Error('No email provided')
-      return resendVerificationEmail(email)
-    },
-    onSettled: () => setIsResending(false),
-  })
+  }, [token, email, verifyEmail, hasVerified])
 
   const handleResendVerification = async () => {
-    if (!email) return
-
+    if (!email || isResending || hasVerified) return
+    setIsResending(true)
     try {
-      await resendVerificationEmail(email)
-    } catch (err) {
-      setError(processAuthError(err))
+      await resendVerification(email)
+    } finally {
+      setIsResending(false)
     }
   }
 
@@ -99,11 +98,9 @@ export default function VerifyEmailContent() {
                   variant='outline'
                   className='w-full'
                   onClick={handleResendVerification}
-                  disabled={isResending || resendMutation.isPending}
+                  disabled={isResending || isVerifying || hasVerified}
                 >
-                  {isResending || resendMutation.isPending
-                    ? 'Sending...'
-                    : 'Resend verification email'}
+                  {isResending ? 'Sending...' : 'Resend verification email'}
                 </Button>
               )}
             </>

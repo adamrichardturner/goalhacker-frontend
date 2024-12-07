@@ -15,6 +15,8 @@ import { Label } from '@/components/ui/label'
 import { settingsService } from '@/services/settingsService'
 import { toast } from 'sonner'
 import { Footer } from '@/components/Footer'
+import Logo from '@/components/Logo'
+import Link from 'next/link'
 
 export default function ResetPassword() {
   const searchParams = useSearchParams()
@@ -69,8 +71,13 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className='container min-h-screen max-w-lg py-10'>
-      <Card className='bg-paper'>
+    <div className='container min-h-screen max-w-3xl flex flex-col items-center justify-center'>
+      <div className='flex flex-col items-center justify-center w-full mb-4'>
+        <Link href='/'>
+          <Logo />
+        </Link>
+      </div>
+      <Card className='bg-paper w-full max-w-lg'>
         <CardHeader>
           <CardTitle>Reset Your Password</CardTitle>
           <CardDescription>

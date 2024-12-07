@@ -4,9 +4,9 @@
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useAuth } from '@/hooks/useAuth'
 import { Logo } from '@/components/Logo'
 import { ModeToggle } from '@/components/ThemeSwitcher'
+import { useUser } from '@/hooks/auth/useUser'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -47,7 +47,7 @@ const slideIn = {
 }
 
 export default function LandingPage() {
-  const { user, isLoading } = useAuth()
+  const { user, isLoading } = useUser()
   const year = new Date().getFullYear()
 
   return (

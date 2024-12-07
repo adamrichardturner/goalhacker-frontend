@@ -3,13 +3,13 @@
 import Header from '@/components/Header'
 import GoalsView from '@/components/GoalsView'
 import Loading from '@/components/ui/loading'
-import useAuth from '@/hooks/useAuth'
 import { useGoal } from '@/hooks/useGoal'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { useUser } from '@/hooks/auth/useUser'
 
 export default function ArchivedGoalsPage() {
-  const { user, isLoading: userIsLoading } = useAuth()
+  const { user, isLoading: userIsLoading } = useUser()
   const { goals, isLoading: goalsLoading } = useGoal()
 
   if (!user) {

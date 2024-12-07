@@ -6,7 +6,7 @@ import {
 } from '@/services/insightsService'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import useAuth from './useAuth'
+import { useUser } from './auth/useUser'
 
 interface ApiError {
   message: string
@@ -17,7 +17,7 @@ interface ApiError {
 export function useInsights(forceGenerate = false) {
   const queryClient = useQueryClient()
   const router = useRouter()
-  const { user, hasSessionCookie, isLoading: isAuthLoading } = useAuth()
+  const { user, hasSessionCookie, isLoading: isAuthLoading } = useUser()
 
   const {
     data: currentData,

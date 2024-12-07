@@ -1,0 +1,21 @@
+# Docker aliases
+alias d='docker'
+alias dc='docker compose'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias dimg='docker images'
+alias drm='docker rm'
+alias drmi='docker rmi'
+alias dex='docker exec -it'
+alias dlogs='docker logs'
+alias dstart='docker start'
+alias dstop='docker stop'
+
+# Docker Compose aliases
+alias dcup='docker compose up'
+alias dcdown='docker compose down'
+alias dcstart='docker compose start'
+alias dcstop='docker compose stop'
+alias dcrestart='docker compose restart'
+alias dcps='docker compose ps'
+alias dclogs='docker compose logs' 

@@ -1,13 +1,13 @@
 'use client'
 
 import Settings from '@/components/Settings'
-import useAuth from '@/hooks/useAuth'
 import Loading from '@/components/ui/loading'
 import Header from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import { useUser } from '@/hooks/auth/useUser'
 
 export default function SettingsPage() {
-  const { user, isLoading: userIsLoading } = useAuth()
+  const { user, isLoading: userIsLoading } = useUser()
 
   if (!user) {
     return null

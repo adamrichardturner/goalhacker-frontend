@@ -22,7 +22,6 @@ import {
   SheetTrigger,
 } from '../ui/sheet'
 import { User } from '@/types/auth'
-import { useAuth } from '@/hooks/useAuth'
 import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
 import BetaButton from './BetaButton'
@@ -36,13 +35,14 @@ import {
   Target,
   LayoutDashboard,
 } from 'lucide-react'
+import { useLogout } from '@/hooks/auth/useLogout'
 
 interface HeaderProps {
   user: User
 }
 
 const Header = ({ user }: HeaderProps) => {
-  const { logout } = useAuth()
+  const { logout } = useLogout()
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -229,18 +229,22 @@ const Header = ({ user }: HeaderProps) => {
             </SheetTrigger>
             <SheetContent className='top-[70px] sm:hidden flex flex-col justify-between h-[calc(100vh-70px)] bg-background'>
               <SheetHeader>
-                <div className='flex items-center gap-4'>
-                  <Avatar className='h-[42px] w-[42px]'>
-                    <AvatarImage src={avatarSrc} alt={user.first_name || ''} />
-                    <AvatarFallback>
-                      {user.first_name?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <SheetTitle className='text-sm text-left font-semibold'>
-                    Welcome, <br /> {user.first_name}! 👋
-                  </SheetTitle>
-                </div>
-
+                <Link href='/settings'>
+                  <div className='flex items-center gap-4'>
+                    <Avatar className='h-[42px] w-[42px]'>
+                      <AvatarImage
+                        src={avatarSrc}
+                        alt={user.first_name || ''}
+                      />
+                      <AvatarFallback>
+                        {user.first_name?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <SheetTitle className='text-sm text-left font-semibold'>
+                      Welcome, <br /> {user.first_name}! 👋
+                    </SheetTitle>
+                  </div>
+                </Link>
                 <div className='flex pt-8 flex-col items-start gap-8 mt-4'>
                   {mobileLinks.map((link) => {
                     const isActive =

@@ -3,12 +3,12 @@
 import { Footer } from '@/components/Footer'
 import Header from '@/components/Header'
 import Loading from '@/components/ui/loading'
-import useAuth from '@/hooks/useAuth'
 import { useGoal } from '@/hooks/useGoal'
 import { TabNavigation } from '@/components/Dashboard/TabNavigation'
+import { useUser } from '@/hooks/auth/useUser'
 
 export default function DashboardPage() {
-  const { user, isLoading: userIsLoading } = useAuth()
+  const { user, isLoading: userIsLoading } = useUser()
   const { goals, isLoading: goalsLoading } = useGoal()
 
   if (!user) {

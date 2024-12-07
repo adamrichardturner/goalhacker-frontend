@@ -4,11 +4,11 @@ import { Footer } from '@/components/Footer'
 import GoalsView from '@/components/GoalsView'
 import Header from '@/components/Header'
 import Loading from '@/components/ui/loading'
-import useAuth from '@/hooks/useAuth'
+import { useUser } from '@/hooks/auth/useUser'
 import { useGoal } from '@/hooks/useGoal'
 
 export default function GoalsPage() {
-  const { user, isLoading: userIsLoading } = useAuth()
+  const { user, isLoading: userIsLoading } = useUser()
   const { goals, isLoading: goalsLoading } = useGoal()
 
   if (!user) {

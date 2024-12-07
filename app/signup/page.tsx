@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button'
 import { AuthCard } from '@/components/form-components'
 import { Alert } from '@/components/ui/alert'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 import { PublicLogo } from '@/components/PublicLogo'
 import { processAuthError } from '@/utils/auth-errors'
 import { Footer } from '@/components/Footer'
+import { useSignup } from '@/hooks/auth/useSignup'
 
 interface ValidationErrors {
   email?: string
@@ -37,7 +37,7 @@ export default function SignupPage() {
   })
   const [showCheckEmail, setShowCheckEmail] = useState(false)
   const [errors, setErrors] = useState<ValidationErrors>({})
-  const { signup, isLoading } = useAuth()
+  const { signup, isLoading } = useSignup()
 
   const validateForm = () => {
     const newErrors: ValidationErrors = {}
@@ -70,21 +70,17 @@ export default function SignupPage() {
     e.preventDefault()
     setErrors({})
 
-    if (!validateForm()) {
-      return
-    }
+    if (!validateForm()) return
 
     try {
-      const success = await signup({
+      await signup({
         first_name: formData.firstName,
         last_name: formData.lastName,
         username: formData.username,
         email: formData.email,
         password: formData.password,
       })
-      if (success) {
-        setShowCheckEmail(true)
-      }
+      setShowCheckEmail(true)
     } catch (err) {
       setErrors({ general: processAuthError(err) })
     }

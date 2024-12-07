@@ -36,8 +36,8 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { API_URL } from '@/config'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
-import useAuth from '@/hooks/useAuth'
 import { settingsService } from '@/services/settingsService'
+import { useUser } from '@/hooks/auth/useUser'
 
 const DATE_FORMATS: { value: DateFormat; label: string }[] = [
   { value: 'MMM d, yyyy', label: 'Jan 15, 2024' },
@@ -48,7 +48,7 @@ const DATE_FORMATS: { value: DateFormat; label: string }[] = [
 
 export default function Settings() {
   const { theme, setTheme } = useTheme()
-  const { user } = useAuth()
+  const { user } = useUser()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const {
     settings,

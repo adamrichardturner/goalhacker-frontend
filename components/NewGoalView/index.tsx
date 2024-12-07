@@ -6,10 +6,10 @@ import { NewGoalStages } from './NewGoalStages'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { goalsService } from '@/services/goalsService'
-import useAuth from '@/hooks/useAuth'
 import { Loading } from '../ui/loading'
 import SmartDialog from '../SmartDialog'
 import GoalCreationTimeline from './GoalCreationTimeline'
+import { useUser } from '@/hooks/auth/useUser'
 
 export const stages = [
   'BasicInfo',
@@ -22,7 +22,7 @@ export type Stage = (typeof stages)[number]
 
 export default function NewGoalView() {
   const router = useRouter()
-  const { user, isLoading: userLoading } = useAuth()
+  const { user, isLoading: userLoading } = useUser()
   const [currentStage, setCurrentStage] = useState<Stage>('BasicInfo')
   const [goalData, setGoalData] = useState<Partial<Goal>>({
     status: 'planned',

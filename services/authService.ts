@@ -36,12 +36,18 @@ export const authService = {
         },
         {
           withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
       )
 
       if (!response.data.success) {
         throw new Error(response.data.error || 'Login failed')
       }
+
+      // Add a small delay to ensure cookie is set
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       return response.data
     } catch (error) {
@@ -102,17 +108,26 @@ export const authService = {
 
   async logout() {
     try {
-      await api.post<{ success: boolean; message: string }>(
+      // Call backend to destroy session
+      const response = await api.post<{ success: boolean; message: string }>(
         '/api/users/logout',
         {},
         {
           withCredentials: true,
         }
       )
+
+      if (!response.data.success) {
+        throw new Error('Failed to logout')
+      }
+
+      // Clear local storage if you're storing anything there
+      localStorage.clear()
+
+      return response.data
     } catch (error) {
       console.error('Logout error:', error)
-    } finally {
-      localStorage.removeItem('token')
+      throw error
     }
   },
 
@@ -134,10 +149,10 @@ export const authService = {
     return response.data
   },
 
-  async forgotPassword(email: string) {
+  async forgotPasswordRequest(email: string) {
     try {
       const response = await api.post<{ success: boolean }>(
-        '/api/users/forgot-password',
+        '/api/users/reset-password',
         { email },
         { withCredentials: true }
       )
@@ -152,10 +167,14 @@ export const authService = {
     }
   },
 
-  async resetPassword(token: string, email: string, newPassword: string) {
+  async resetPasswordConfirm(
+    token: string,
+    email: string,
+    newPassword: string
+  ) {
     try {
       const response = await api.post<{ success: boolean }>(
-        '/api/users/reset-password',
+        '/api/users/reset-password/confirm',
         { token, email, newPassword },
         { withCredentials: true }
       )
