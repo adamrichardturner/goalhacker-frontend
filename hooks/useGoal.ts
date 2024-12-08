@@ -200,7 +200,7 @@ export function useGoal(id?: string) {
       target_date,
     }: {
       subgoalId: string
-      target_date: string | null
+      target_date: string | undefined
     }) => {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
@@ -212,7 +212,7 @@ export function useGoal(id?: string) {
             'Content-Type': 'application/json',
           },
           credentials: 'include',
-          body: JSON.stringify({ target_date }),
+          body: JSON.stringify({ target_date: target_date || undefined }),
         }
       )
 
@@ -223,13 +223,40 @@ export function useGoal(id?: string) {
 
       return response.json()
     },
+    onMutate: async ({ subgoalId, target_date }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['goal', id] })
+
+      // Snapshot the previous value
+      const previousGoal = queryClient.getQueryData(['goal', id])
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['goal', id], (old: Goal) => {
+        if (!old) return old
+        return {
+          ...old,
+          subgoals: old.subgoals?.map((subgoal: Subgoal) =>
+            subgoal.subgoal_id === subgoalId
+              ? { ...subgoal, target_date }
+              : subgoal
+          ),
+        }
+      })
+
+      // Return a context object with the snapshotted value
+      return { previousGoal }
+    },
+    onError: (err, newTodo, context) => {
+      // Rollback to the previous value if there's an error
+      if (context?.previousGoal) {
+        queryClient.setQueryData(['goal', id], context.previousGoal)
+      }
+      toast.error('Failed to update target date')
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
       queryClient.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Target date updated successfully')
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Failed to update target date')
     },
   })
 

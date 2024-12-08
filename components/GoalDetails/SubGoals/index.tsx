@@ -218,7 +218,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     try {
       updateSubgoalTargetDate({
         subgoalId,
-        target_date: date?.toISOString() || null,
+        target_date: date?.toISOString() || undefined,
       })
     } catch (error) {
       console.error('Error updating target date:', error)
