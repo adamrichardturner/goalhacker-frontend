@@ -19,7 +19,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'Goal Hacker | Track and achieve your goals',
-  description: 'Track and achieve your goals',
+  description:
+    "Goal Hacker - Your intelligent goal tracking and achievement platform. Set meaningful goals, break them down into actionable subgoals, track your progress, and get AI-powered insights to stay motivated. Features smart goal organization, visual progress tracking, collaborative sharing, and personalized achievement strategies. Transform your aspirations into accomplishments with our Goal Hacker's intuitive goal management system.",
   manifest: '/manifest.json',
   icons: {
     icon: [{ url: '/icons/favicon.svg', type: 'image/svg+xml' }],
