@@ -7,6 +7,8 @@ import { Toaster as Sonner } from 'sonner'
 import { BackToTop } from '@/components/ui/back-to-top'
 import { FloatingInsights } from '@/components/ui/floating-insights'
 import { Suspense } from 'react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
+import CookieConsent from '@/components/CookieConsent'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -75,6 +77,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
           <FloatingInsights />
         </Suspense>
         <BackToTop />
+        <CookieConsent />
       </Providers>
       <Sonner />
     </ThemeProvider>
@@ -90,6 +93,7 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body className={`${inter.className} overflow-y-scroll`}>
         <ClientLayout>{children}</ClientLayout>
+        <GoogleAnalytics />
       </body>
     </html>
   )
