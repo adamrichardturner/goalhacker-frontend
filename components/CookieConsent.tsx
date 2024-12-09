@@ -49,9 +49,9 @@ const CookieConsent = () => {
   if (!showBanner) return null
 
   return (
-    <div className='fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg z-50'>
+    <div className='fixed bottom-0 left-0 right-0 bg-background p-4 shadow-lg z-50'>
       <div className='max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4'>
-        <p className='text-sm text-gray-600'>
+        <p className='text-sm text-muted-foreground'>
           We use essential cookies for our service to work and analytics cookies
           to understand how you use our site. Would you like to accept analytics
           cookies?
