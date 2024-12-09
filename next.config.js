@@ -32,6 +32,7 @@ const nextConfig = {
     ],
     domains: ['localhost'],
   },
+  output: 'standalone',
 }
 
 module.exports = nextConfig
