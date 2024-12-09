@@ -8,30 +8,11 @@ import { useState, useEffect } from 'react'
 export const useUser = () => {
   const router = useRouter()
   const pathname = usePathname()
-  const [hasSessionCookie, setHasSessionCookie] = useState(false)
-
-  useEffect(() => {
-    const cookies = document.cookie.split(';')
-    const hasSession = cookies.some((cookie) =>
-      cookie.trim().startsWith('goalhacker.sid=')
-    )
-    setHasSessionCookie(hasSession)
-  }, [])
-
-  const publicPaths = [
-    '/',
-    '/login',
-    '/signup',
-    '/register',
-    '/forgot-password',
-    '/reset-password',
-    '/verify-email',
-    '/await-verification',
-  ]
+  const [isInitializing, setIsInitializing] = useState(true)
 
   const {
     data: user,
-    isLoading,
+    isLoading: isQueryLoading,
     isError,
     error,
     isSuccess,
@@ -39,10 +20,6 @@ export const useUser = () => {
   } = useQuery<User | null>({
     queryKey: ['user'],
     queryFn: async () => {
-      if (publicPaths.includes(pathname) && !hasSessionCookie) {
-        return null
-      }
-
       try {
         const response = await authService.getProfile()
         const transformedUser = transformUserData(response.user)
@@ -55,17 +32,38 @@ export const useUser = () => {
       }
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: hasSessionCookie || !publicPaths.includes(pathname),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: true,
   })
 
+  // Update initializing state when we have a result
+  useEffect(() => {
+    if (!isQueryLoading) {
+      setIsInitializing(false)
+    }
+  }, [isQueryLoading])
+
+  const publicPaths = [
+    '/',
+    '/login',
+    '/signup',
+    '/register',
+    '/forgot-password',
+    '/reset-password',
+    '/verify-email',
+    '/await-verification',
+  ]
+
+  // Consider loading until we've completed the initial query
+  const isLoading = isInitializing || isQueryLoading
+
   return {
-    user,
+    user: isLoading ? null : user,
     isLoading,
-    isError,
+    isError: !isLoading && isError,
     error,
-    isSuccess,
-    hasSessionCookie,
+    isSuccess: !isLoading && isSuccess,
+    hasSessionCookie: isSuccess && !!user, // Derive from successful auth
     refetchUser,
   }
 }

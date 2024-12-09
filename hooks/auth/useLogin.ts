@@ -22,15 +22,27 @@ export const useLogin = () => {
       password: string
     }) => {
       const loginResponse = await authService.login(email, password)
+
       if (!loginResponse.success) {
         throw new Error(loginResponse.error || 'Login failed')
       }
+
+      // Add a delay to ensure cookie is set
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
       const profileResponse = await authService.getProfile()
+
+      // Check cookies after successful login
+      const cookies = document.cookie.split(';')
+      console.log('Cookies after login:', cookies)
+
       return transformUserData(profileResponse.user)
     },
     onSuccess: (user) => {
+      console.log('Login successful, setting user data')
       queryClient.setQueryData(['user'], user)
       setTimeout(() => {
+        console.log('Redirecting to /goals')
         router.push('/goals')
       }, 500)
     },

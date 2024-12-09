@@ -1,7 +1,6 @@
 'use client'
 
 import Logo from '@/components/Logo'
-import { ModeToggle } from '@/components/ThemeSwitcher'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/hooks/auth/useUser'
@@ -54,158 +53,136 @@ function LandingPageClient() {
   return (
     <div className='min-h-screen container flex flex-col gap-6 sm:px-4 w-full'>
       {/* Hero Section */}
-      <div className='container mx-auto px-4 pt-8 sm:pt-16'>
-        <motion.nav
-          className='flex justify-end w-full items-center mb-16'
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className='flex items-center gap-4'>
-            <ModeToggle />
-            {isLoading ? (
-              <Button variant='ghost' disabled>
-                Loading...
-              </Button>
-            ) : user ? (
-              <Link href='/goals'>
-                <Button className='bg-electricPurple hover:bg-electricPurple/90 text-white'>
-                  View Goals
-                </Button>
-              </Link>
-            ) : (
-              <>
-                <Link href='/login'>
-                  <Button variant='outline'>Sign in</Button>
-                </Link>
-                <Link href='/signup'>
-                  <Button>Get Started</Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </motion.nav>
-
-        <div className='text-center max-w-3xl flex flex-col gap-4 mx-auto mb-16 py-10'>
-          <motion.div
-            className='flex justify-center'
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{
-              type: 'spring',
-              stiffness: 200,
-              damping: 20,
-            }}
-          >
-            <Logo className='text-3xl sm:text-4xl' />
-          </motion.div>
-          <motion.h1
-            className='text-4xl sm:text-6xl font-bold mb-6'
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            Transform Your Goals into{' '}
-            <motion.span
-              className='text-electricPurple inline-block'
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
+      <div className='container mx-auto px-4'>
+        <div className='flex flex-col min-h-screen items-center justify-center w-full mb-16'>
+          <div className='text-center max-w-3xl flex flex-col gap-4 mx-auto mb-16 py-10'>
+            <motion.div
+              className='flex justify-center'
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
               transition={{
-                duration: 0.6,
-                ease: 'easeOut',
+                type: 'spring',
+                stiffness: 200,
+                damping: 20,
               }}
             >
-              Achievements
-            </motion.span>
-          </motion.h1>
-          <motion.p
-            className='text-lg sm:text-xl text-muted-foreground mb-8'
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            Goal Hacker helps you break down big goals into manageable steps,
-            track your progress, and stay motivated with powerful insights.
-          </motion.p>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            {!user && (
-              <>
+              <Logo size='xl' />
+            </motion.div>
+            <motion.h1
+              className='text-4xl sm:text-6xl font-bold mb-6'
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Transform Your Goals into{' '}
+              <motion.span
+                className='text-electricPurple inline-block'
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{
+                  duration: 0.6,
+                  ease: 'easeOut',
+                }}
+              >
+                Achievements
+              </motion.span>
+            </motion.h1>
+            <motion.p
+              className='text-lg sm:text-xl text-muted-foreground mb-8'
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Goal Hacker helps you break down big goals into manageable steps,
+              track your progress, and stay motivated with powerful insights.
+            </motion.p>
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              {isLoading ? (
+                <Button
+                  size='lg'
+                  className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                  disabled
+                >
+                  Loading...
+                </Button>
+              ) : !user ? (
+                <>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link href='/signup'>
+                      <Button
+                        size='lg'
+                        className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                      >
+                        Register for Beta Access
+                      </Button>
+                    </Link>
+                  </motion.div>
+                  <p className='text-sm text-muted-foreground mt-2'>
+                    (...Beta access is free!)
+                  </p>
+                </>
+              ) : (
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href='/signup'>
+                  <Link href='/goals'>
                     <Button
                       size='lg'
                       className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
                     >
-                      Register for Beta Access
+                      Go to Your Goals
                     </Button>
                   </Link>
                 </motion.div>
-                <p className='text-sm text-muted-foreground mt-2'>
-                  (...Beta access is free!)
-                </p>
-              </>
-            )}
-            {user && (
+              )}
+            </motion.div>
+          </div>
+
+          {/* Features Section */}
+          <motion.div
+            className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-16'
+            variants={staggerContainer}
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-100px' }}
+          >
+            {[
+              {
+                title: 'Smart Goal Breakdown',
+                description:
+                  'Break complex goals into actionable subgoals. Track progress and celebrate small wins along the way.',
+              },
+              {
+                title: 'AI-Powered Insights',
+                description:
+                  'Get personalized advice on goal optimization, progress patterns, and actionable recommendations to improve your success rate.',
+              },
+              {
+                title: 'Progress Analytics',
+                description:
+                  'Visual dashboards and detailed analytics help you understand your productivity trends and achievement patterns.',
+              },
+            ].map((feature, index) => (
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                key={index}
+                className='p-6 bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow'
+                variants={fadeIn}
+                whileHover={{ y: -5 }}
               >
-                <Link href='/goals'>
-                  <Button
-                    size='lg'
-                    className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
-                  >
-                    Go to Your Goals
-                  </Button>
-                </Link>
+                <h3 className='text-xl font-semibold mb-3'>{feature.title}</h3>
+                <p className='text-muted-foreground'>{feature.description}</p>
               </motion.div>
-            )}
+            ))}
           </motion.div>
         </div>
-
-        {/* Features Section */}
-        <motion.div
-          className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-16'
-          variants={staggerContainer}
-          initial='hidden'
-          whileInView='visible'
-          viewport={{ once: true, margin: '-100px' }}
-        >
-          {[
-            {
-              title: 'Smart Goal Breakdown',
-              description:
-                'Break complex goals into actionable subgoals. Track progress and celebrate small wins along the way.',
-            },
-            {
-              title: 'AI-Powered Insights',
-              description:
-                'Get personalized advice on goal optimization, progress patterns, and actionable recommendations to improve your success rate.',
-            },
-            {
-              title: 'Progress Analytics',
-              description:
-                'Visual dashboards and detailed analytics help you understand your productivity trends and achievement patterns.',
-            },
-          ].map((feature, index) => (
-            <motion.div
-              key={index}
-              className='p-6 bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow'
-              variants={fadeIn}
-              whileHover={{ y: -5 }}
-            >
-              <h3 className='text-xl font-semibold mb-3'>{feature.title}</h3>
-              <p className='text-muted-foreground'>{feature.description}</p>
-            </motion.div>
-          ))}
-        </motion.div>
 
         {/* How It Works Section */}
         <motion.div
@@ -280,14 +257,17 @@ function LandingPageClient() {
           <p className='text-muted-foreground mb-8'>
             Join the beta and be among the first to experience Goal Hacker.
           </p>
-          {!user && (
+          {isLoading ? (
+            <Button size='lg' disabled>
+              Loading...
+            </Button>
+          ) : !user ? (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href='/signup'>
                 <Button size='lg'>Sign Up for Beta Access</Button>
               </Link>
             </motion.div>
-          )}
-          {user && (
+          ) : (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href='/goals'>
                 <Button size='lg'>View Your Goals</Button>

@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { useUser } from './auth/useUser'
 
 export function useGoal(id?: string) {
-  const { user } = useUser()
+  const { user, isLoading: userLoading, hasSessionCookie } = useUser()
   const queryClient = useQueryClient()
 
   const {
@@ -28,11 +28,12 @@ export function useGoal(id?: string) {
     refetchOnMount: true,
     refetchOnReconnect: true,
     retry: false,
+    enabled: hasSessionCookie,
   })
 
   const {
     data: goal,
-    isLoading,
+    isLoading: isIndividualGoalLoading,
     isError,
     error,
   } = useQuery<Goal | null>({
@@ -42,8 +43,10 @@ export function useGoal(id?: string) {
       const response = await goalsService.getGoalById(id)
       return response
     },
-    enabled: !!id,
+    enabled: !!id && hasSessionCookie,
   })
+
+  const isLoading = userLoading || isGoalsLoading || isIndividualGoalLoading
 
   const { mutate: createSubgoal } = useMutation({
     mutationFn: async ({

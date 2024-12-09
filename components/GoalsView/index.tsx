@@ -37,7 +37,7 @@ const GoalsView = ({
   const filters: FilterType[] = ['All', 'Planned', 'Active', 'Completed']
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || !user) {
       setDelayedLoading(true)
     } else {
       const timer = setTimeout(() => {
@@ -45,7 +45,7 @@ const GoalsView = ({
       }, 500)
       return () => clearTimeout(timer)
     }
-  }, [isLoading])
+  }, [isLoading, user])
 
   const nonArchivedGoals = goals.filter((goal) => goal.status !== 'archived')
   const statusCounts: Record<FilterType, number> = {
