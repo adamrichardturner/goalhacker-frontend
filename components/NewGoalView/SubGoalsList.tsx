@@ -11,6 +11,7 @@ import { CalendarIcon } from '@radix-ui/react-icons'
 import { useState } from 'react'
 import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
+import { startOfDay } from 'date-fns'
 
 interface SubGoalsListProps {
   goalData: Partial<Goal>
@@ -111,7 +112,7 @@ export function SubGoalsList({
                     }
                     updateGoalData({ subgoals: updatedSubgoals })
                   }}
-                  disabled={(date) => date < new Date()}
+                  disabled={(date) => startOfDay(date) < startOfDay(new Date())}
                   initialFocus
                 />
               </PopoverContent>
@@ -168,7 +169,7 @@ export function SubGoalsList({
                     target_date: date?.toISOString(),
                   })
                 }
-                disabled={(date) => date < new Date()}
+                disabled={(date) => startOfDay(date) < startOfDay(new Date())}
               />
             </PopoverContent>
           </Popover>

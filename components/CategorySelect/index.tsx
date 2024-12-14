@@ -96,7 +96,7 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
             <PlusCircle className='h-5 w-5' />
           </Button>
         </DialogTrigger>
-        <DialogContent className='max-w-[90vw] sm:max-w-md'>
+        <DialogContent className='max-w-[90vw] sm:max-w-md rounded-lg'>
           <DialogHeader>
             <DialogTitle>Create New Category</DialogTitle>
             <DialogDescription>
@@ -114,7 +114,7 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
               />
             </div>
           </div>
-          <DialogFooter className='flex justify-end gap-2'>
+          <DialogFooter className='flex justify-end gap-4'>
             <Button
               variant='outline'
               onClick={() => setIsOpen(false)}

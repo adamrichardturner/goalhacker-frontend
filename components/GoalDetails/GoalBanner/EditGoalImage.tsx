@@ -86,7 +86,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
             <Pen className='h-4 w-4 text-white' />
           </Button>
         </DialogTrigger>
-        <DialogContent className='max-w-3xl bg-card'>
+        <DialogContent className='sm:max-w-3xl bg-card max-w-[90vw] overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg'>
           <DialogHeader>
             <DialogTitle className='text-xl font-semibold text-primary'>
               Edit Goal Image

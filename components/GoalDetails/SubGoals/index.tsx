@@ -39,6 +39,7 @@ import { useGoal } from '@/hooks/useGoal'
 import { format } from 'date-fns'
 import { Reorder } from 'framer-motion'
 import { goalsService } from '@/services/goalsService'
+import { startOfDay } from 'date-fns'
 
 interface SubGoalsProps {
   goal: Goal
@@ -324,7 +325,9 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                         target_date: date?.toISOString(),
                       })
                     }
-                    disabled={(date) => date < new Date()}
+                    disabled={(date) =>
+                      startOfDay(date) < startOfDay(new Date())
+                    }
                   />
                 </PopoverContent>
               </Popover>
@@ -403,7 +406,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                       target_date: date?.toISOString(),
                     })
                   }
-                  disabled={(date) => date < new Date()}
+                  disabled={(date) => startOfDay(date) < startOfDay(new Date())}
                 />
               </PopoverContent>
             </Popover>
@@ -543,7 +546,9 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                             date || null
                           )
                         }
-                        disabled={(date) => date < new Date()}
+                        disabled={(date) =>
+                          startOfDay(date) < startOfDay(new Date())
+                        }
                       />
                     </PopoverContent>
                   </Popover>

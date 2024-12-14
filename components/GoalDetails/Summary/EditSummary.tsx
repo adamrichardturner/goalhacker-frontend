@@ -31,6 +31,7 @@ import { Input } from '@/components/ui/input'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { CategorySelect } from '@/components/CategorySelect'
 import { api } from '@/services/api'
+import { startOfDay } from 'date-fns'
 
 interface EditSummaryProps {
   goal: Goal
@@ -176,7 +177,9 @@ export function EditSummary({ goal }: EditSummaryProps) {
                         target_date: date?.toISOString(),
                       }))
                     }
-                    disabled={(date) => date < new Date()}
+                    disabled={(date) =>
+                      startOfDay(date) < startOfDay(new Date())
+                    }
                     initialFocus
                   />
                 </PopoverContent>

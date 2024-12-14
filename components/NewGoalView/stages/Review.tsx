@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { ImageGallery } from '@/components/ImageGallery'
+import { Badge } from '@/components/ui/badge'
+import { useCallback } from 'react'
 
 interface ReviewProps {
   onBack?: () => void
@@ -26,6 +28,17 @@ export function Review({
   updateGoalData,
   onNavigateToStep,
 }: ReviewProps) {
+  const handleImageSelect = useCallback(
+    (image: Image) => {
+      updateGoalData({
+        ...goalData,
+        image_url: image.url,
+        default_image_key: image.id,
+      })
+    },
+    [goalData, updateGoalData]
+  )
+
   if (isLoading) {
     return (
       <div className='space-y-4'>
@@ -54,14 +67,6 @@ export function Review({
     )
   }
 
-  const handleImageSelect = (image: Image) => {
-    updateGoalData({
-      ...goalData,
-      image_url: image.url,
-      default_image_key: image.id,
-    })
-  }
-
   return (
     <div className='space-y-4'>
       <div className='flex flex-col gap-4'>
@@ -76,40 +81,40 @@ export function Review({
 
         <div className='space-y-6'>
           <div className='bg-card rounded-lg p-6 space-y-4 border'>
-            <div className='grid gap-4'>
+            <div className='grid gap-6 sm:gap-4'>
               <div
                 onClick={() => onNavigateToStep(1)}
-                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                className='cursor-pointer shadow sm:shadow-none hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
               >
                 <label className='text-sm font-medium text-primary cursor-pointer'>
                   Title
                 </label>
-                <p className='text-base text-muted-foreground'>
+                <p className='text-xs sm:text-sm text-muted-foreground'>
                   {goalData.title}
                 </p>
               </div>
 
               <div
                 onClick={() => onNavigateToStep(2)}
-                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                className='cursor-pointer shadow sm:shadow-none hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
               >
                 <label className='text-sm font-medium text-primary cursor-pointer'>
                   Aims
                 </label>
-                <p className='text-base text-muted-foreground'>
+                <p className='text-xs sm:text-sm text-muted-foreground'>
                   {goalData.aims}
                 </p>
               </div>
 
               <div
                 onClick={() => onNavigateToStep(3)}
-                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                className='cursor-pointer shadow sm:shadow-none hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
               >
                 <label className='text-sm font-medium text-primary cursor-pointer'>
                   How to measure
                 </label>
                 <div
-                  className='text-base text-muted-foreground'
+                  className='text-xs sm:text-sm text-muted-foreground'
                   dangerouslySetInnerHTML={{
                     __html: goalData.measurement_method || '',
                   }}
@@ -118,29 +123,29 @@ export function Review({
 
               <div
                 onClick={() => onNavigateToStep(4)}
-                className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                className='cursor-pointer shadow sm:shadow-none hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
               >
                 <label className='text-sm font-medium text-primary cursor-pointer'>
                   Steps to completion
                 </label>
                 <div
-                  className='text-base text-muted-foreground'
+                  className='text-xs sm:text-sm text-muted-foreground'
                   dangerouslySetInnerHTML={{
                     __html: goalData.steps_to_completion || '',
                   }}
                 />
               </div>
 
-              <div className='grid grid-cols-2 gap-4'>
+              <div className='grid grid-cols-2 gap-6 sm:gap-4'>
                 {goalData.target_date && (
                   <div
                     onClick={() => onNavigateToStep(3)}
-                    className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                    className='cursor-pointer shadow sm:shadow-none hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
                   >
                     <label className='text-sm font-medium text-primary'>
                       Target Date
                     </label>
-                    <p className='text-base text-muted-foreground'>
+                    <p className='text-xs sm:text-sm text-muted-foreground'>
                       {format(new Date(goalData.target_date), 'PPP')}
                     </p>
                   </div>
@@ -148,12 +153,12 @@ export function Review({
 
                 <div
                   onClick={() => onNavigateToStep(3)}
-                  className='cursor-pointer hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
+                  className='cursor-pointer shadow sm:shadow-none hover:bg-accent/50 rounded-md p-2 -m-2 transition-colors'
                 >
                   <label className='text-sm font-medium text-primary'>
                     Priority
                   </label>
-                  <p className='text-base text-muted-foreground capitalize'>
+                  <p className='text-xs sm:text-sm text-muted-foreground capitalize'>
                     {goalData.priority}
                   </p>
                 </div>
@@ -175,9 +180,9 @@ export function Review({
                   >
                     <span className='font-medium'>{subgoal.title}</span>
                     {subgoal.target_date && (
-                      <span className='text-xs text-muted-foreground self-end sm:self-auto'>
-                        Due: {format(new Date(subgoal.target_date), 'PPP')}
-                      </span>
+                      <Badge className='text-xs text-muted-foreground bg-background p-2 self-end sm:self-auto'>
+                        🎯 {format(new Date(subgoal.target_date), 'PPP')}
+                      </Badge>
                     )}
                   </div>
                 ))}
