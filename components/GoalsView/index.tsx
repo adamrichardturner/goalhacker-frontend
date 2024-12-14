@@ -26,6 +26,8 @@ interface GoalsViewProps {
   isArchived?: boolean
 }
 
+// GoalsView
+
 const GoalsView = ({
   goals = [],
   user,
