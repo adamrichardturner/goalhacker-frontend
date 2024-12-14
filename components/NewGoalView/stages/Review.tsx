@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { ImageGallery } from '@/components/ImageGallery'
 import { Badge } from '@/components/ui/badge'
+import { useCallback } from 'react'
 
 interface ReviewProps {
   onBack?: () => void
@@ -27,6 +28,17 @@ export function Review({
   updateGoalData,
   onNavigateToStep,
 }: ReviewProps) {
+  const handleImageSelect = useCallback(
+    (image: Image) => {
+      updateGoalData({
+        ...goalData,
+        image_url: image.url,
+        default_image_key: image.id,
+      })
+    },
+    [goalData, updateGoalData]
+  )
+
   if (isLoading) {
     return (
       <div className='space-y-4'>
@@ -53,14 +65,6 @@ export function Review({
         </div>
       </div>
     )
-  }
-
-  const handleImageSelect = (image: Image) => {
-    updateGoalData({
-      ...goalData,
-      image_url: image.url,
-      default_image_key: image.id,
-    })
   }
 
   return (
