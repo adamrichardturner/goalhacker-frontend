@@ -54,12 +54,16 @@ export const ImageGallery = memo(function ImageGallery({
   )
 
   return (
-    <Card className='w-full'>
-      <CardContent className='p-6'>
+    <Card className='w-full p-0'>
+      <CardContent className='p-2 sm:p-4'>
         <Tabs defaultValue='upload' className='w-full'>
-          <TabsList className='grid w-full grid-cols-2 bg-muted-foreground/10'>
-            <TabsTrigger value='upload'>Upload Image</TabsTrigger>
-            <TabsTrigger value='default'>Default Images</TabsTrigger>
+          <TabsList className='grid w-full grid-cols-2 gap-2 bg-muted-foreground/10'>
+            <TabsTrigger value='upload' className='text-xs sm:text-sm py-2'>
+              Upload
+            </TabsTrigger>
+            <TabsTrigger value='default' className='text-xs sm:text-sm py-2'>
+              Gallery
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value='upload' className='mt-4'>
@@ -95,7 +99,7 @@ export const ImageGallery = memo(function ImageGallery({
                 ) : (
                   <div className='flex flex-col items-center justify-center pt-5 pb-6'>
                     <Upload className='w-8 h-8 mb-2 text-gray-500' />
-                    <p className='text-sm text-gray-500'>
+                    <p className='sm:text-sm text-xs text-center sm:text-left p-4 text-gray-500'>
                       {isUploading ? (
                         <span className='flex items-center'>
                           <Loader2 className='w-4 h-4 mr-2 animate-spin' />

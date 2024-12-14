@@ -39,7 +39,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
       )}
 
       <ScrollArea className='relative'>
-        <div className='grid grid-cols-3 gap-4 p-1'>
+        <div className='grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 p-1'>
           {defaultImages?.map((image: Image) => (
             <div
               key={image.id}
@@ -80,10 +80,10 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             onClick={() => changePage(page - 1)}
             disabled={page === 1 || isLoadingNextPage}
           >
-            Previous
+            Prev
           </Button>
-          <span className='flex items-center px-3 text-sm'>
-            Page {page} of {totalPages}
+          <span className='flex text-xs sm:text-sm items-center px-3'>
+            {page}/{totalPages}
           </span>
           <Button
             variant='outline'
