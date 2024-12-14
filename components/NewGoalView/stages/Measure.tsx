@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { Label } from '@/components/ui/label'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
+import { startOfDay } from 'date-fns'
 
 interface MeasureProps {
   onNext: () => void
@@ -147,7 +148,9 @@ export function Measure({
                         target_date: date ? date.toISOString() : undefined,
                       })
                     }
-                    disabled={(date) => date < new Date()}
+                    disabled={(date) =>
+                      startOfDay(date) < startOfDay(new Date())
+                    }
                     initialFocus
                     className='text-lg text-primary'
                   />
