@@ -88,7 +88,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
           <Pen className='h-4 w-4 text-white' />
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-2xl'>
+      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] h-[70vh] overflow-y-auto rounded-lg'>
         <DialogHeader>
           <DialogTitle>Edit Goal Summary</DialogTitle>
         </DialogHeader>
@@ -143,7 +143,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
               className='min-h-[100px]'
             />
           </div>
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
             <div className='space-y-2'>
               <Label>Target Date</Label>
               <Popover>
