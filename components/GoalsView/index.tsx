@@ -103,20 +103,22 @@ const GoalsView = ({
       </div>
 
       {nonArchivedGoals.length > 0 && !isArchived && (
-        <nav className='flex gap-8 items-center border-border border-b pb-4'>
+        <nav className='flex gap-8 items-center border-border sm:border-b sm:pb-4'>
           <div className='hidden sm:flex gap-8 items-center'>
             {filters.map((filter) => {
-              const isDisabled = filter !== 'All' && statusCounts[filter] === 0
+              if (statusCounts[filter] === 0) {
+                return false
+              }
               return (
                 <button
                   key={filter}
                   onClick={() => setSelectedFilter(filter)}
-                  disabled={delayedLoading || isDisabled}
+                  disabled={delayedLoading}
                   className={`relative pb-2 text-sm transition-colors duration-200 ${
                     selectedFilter === filter
                       ? 'text-primary font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
-                  } ${delayedLoading || isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  } ${delayedLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {filter}
                   {selectedFilter === filter && (
@@ -134,18 +136,19 @@ const GoalsView = ({
                 setSelectedFilter(value as FilterType)
               }
             >
-              <SelectTrigger className='border-0 shadow-sm focus:ring-0'>
+              <SelectTrigger className='border-0 shadow focus:ring-0'>
                 <SelectValue placeholder='Filter goals' />
               </SelectTrigger>
               <SelectContent>
                 {filters.map((filter) => {
-                  const isDisabled =
-                    filter !== 'All' && statusCounts[filter] === 0
+                  if (statusCounts[filter] === 0) {
+                    return false
+                  }
                   return (
                     <SelectItem
                       key={filter}
                       value={filter}
-                      disabled={delayedLoading || isDisabled}
+                      disabled={delayedLoading}
                     >
                       {filter}
                     </SelectItem>

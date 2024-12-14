@@ -55,7 +55,7 @@ export const ImageGallery = memo(function ImageGallery({
 
   return (
     <Card className='w-full p-0'>
-      <CardContent className='p-2 sm:p-4 sm:h-[500px]'>
+      <CardContent className='p-2 sm:p-4'>
         <Tabs defaultValue='upload' className='w-full'>
           <TabsList className='grid w-full grid-cols-2 gap-2 bg-muted-foreground/10'>
             <TabsTrigger value='upload' className='text-xs sm:text-sm py-2'>
@@ -122,7 +122,7 @@ export const ImageGallery = memo(function ImageGallery({
             </div>
           </TabsContent>
 
-          <TabsContent value='default' className='mt-4'>
+          <TabsContent value='default' className='mt-4 sm:h-[420px]'>
             <DefaultImagesGrid
               onImageSelect={onImageSelect}
               selectedImage={selectedImage}
