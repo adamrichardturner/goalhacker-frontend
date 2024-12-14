@@ -169,7 +169,7 @@ export function SubGoalsList({
                     target_date: date?.toISOString(),
                   })
                 }
-                disabled={(date) => date < new Date()}
+                disabled={(date) => startOfDay(date) < startOfDay(new Date())}
               />
             </PopoverContent>
           </Popover>
