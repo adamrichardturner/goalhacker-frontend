@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { useGoal } from '@/hooks/useGoal'
 import { Goal, GoalStatus } from '@/types/goal'
+import { Label } from '@/components/ui/label'
 
 interface GoalStatusEditorProps {
   goal: Goal
@@ -57,27 +58,30 @@ export function GoalStatusEditor({
   }
 
   return (
-    <div className='flex flex-col gap-2 bg-background sm:w-[320px] w-full rounded-lg'>
-      <div className='flex items-end justify-end gap-2'>
-        <Select value={selectedStatus} onValueChange={handleStatusChange}>
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Select status' />
-          </SelectTrigger>
-          <SelectContent>
-            {GOAL_STATUSES.map((status) => (
-              <SelectItem key={status.value} value={status.value}>
-                {status.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className='flex flex-col gap-2 sm:w-[320px] w-full rounded-lg'>
+      <div className='flex flex-col items-start justify-end gap-1'>
+        <Label className='text-xs'>Goal Status</Label>
+        <div className='flex items-end justify-end gap-2'>
+          <Select value={selectedStatus} onValueChange={handleStatusChange}>
+            <SelectTrigger className='w-[180px]'>
+              <SelectValue placeholder='Select status' />
+            </SelectTrigger>
+            <SelectContent>
+              {GOAL_STATUSES.map((status) => (
+                <SelectItem key={status.value} value={status.value}>
+                  {status.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <Button
-          onClick={handleSaveClick}
-          disabled={selectedStatus === goal.status}
-        >
-          Save Changes
-        </Button>
+          <Button
+            onClick={handleSaveClick}
+            disabled={selectedStatus === goal.status}
+          >
+            Save Changes
+          </Button>
+        </div>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

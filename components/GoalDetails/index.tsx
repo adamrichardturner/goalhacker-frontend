@@ -8,7 +8,6 @@ import ProgressGoals from './ProgressGoals'
 import ProgressNotes from './ProgressNotes'
 import { Summary } from './Summary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
-import { GoalStatusEditor } from './GoalStatusEditor'
 import { BackToInsights } from '../ui/back-to-insights'
 import { useSearchParams } from 'next/navigation'
 
@@ -60,16 +59,13 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
     <div className='space-y-6'>
       <GoalBanner goal={goal} />
       <div className='space-y-0'>
-        <Tabs defaultValue='summary' className='w-full sm:px-0 px-2'>
+        <Tabs defaultValue='summary' className='sm:px-0 px-2'>
           <div className='flex flex-col sm:flex-row sm:justify-between w-full sm:items-start gap-4 mb-4'>
-            <TabsList className='w-full grid grid-cols-3 bg-card'>
+            <TabsList className='grid grid-cols-3 bg-card gap-2'>
               <TabsTrigger value='summary'>Summary</TabsTrigger>
               <TabsTrigger value='progress'>Progress</TabsTrigger>
               <TabsTrigger value='notes'>Notes</TabsTrigger>
             </TabsList>
-            <div className='w-full flex-1 justify-end'>
-              <GoalStatusEditor goal={goal} />
-            </div>
           </div>
 
           <TabsContent value='summary'>

@@ -69,7 +69,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
       )}
 
       <ScrollArea className='relative'>
-        <div className='grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 p-1 transition-all duration-300 ease-in-out'>
+        <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 p-1 transition-all duration-300 ease-in-out'>
           {gridItems}
         </div>
       </ScrollArea>

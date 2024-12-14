@@ -2,6 +2,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Goal } from '@/types/goal'
 import { EditSummary } from './EditSummary'
 import { Badge } from '@/components/ui/badge'
+import { GoalStatusEditor } from '../GoalStatusEditor'
 
 export const Summary = ({ goal }: { goal: Goal }) => {
   return (
@@ -37,6 +38,9 @@ export const Summary = ({ goal }: { goal: Goal }) => {
             className='prose-content'
             dangerouslySetInnerHTML={{ __html: goal.measurement_method }}
           />
+        </div>
+        <div className='w-full flex justify-end'>
+          <GoalStatusEditor goal={goal} />
         </div>
       </CardContent>
     </Card>
