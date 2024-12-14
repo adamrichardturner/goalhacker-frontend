@@ -53,7 +53,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             <img
               src={image.url}
               alt={`${image.category} image`}
-              className='w-full h-full object-cover rounded-lg transition-transform duration-200 hover:scale-105'
+              className='w-full h-full object-cover rounded-lg sm:transition-transform duration-200 sm:hover:scale-105'
             />
           </div>
         ))
