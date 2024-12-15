@@ -3,7 +3,6 @@
 import Settings from '@/components/Settings'
 import Loading from '@/components/ui/loading'
 import Header from '@/components/Header'
-import { Footer } from '@/components/Footer'
 import { useUser } from '@/hooks/auth/useUser'
 
 export default function SettingsClient() {
@@ -14,7 +13,7 @@ export default function SettingsClient() {
   }
 
   return (
-    <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='container max-w-3xl flex pb-10 flex-col gap-6 sm:px-4 w-full'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
@@ -26,7 +25,6 @@ export default function SettingsClient() {
           <Settings />
         </main>
       </div>
-      <Footer />
     </div>
   )
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import { Footer } from '@/components/Footer'
 import Header from '@/components/Header'
 import Loading from '@/components/ui/loading'
 import { useGoal } from '@/hooks/useGoal'
@@ -26,7 +25,7 @@ export default function DashboardClient() {
   }
 
   return (
-    <div className='container min-h-screen max-w-3xl flex gap-6 flex-col sm:px-4 w-full'>
+    <div className='container pb-6 min-h-screen max-w-3xl flex gap-6 flex-col sm:px-4 w-full'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
@@ -41,7 +40,6 @@ export default function DashboardClient() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }

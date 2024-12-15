@@ -53,7 +53,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             <img
               src={image.url}
               alt={`${image.category} image`}
-              className='w-full h-full object-cover rounded-lg sm:transition-transform duration-200 sm:hover:scale-105'
+              className='w-full h-full object-cover object-center rounded-lg sm:transition-transform sm:duration-200 sm:hover:scale-105'
             />
           </div>
         ))
@@ -69,7 +69,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
       )}
 
       <ScrollArea className='relative'>
-        <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 p-1 transition-all duration-300 ease-in-out'>
+        <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 p-1 sm:transition-all sm:duration-300 sm:ease-in-out'>
           {gridItems}
         </div>
       </ScrollArea>

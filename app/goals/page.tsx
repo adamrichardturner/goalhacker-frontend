@@ -1,6 +1,5 @@
 'use client'
 
-import { Footer } from '@/components/Footer'
 import GoalsView from '@/components/GoalsView'
 import Header from '@/components/Header'
 import { useUser } from '@/hooks/auth/useUser'
@@ -22,14 +21,13 @@ function GoalsContent() {
   }
 
   return (
-    <div className='container max-w-3xl min-h-screen flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
       <Header user={user} />
-      <div className='flex flex-col gap-4 w-full px-4 sm:px-0 rounded-lg'>
+      <div className='flex flex-col gap-4 w-full rounded-lg'>
         <main className='flex flex-col gap-4 w-full bg-card px-4 py-6 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
           <GoalsView goals={goals} user={user} isLoading={goalsLoading} />
         </main>
       </div>
-      <Footer />
     </div>
   )
 }
