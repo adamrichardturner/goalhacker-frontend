@@ -42,8 +42,8 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
           <div
             key={image.id}
             className={cn(
-              'relative cursor-pointer rounded-lg overflow-hidden border-2 border-electricPurple p-[0.5px] aspect-[16/9]',
-              'hover:border-electricPurple transition-all duration-200',
+              'relative cursor-pointer rounded-lg overflow-hidden border-2 p-[0.5px] aspect-[16/9]',
+              'hover:border-electricPurple',
               selectedImage?.id === image.id
                 ? 'border-electricPurple'
                 : 'border-transparent'
@@ -53,7 +53,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             <img
               src={image.url}
               alt={`${image.category} image`}
-              className='w-full h-full object-cover object-center rounded-lg sm:transition-transform sm:duration-200 sm:hover:scale-105'
+              className='w-full h-full object-cover object-center rounded-lg'
             />
           </div>
         ))
