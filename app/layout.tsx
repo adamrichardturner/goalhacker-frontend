@@ -28,7 +28,7 @@ export default function RootLayout({
         />
         <meta name='theme-color' content='#744afc' />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} scroll-smooth overflow-y-scroll`}>
         <Providers>
           <ThemeProvider>
             {children}

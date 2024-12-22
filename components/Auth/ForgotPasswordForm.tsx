@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { usePasswordReset } from '@/hooks/auth/usePasswordReset'
 import { Alert } from '@/components/ui/alert'
+import { AuthCard } from '@/components/form-components'
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState('')
@@ -20,57 +21,54 @@ export function ForgotPasswordForm() {
     }
   }
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const isValidForm = email && validateEmail(email)
+  const isDisabled = isLoading || !isValidForm
+
   return (
-    <div className='grid gap-6'>
-      <form onSubmit={handleSubmit} className='space-y-4'>
-        <div className='grid gap-2'>
-          <div className='grid gap-1'>
-            <Input
-              id='email'
-              name='email'
-              placeholder='name@example.com'
-              type='email'
-              autoCapitalize='none'
-              autoComplete='email'
-              autoCorrect='off'
-              required
-              disabled={isLoading}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              aria-label='Email address'
-            />
-          </div>
-          {error && (
-            <Alert variant='destructive' role='alert'>
-              {error}
-            </Alert>
+    <AuthCard
+      title='Reset Password'
+      description="Enter your email address and we'll send you a link to reset your password."
+    >
+      <form onSubmit={handleSubmit} className='space-y-6'>
+        <Input
+          type='email'
+          placeholder='Email'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          disabled={isLoading}
+          className='h-12 px-4 text-base'
+        />
+        {error && <Alert variant='destructive'>{error}</Alert>}
+        <Button
+          type='submit'
+          className='w-full h-12 text-base'
+          disabled={isDisabled}
+          size='lg'
+        >
+          {isLoading ? (
+            <>
+              <div className='mr-2 h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+              Sending...
+            </>
+          ) : (
+            'Send reset link'
           )}
-          <Button type='submit' disabled={isLoading} className='w-full'>
-            {isLoading ? (
-              <>
-                <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
-                Sending...
-              </>
-            ) : (
-              'Reset password'
-            )}
-          </Button>
+        </Button>
+        <div className='pt-2'>
+          <Link
+            href='/login'
+            className='w-full py-4 text-base text-center text-blue-600 active:text-blue-800 block touch-manipulation'
+          >
+            Back to login
+          </Link>
         </div>
       </form>
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background px-2 text-muted-foreground'>Or</span>
-        </div>
-      </div>
-      <Link
-        href='/login'
-        className='text-sm text-muted-foreground hover:text-primary text-center'
-      >
-        Back to login
-      </Link>
-    </div>
+    </AuthCard>
   )
 }

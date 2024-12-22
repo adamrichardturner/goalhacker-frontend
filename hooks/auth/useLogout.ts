@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { authService } from '@/services/authService'
+import { Preferences } from '@capacitor/preferences'
 
 export const useLogout = () => {
   const router = useRouter()
@@ -14,6 +15,10 @@ export const useLogout = () => {
       'goalhacker.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost;',
       'goalhacker.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.localhost;',
       'goalhacker.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; sameSite=none;',
+      'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;',
+      'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost;',
+      'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.localhost;',
+      'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; sameSite=none;',
     ]
 
     cookieOptions.forEach((option) => {
@@ -23,12 +28,19 @@ export const useLogout = () => {
 
   const logout = async () => {
     try {
+      toast.success('Logged out successfully')
+      router.replace('/')
       await authService.logout()
       queryClient.setQueryData(['user'], null)
       queryClient.clear() // Clear all queries
       clearSessionCookie()
-      toast.success('Logged out successfully')
-      router.push('/')
+
+      // Clear Capacitor preferences
+      await Preferences.remove({ key: 'auth_token' })
+
+      // Clear any other stored data
+      localStorage.clear()
+      sessionStorage.clear()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Logout failed')
       throw error
