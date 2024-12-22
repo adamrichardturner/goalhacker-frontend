@@ -23,7 +23,6 @@ import {
 import { User } from '@/types/auth'
 import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
-import BetaButton from './BetaButton'
 import { ClientLogo } from '../Logo'
 import { Search } from '../Search'
 import {
@@ -115,7 +114,6 @@ const Header = ({ user }: HeaderProps) => {
           <Link href='/goals'>
             <ClientLogo size='sm' />
           </Link>
-          <BetaButton />
         </div>
 
         <div className='flex items-center gap-8'>
@@ -207,7 +205,6 @@ const Header = ({ user }: HeaderProps) => {
           <Link href='/goals'>
             <ClientLogo size='sm' />
           </Link>
-          <BetaButton />
         </div>
 
         <div className='flex items-center gap-4'>

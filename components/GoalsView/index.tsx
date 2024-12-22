@@ -16,6 +16,8 @@ import {
   SelectValue,
 } from '../ui/select'
 import { Label } from '../ui/label'
+import { motion } from 'framer-motion'
+import { AnimatedTabs } from '../ui/animated-tabs'
 
 type FilterType = 'All' | 'Planned' | 'Active' | 'Completed'
 
@@ -105,30 +107,20 @@ const GoalsView = ({
       </div>
 
       {nonArchivedGoals.length > 0 && !isArchived && (
-        <nav className='flex gap-8 items-center border-border sm:border-b sm:pb-4'>
-          <div className='hidden sm:flex gap-8 items-center'>
-            {filters.map((filter) => {
-              if (statusCounts[filter] === 0) {
-                return false
-              }
-              return (
-                <button
-                  key={filter}
-                  onClick={() => setSelectedFilter(filter)}
-                  disabled={delayedLoading}
-                  className={`relative pb-2 text-sm transition-colors duration-200 ${
-                    selectedFilter === filter
-                      ? 'text-primary font-semibold'
-                      : 'text-muted-foreground hover:text-foreground'
-                  } ${delayedLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {filter}
-                  {selectedFilter === filter && (
-                    <div className='absolute bottom-0 left-0 w-full h-0.5 bg-electricPurple' />
-                  )}
-                </button>
-              )
-            })}
+        <nav className='border-border sm:border-b sm:pb-4'>
+          <div className='hidden sm:block'>
+            <AnimatedTabs
+              items={filters.map((filter) => ({
+                id: filter,
+                label: filter,
+                disabled: statusCounts[filter] === 0,
+              }))}
+              selected={selectedFilter}
+              onChange={(value) => setSelectedFilter(value as FilterType)}
+              isLoading={delayedLoading}
+              layoutId='activeFilter'
+              variant='underline'
+            />
           </div>
           <div className='sm:hidden w-full'>
             <Label className='text-xs font-light'>Filter goals</Label>

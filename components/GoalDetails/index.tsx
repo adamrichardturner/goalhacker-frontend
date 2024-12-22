@@ -7,7 +7,7 @@ import GoalBanner from './GoalBanner'
 import ProgressGoals from './ProgressGoals'
 import ProgressNotes from './ProgressNotes'
 import { Summary } from './Summary'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+import { AnimatedTabs } from '../ui/animated-tabs'
 import { BackToInsights } from '../ui/back-to-insights'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -75,90 +75,59 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
         <div className='space-y-4'>
           <GoalBanner goal={goal} />
 
-          <Tabs
-            defaultValue='summary'
-            className='w-full'
-            onValueChange={setActiveTab}
-          >
-            <div className='sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
-              <div className='max-w-7xl mx-auto'>
-                <TabsList className='h-8 w-full justify-start gap-2 bg-transparent rounded-none relative'>
-                  {[
-                    { value: 'summary', label: 'Summary' },
-                    { value: 'progress', label: 'Progress' },
-                    { value: 'notes', label: 'Notes' },
-                  ].map((tab) => (
-                    <TabsTrigger
-                      key={tab.value}
-                      value={tab.value}
-                      className='relative h-full data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-medium transition-colors hover:text-primary data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground'
-                    >
-                      <span className='relative'>
-                        {tab.label}
-                        {tab.value === activeTab && (
-                          <motion.div
-                            className='absolute -bottom-[10px] left-0 right-0 h-[1.5px] bg-electricPurple'
-                            layoutId='activeTabUnderline'
-                            transition={{
-                              type: 'spring',
-                              stiffness: 500,
-                              damping: 30,
-                            }}
-                          />
-                        )}
-                      </span>
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </div>
+          <div className='sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+            <div className='max-w-7xl mx-auto'>
+              <AnimatedTabs
+                items={[
+                  { id: 'summary', label: 'Summary' },
+                  { id: 'progress', label: 'Progress' },
+                  { id: 'notes', label: 'Notes' },
+                ]}
+                selected={activeTab}
+                onChange={setActiveTab}
+                layoutId='activeTabUnderline'
+                className='h-4 w-full justify-start gap-2 bg-transparent'
+                variant='underline'
+              />
             </div>
+          </div>
 
-            <div className='mt-3'>
-              <TabsContent
-                value='summary'
-                className='mt-0 border-none focus-visible:outline-none focus-visible:ring-0'
+          <div className='mt-3'>
+            {activeTab === 'summary' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Summary goal={goal} />
-                </motion.div>
-              </TabsContent>
+                <Summary goal={goal} />
+              </motion.div>
+            )}
 
-              <TabsContent
-                value='progress'
-                className='mt-0 border-none focus-visible:outline-none focus-visible:ring-0'
+            {activeTab === 'progress' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ProgressGoals goal={goal} />
-                </motion.div>
-              </TabsContent>
+                <ProgressGoals goal={goal} />
+              </motion.div>
+            )}
 
-              <TabsContent
-                value='notes'
-                className='mt-0 border-none focus-visible:outline-none focus-visible:ring-0'
+            {activeTab === 'notes' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ProgressNotes
-                    goal={goal}
-                    onEditNote={handleProgressNoteEdit}
-                    onDeleteNote={handleProgressNoteDelete}
-                    onAddNote={handleProgressNoteSave}
-                  />
-                </motion.div>
-              </TabsContent>
-            </div>
-          </Tabs>
+                <ProgressNotes
+                  goal={goal}
+                  onEditNote={handleProgressNoteEdit}
+                  onDeleteNote={handleProgressNoteDelete}
+                  onAddNote={handleProgressNoteSave}
+                />
+              </motion.div>
+            )}
+          </div>
         </div>
 
         {fromInsights && (
