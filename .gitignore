@@ -44,3 +44,56 @@ uploads/*
 !uploads/.gitkeep
 default-goal-images/*
 !default-goal-images/.gitkeep
+
+# Capacitor
+# iOS specific
+/ios/App/Pods/
+/ios/App/build/
+/ios/App/App/public/
+/ios/App/DerivedData/
+/ios/App/App.xcarchive/
+/ios/App/App.xcworkspace/xcuserdata/
+/ios/App/*.xcodeproj/xcuserdata/
+/ios/App/App.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+/ios/App/App.xcworkspace/xcshareddata/*.xccheckout
+/ios/App/App.xcworkspace/xcshareddata/*.xcscmblueprint
+/ios/App/App/GoogleService-Info.plist
+/ios/App/fastlane/report.xml
+/ios/App/fastlane/Preview.html
+/ios/App/fastlane/screenshots
+/ios/App/fastlane/test_output
+
+# Android specific
+/android/app/build/
+/android/build/
+/android/app/release/
+/android/captures/
+/android/local.properties
+/android/.gradle/
+/android/.idea/
+/android/*.iml
+/android/app/*.iml
+/android/app/debug/
+/android/app/profile/
+/android/keystore.properties
+/android/app/google-services.json
+/android/.settings/
+/android/app/.settings/
+/android/app/proguard-rules.pro.bak
+/android/gradle.properties.bak
+
+# Capacitor-specific files
+capacitor.config.json
+capacitor.config.ts.timestamp-*
+.capacitor/
+resources/android/*
+resources/ios/*
+!resources/android/icon
+!resources/android/splash
+!resources/ios/icon
+!resources/ios/splash
+
+# Platform builds
+www/
+dist/
+platforms/
