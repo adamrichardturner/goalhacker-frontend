@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Goal Hacker</string>
+    <string name="title_activity_main">Goal Hacker</string>
+    <string name="package_name">app.goalhacker</string>
+    <string name="custom_url_scheme">app.goalhacker</string>
+</resources>

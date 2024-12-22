@@ -15,7 +15,6 @@ import { useState, useEffect } from 'react'
 import {
   Sheet,
   SheetContent,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,

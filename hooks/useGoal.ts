@@ -6,6 +6,7 @@ import { Goal, Subgoal, SubgoalStatus } from '@/types/goal'
 import { API_URL } from '@/config'
 import { toast } from 'sonner'
 import { useUser } from './auth/useUser'
+import { Preferences } from '@capacitor/preferences'
 
 export function useGoal(id?: string) {
   const { user, isLoading: userLoading, hasSessionCookie } = useUser()
@@ -571,6 +572,17 @@ export function useGoal(id?: string) {
     },
   })
 
+  const saveGoal = async (goal: Goal) => {
+    try {
+      await Preferences.set({
+        key: `goal_${goal.goal_id}`,
+        value: JSON.stringify(goal),
+      })
+    } catch (error) {
+      console.error('Error saving goal:', error)
+    }
+  }
+
   return {
     goals,
     goal,
@@ -594,5 +606,6 @@ export function useGoal(id?: string) {
     updateSubgoalsOrder,
     createGoal: createGoalMutation.mutate,
     isCreatingGoal: createGoalMutation.isPending,
+    saveGoal,
   }
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import { Goal } from '@/types/goal'
 import { Skeleton } from '../ui/skeleton'
 import { AspectRatio } from '../ui/aspect-ratio'
@@ -7,6 +9,8 @@ import { Badge } from '../ui/badge'
 import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
 import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
+import { Filesystem, Directory } from '@capacitor/filesystem'
+import { useState, useEffect } from 'react'
 
 interface GoalImageProps {
   goal: Goal
@@ -18,9 +22,30 @@ const badgeBaseStyles =
 const targetBadgeStyles =
   'px-2 py-1 rounded-full font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 
+const cacheImage = async (url: string): Promise<string> => {
+  const fileName = url.split('/').pop() || 'default.jpg'
+  try {
+    const result = await Filesystem.downloadFile({
+      url,
+      path: fileName,
+      directory: Directory.Cache,
+    })
+    return result.path || url
+  } catch (error) {
+    console.error('Error caching image:', error)
+    return url
+  }
+}
+
 export default function GoalImage({ goal, className = '' }: GoalImageProps) {
   const { imageUrl, isLoading } = useGoalImageDisplay(goal)
   const { settings } = useSettings()
+  const [cachedUrl, setCachedUrl] = useState(imageUrl)
+
+  useEffect(() => {
+    cacheImage(imageUrl).then(setCachedUrl)
+  }, [imageUrl])
+
   if (!goal) return null
 
   const statusConfig = getGoalStatus(goal.status)
@@ -34,7 +59,7 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
         <div
           className='relative w-full h-[200px] rounded-t-2xl sm:rounded-2xl overflow-hidden group'
           style={{
-            backgroundImage: `url(${imageUrl})`,
+            backgroundImage: `url(${cachedUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}

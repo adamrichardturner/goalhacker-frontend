@@ -4,6 +4,7 @@ import { authService } from '@/services/authService'
 import { User } from '@/types/auth'
 import { transformUserData } from '@/utils/transform-user'
 import { useState, useEffect } from 'react'
+import { Preferences } from '@capacitor/preferences'
 
 export const useUser = () => {
   const router = useRouter()
@@ -56,6 +57,14 @@ export const useUser = () => {
 
   // Consider loading until we've completed the initial query
   const isLoading = isInitializing || isQueryLoading
+
+  // Store auth tokens
+  const storeToken = async (token: string) => {
+    await Preferences.set({
+      key: 'auth_token',
+      value: token,
+    })
+  }
 
   return {
     user: isLoading ? null : user,

@@ -1,0 +1,59 @@
+import { Metadata, Viewport } from 'next'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#744afc',
+}
+
+export const metadata: Metadata = {
+  title: 'Goal Hacker | Track and achieve your goals',
+  description:
+    "Goal Hacker - Your intelligent goal tracking and achievement platform. Set meaningful goals, break them down into actionable subgoals, track your progress, and get AI-powered insights to stay motivated. Features smart goal organization, visual progress tracking, collaborative sharing, and personalized achievement strategies. Transform your aspirations into accomplishments with our Goal Hacker's intuitive goal management system.",
+  metadataBase: new URL('https://goalhacker.app'),
+  openGraph: {
+    title: 'Goal Hacker | Track and achieve your goals',
+    description:
+      "Goal Hacker - Your intelligent goal tracking and achievement platform. Set meaningful goals, break them down into actionable subgoals, track your progress, and get AI-powered insights to stay motivated. Features smart goal organization, visual progress tracking, collaborative sharing, and personalized achievement strategies. Transform your aspirations into accomplishments with our Goal Hacker's intuitive goal management system.",
+    url: '/',
+    siteName: 'Goal Hacker',
+    images: [
+      {
+        url: 'https://goalhacker.app/goal-hacker-social.png',
+        width: 1200,
+        height: 630,
+        alt: 'Goal Hacker - Track and achieve your goals',
+      },
+    ],
+    locale: 'en_GB',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Goal Hacker | Track and achieve your goals',
+    description:
+      "Goal Hacker - Your intelligent goal tracking and achievement platform. Set meaningful goals, break them down into actionable subgoals, track your progress, and get AI-powered insights to stay motivated. Features smart goal organization, visual progress tracking, collaborative sharing, and personalized achievement strategies. Transform your aspirations into accomplishments with our Goal Hacker's intuitive goal management system.",
+    images: [
+      {
+        url: 'https://goalhacker.app/goal-hacker-social.png',
+        alt: 'Goal Hacker - Track and achieve your goals',
+      },
+    ],
+    creator: '@devadam88',
+  },
+  manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icons/favicon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: [{ url: '/favicon.ico' }],
+    apple: [{ url: '/icons/favicon.svg' }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Goal Hacker',
+  },
+}

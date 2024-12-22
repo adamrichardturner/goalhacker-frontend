@@ -1,10 +1,23 @@
 import { Goal } from '@/types/goal'
 import { useMemo } from 'react'
+import { Capacitor } from '@capacitor/core'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 export default function useGoalImageDisplay(goal: Goal) {
+  const getPlatform = () => {
+    return Capacitor.getPlatform()
+  }
+
+  const handleImageDisplay = (imageUrl: string) => {
+    const platform = getPlatform()
+    if (platform === 'ios' || platform === 'android') {
+      return imageUrl
+    }
+    return imageUrl
+  }
+
   const imageUrl = useMemo(() => {
     if (!goal) return '/default-goal.jpg'
 
@@ -34,7 +47,7 @@ export default function useGoalImageDisplay(goal: Goal) {
   }, [goal])
 
   return {
-    imageUrl,
+    imageUrl: handleImageDisplay(imageUrl),
     isLoading: false,
   }
 }
