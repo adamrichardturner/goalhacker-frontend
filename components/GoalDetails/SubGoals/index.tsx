@@ -297,11 +297,11 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   <Button
                     variant='ghost'
                     className={cn(
-                      'h-12 w-full bg-accent justify-start',
+                      'h-12 w-12 bg-accent justify-start bg-input',
                       newSubgoal.target_date && 'border-2 border-electricPurple'
                     )}
                   >
-                    <CalendarIcon className='h-4 w-4 mr-2' />
+                    <CalendarIcon className='h-12 w-12 mr-2 bg-input' />
                     {newSubgoal.target_date
                       ? format(new Date(newSubgoal.target_date), 'MMM d, yyyy')
                       : 'Set target date'}
@@ -377,12 +377,13 @@ export default function SubGoals({ goal }: SubGoalsProps) {
           </Select>
           <div className='flex gap-2 justify-between sm:justify-start'>
             <Popover>
-              <PopoverTrigger asChild>
+              <PopoverTrigger asChild className='w-12 h-12 bg-input'>
                 <Button
                   variant='ghost'
                   className={cn(
-                    'h-12 w-12 bg-accent',
-                    newSubgoal.target_date && 'border-2 border-electricPurple'
+                    'h-12 w-12 bg-input',
+                    newSubgoal.target_date &&
+                      'border-2 bg-input border-electricPurple'
                   )}
                 >
                   <CalendarIcon className='h-4 w-4' />
@@ -519,7 +520,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                       <Button
                         variant='ghost'
                         className={cn(
-                          'h-12 w-12 p-0 bg-accent',
+                          'h-12 w-12 p-0 bg-input',
                           subgoal.target_date &&
                             'border-2 border-electricPurple'
                         )}
@@ -558,14 +559,14 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                         title: subgoal.title,
                       })
                     }}
-                    className='bg-input hover:bg-input/98 h-8 w-8'
+                    className='bg-input h-12 w-12'
                   >
                     <Pen className='h-4 w-4 text-primary' />
                   </Button>
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-12 w-12 bg-accent hover:bg-accent/80'
+                    className='h-12 w-12 bg-input'
                     onClick={() =>
                       subgoal.subgoal_id &&
                       handleDeleteClick(subgoal.subgoal_id)

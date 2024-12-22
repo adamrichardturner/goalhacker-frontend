@@ -49,7 +49,7 @@ export function AnimatedAccordion({
           key={item.id}
           value={item.id}
           className={cn(
-            'rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200',
+            'rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-200',
             variant === 'purple' ? 'border-0' : 'border border-border/50'
           )}
         >

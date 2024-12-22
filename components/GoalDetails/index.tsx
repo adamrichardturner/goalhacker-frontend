@@ -26,7 +26,7 @@ export const targetBadgeStyles =
 export default function GoalDetails({ goal }: GoalDetailsProps) {
   const searchParams = useSearchParams()
   const fromInsights = searchParams.get('from') === 'insights'
-  const [activeTab, setActiveTab] = useState('summary')
+  const [activeTab, setActiveTab] = useState('progress')
   const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(
     goal.goal_id
   )
