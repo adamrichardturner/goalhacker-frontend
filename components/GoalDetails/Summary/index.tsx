@@ -16,7 +16,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
       id: 'aims',
       title: (
         <div className='flex items-center gap-2'>
-          <Badge variant='outline' className='text-primary'>
+          <Badge variant='outline' className='text-white border-white/20'>
             <Target className='h-3 w-3 mr-1' />
             Aims
           </Badge>
@@ -28,7 +28,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
       id: 'steps',
       title: (
         <div className='flex items-center gap-2'>
-          <Badge variant='outline' className='text-primary'>
+          <Badge variant='outline' className='text-white border-white/20'>
             <ListChecks className='h-3 w-3 mr-1' />
             Steps to Completion
           </Badge>
@@ -41,7 +41,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
       id: 'measurement',
       title: (
         <div className='flex items-center gap-2'>
-          <Badge variant='outline' className='text-primary'>
+          <Badge variant='outline' className='text-white border-white/20'>
             <LineChart className='h-3 w-3 mr-1' />
             Measurement Method
           </Badge>
@@ -89,7 +89,6 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           openItem={openItem}
           onOpenChange={setOpenItem}
           variant='purple'
-          className='accordion-content'
         />
 
         <div className='w-full flex justify-end'>
