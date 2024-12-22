@@ -5,7 +5,6 @@ import { useGoal } from '@/hooks/useGoal'
 import { Skeleton } from '@/components/ui/skeleton'
 import GoalDetails from '@/components/GoalDetails'
 import Header from '@/components/Header'
-import { Footer } from '@/components/Footer'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useUser } from '@/hooks/auth/useUser'
@@ -66,7 +65,6 @@ export default function GoalPageClient({ params }: GoalPageClientProps) {
           ) : null}
         </div>
       </main>
-      <Footer />
     </div>
   )
 }

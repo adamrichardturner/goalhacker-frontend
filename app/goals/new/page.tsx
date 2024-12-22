@@ -4,7 +4,6 @@ import Header from '@/components/Header'
 import NewGoalView from '@/components/NewGoalView'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { Footer } from '@/components/Footer'
 import { useUser } from '@/hooks/auth/useUser'
 
 export default function NewGoalPage() {

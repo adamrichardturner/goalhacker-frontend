@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from '../ui/select'
 import { Label } from '../ui/label'
-import { motion } from 'framer-motion'
 import { AnimatedTabs } from '../ui/animated-tabs'
 
 type FilterType = 'All' | 'Planned' | 'Active' | 'Completed'
