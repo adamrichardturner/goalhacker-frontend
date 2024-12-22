@@ -162,10 +162,6 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     }
   }
 
-  const handleEditClick = (subgoalId: string, title: string) => {
-    setEditing({ subgoalId, title })
-  }
-
   const handleEditSave = () => {
     if (!editing.subgoalId || !editing.title) return
 
