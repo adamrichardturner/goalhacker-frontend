@@ -19,11 +19,7 @@ interface SubGoalsListProps {
   isCreating: boolean
 }
 
-export function SubGoalsList({
-  goalData,
-  updateGoalData,
-  isCreating,
-}: SubGoalsListProps) {
+export function SubGoalsList({ goalData, updateGoalData, isCreating }: SubGoalsListProps) {
   const { settings } = useSettings()
   const [newSubgoal, setNewSubgoal] = useState<Partial<Subgoal>>({
     goal_id: '',
@@ -54,12 +50,12 @@ export function SubGoalsList({
   }
 
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       {goalData.subgoals?.map((subgoal, index) => (
-        <div key={index} className='flex items-center gap-2'>
+        <div key={index} className="flex items-center gap-2">
           <Input
             value={subgoal.title}
-            onChange={(e) => {
+            onChange={e => {
               const updatedSubgoals = [...(goalData.subgoals || [])]
               updatedSubgoals[index] = {
                 ...subgoal,
@@ -67,12 +63,12 @@ export function SubGoalsList({
               }
               updateGoalData({ subgoals: updatedSubgoals })
             }}
-            placeholder='Enter a sub-goal...'
+            placeholder="Enter a sub-goal..."
           />
-          <div className='flex items-center gap-2'>
+          <div className="flex items-center gap-2">
             {!isCreating && subgoal.target_date && (
-              <div className='flex items-center gap-2'>
-                <span className='text-sm text-muted-foreground'>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">
                   {formatDate(subgoal.target_date, settings?.date_format)}
                 </span>
                 <CalendarIcon
@@ -86,25 +82,18 @@ export function SubGoalsList({
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
-                  className={cn(
-                    'h-12 w-12',
-                    subgoal.target_date && 'ring-2 ring-electricPurple'
-                  )}
+                  variant="outline"
+                  size="icon"
+                  className={cn('h-12 w-12', subgoal.target_date && 'ring-2 ring-electricPurple')}
                 >
-                  <CalendarIcon className='h-4 w-4' />
+                  <CalendarIcon className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className='w-auto p-0' align='end'>
+              <PopoverContent className="w-auto p-0" align="end">
                 <Calendar
-                  mode='single'
-                  selected={
-                    subgoal.target_date
-                      ? new Date(subgoal.target_date)
-                      : undefined
-                  }
-                  onSelect={(date) => {
+                  mode="single"
+                  selected={subgoal.target_date ? new Date(subgoal.target_date) : undefined}
+                  onSelect={date => {
                     const updatedSubgoals = [...(goalData.subgoals || [])]
                     updatedSubgoals[index] = {
                       ...subgoal,
@@ -112,7 +101,7 @@ export function SubGoalsList({
                     }
                     updateGoalData({ subgoals: updatedSubgoals })
                   }}
-                  disabled={(date) => startOfDay(date) < startOfDay(new Date())}
+                  disabled={date => startOfDay(date) < startOfDay(new Date())}
                   initialFocus
                 />
               </PopoverContent>
@@ -121,55 +110,49 @@ export function SubGoalsList({
         </div>
       ))}
 
-      <div className='flex items-center gap-2'>
+      <div className="flex items-center gap-2">
         <Input
-          className='text-sm'
+          className="text-sm"
           value={newSubgoal.title}
-          onChange={(e) =>
-            setNewSubgoal({ ...newSubgoal, title: e.target.value })
-          }
-          placeholder='Add a new sub-goal...'
+          onChange={e => setNewSubgoal({ ...newSubgoal, title: e.target.value })}
+          placeholder="Add a new sub-goal..."
           required
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Enter' && newSubgoal.title) {
               handleAddSubgoal()
             }
           }}
         />
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                variant='ghost'
+                variant="ghost"
                 className={cn(
                   'h-12 w-12 p-0',
                   newSubgoal.target_date && 'ring-2 ring-electricPurple'
                 )}
               >
                 {!isCreating && newSubgoal.target_date ? (
-                  <span className='text-xs'>
+                  <span className="text-xs">
                     {format(new Date(newSubgoal.target_date), 'MMM d')}
                   </span>
                 ) : (
-                  <CalendarIcon className='h-4 w-4' />
+                  <CalendarIcon className="h-4 w-4" />
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className='w-auto p-0' align='start'>
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                mode='single'
-                selected={
-                  newSubgoal.target_date
-                    ? new Date(newSubgoal.target_date)
-                    : undefined
-                }
-                onSelect={(date) =>
+                mode="single"
+                selected={newSubgoal.target_date ? new Date(newSubgoal.target_date) : undefined}
+                onSelect={date =>
                   setNewSubgoal({
                     ...newSubgoal,
                     target_date: date?.toISOString(),
                   })
                 }
-                disabled={(date) => startOfDay(date) < startOfDay(new Date())}
+                disabled={date => startOfDay(date) < startOfDay(new Date())}
               />
             </PopoverContent>
           </Popover>
@@ -177,15 +160,15 @@ export function SubGoalsList({
       </div>
 
       <Button
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault()
           if (newSubgoal.title) {
             handleAddSubgoal()
           }
         }}
         disabled={!newSubgoal.title}
-        className='w-full sm:w-auto'
-        size='lg'
+        className="w-full sm:w-auto"
+        size="lg"
       >
         Add Sub-goal
       </Button>

@@ -13,11 +13,7 @@ import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
 import { Label } from '@/components/ui/label'
 import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -84,88 +80,82 @@ export function EditSummary({ goal }: EditSummaryProps) {
     <Dialog open={isEditing} onOpenChange={setIsEditing}>
       <DialogTrigger asChild>
         <Button
-          size='icon'
-          className='absolute top-4 right-4 bg-input m-2 hover:bg-input/98 h-8 w-8'
+          size="icon"
+          className="absolute top-4 right-4 bg-input m-2 hover:bg-input/98 h-8 w-8"
         >
-          <Pen className='h-4 w-4 text-primary' />
+          <Pen className="h-4 w-4 text-primary" />
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] p-4 h-[70vh] rounded-2xl overflow-y-auto sm:p-10'>
+      <DialogContent className="max-w-[90vw] sm:max-w-[40vw] p-4 h-[70vh] rounded-2xl overflow-y-auto sm:p-10">
         <DialogHeader>
           <DialogTitle>Edit Goal Summary</DialogTitle>
         </DialogHeader>
-        <div className='space-y-6 px-6 py-8 bg-paper rounded-2xl'>
-          <div className='space-y-2 bg-paper'>
-            <div className='flex justify-between items-center'>
-              <Label htmlFor='title'>Title</Label>
-              <span className='text-xs text-muted-foreground'>
-                {editedGoal.title.length}/120
-              </span>
+        <div className="space-y-6 px-6 py-8 bg-paper rounded-2xl">
+          <div className="space-y-2 bg-paper">
+            <div className="flex justify-between items-center">
+              <Label htmlFor="title">Title</Label>
+              <span className="text-xs text-muted-foreground">{editedGoal.title.length}/120</span>
             </div>
             <Input
-              id='title'
+              id="title"
               value={editedGoal.title}
-              onChange={(e) =>
-                setEditedGoal((prev) => ({ ...prev, title: e.target.value }))
-              }
+              onChange={e => setEditedGoal(prev => ({ ...prev, title: e.target.value }))}
               maxLength={120}
-              placeholder='Enter goal title'
-              className='bg-input p-4'
+              placeholder="Enter goal title"
+              className="bg-input p-4"
             />
           </div>
-          <div className='space-y-2'>
-            <Label htmlFor='aims'>Aims</Label>
+          <div className="space-y-2">
+            <Label htmlFor="aims">Aims</Label>
             <Input
-              id='aims'
+              id="aims"
               value={editedGoal.aims}
-              onChange={(e) =>
-                setEditedGoal((prev) => ({ ...prev, aims: e.target.value }))
-              }
-              placeholder='What are you aiming to achieve?'
-              className='bg-input'
+              onChange={e => setEditedGoal(prev => ({ ...prev, aims: e.target.value }))}
+              placeholder="What are you aiming to achieve?"
+              className="bg-input"
             />
           </div>
-          <div className='space-y-2'>
-            <Label htmlFor='steps'>Steps to Completion</Label>
+          <div className="space-y-2">
+            <Label htmlFor="steps">Steps to Completion</Label>
             <RichTextEditor
               value={editedGoal.steps_to_completion}
-              onChange={(value) =>
-                setEditedGoal((prev) => ({
+              onChange={value =>
+                setEditedGoal(prev => ({
                   ...prev,
                   steps_to_completion: value,
                 }))
               }
-              placeholder='What steps will you take to complete this goal?'
-              className='min-h-[100px] bg-input'
+              placeholder="What steps will you take to complete this goal?"
+              className="min-h-[100px] bg-input"
             />
           </div>
-          <div className='space-y-2'>
-            <Label htmlFor='measurement'>Measurement Method</Label>
+          <div className="space-y-2">
+            <Label htmlFor="measurement">Measurement Method</Label>
             <RichTextEditor
               value={editedGoal.measurement_method}
-              onChange={(value) =>
-                setEditedGoal((prev) => ({
+              onChange={value =>
+                setEditedGoal(prev => ({
                   ...prev,
                   measurement_method: value,
                 }))
               }
-              placeholder='How will you measure progress towards this goal?'
-              className='min-h-[100px] bg-input'
+              placeholder="How will you measure progress towards this goal?"
+              className="min-h-[100px] bg-input"
             />
           </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-            <div className='space-y-2'>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
               <Label>Target Date</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    variant='outline'
+                    variant="outline"
                     className={cn(
                       'w-full justify-start text-left font-normal bg-input',
                       !editedGoal.target_date && 'text-muted-foreground'
                     )}
                   >
-                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    <CalendarIcon className="mr-2 h-4 w-4" />
                     {editedGoal.target_date ? (
                       formatDate(editedGoal.target_date, settings?.date_format)
                     ) : (
@@ -173,60 +163,52 @@ export function EditSummary({ goal }: EditSummaryProps) {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
-                    mode='single'
-                    selected={
-                      editedGoal.target_date
-                        ? new Date(editedGoal.target_date)
-                        : undefined
-                    }
-                    onSelect={(date) =>
-                      setEditedGoal((prev) => ({
+                    mode="single"
+                    selected={editedGoal.target_date ? new Date(editedGoal.target_date) : undefined}
+                    onSelect={date =>
+                      setEditedGoal(prev => ({
                         ...prev,
                         target_date: date?.toISOString(),
                       }))
                     }
-                    disabled={(date) =>
-                      startOfDay(date) < startOfDay(new Date())
-                    }
+                    disabled={date => startOfDay(date) < startOfDay(new Date())}
                     initialFocus
                   />
                 </PopoverContent>
               </Popover>
             </div>
-            <div className='space-y-2'>
+            <div className="space-y-2">
               <Label>Priority</Label>
               <Select
                 value={editedGoal.priority}
                 onValueChange={(value: 'low' | 'medium' | 'high') =>
-                  setEditedGoal((prev) => ({ ...prev, priority: value }))
+                  setEditedGoal(prev => ({ ...prev, priority: value }))
                 }
               >
-                <SelectTrigger className='bg-input'>
+                <SelectTrigger className="bg-input">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='low'>Low</SelectItem>
-                  <SelectItem value='medium'>Medium</SelectItem>
-                  <SelectItem value='high'>High</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          <div className='space-y-2'>
+          <div className="space-y-2">
             <Label>Category</Label>
             <CategorySelect
               value={editedGoal.category_id}
-              onValueChange={(value) =>
-                setEditedGoal((prev) => ({ ...prev, category_id: value }))
-              }
+              onValueChange={value => setEditedGoal(prev => ({ ...prev, category_id: value }))}
             />
           </div>
         </div>
-        <div className='flex justify-end gap-2'>
-          <Button variant='outline' onClick={() => setIsEditing(false)}>
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={() => setIsEditing(false)}>
             Cancel
           </Button>
           <Button onClick={handleSave}>Save Changes</Button>

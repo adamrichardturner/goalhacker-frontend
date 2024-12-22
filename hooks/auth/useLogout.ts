@@ -21,7 +21,7 @@ export const useLogout = () => {
       'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; sameSite=none;',
     ]
 
-    cookieOptions.forEach((option) => {
+    cookieOptions.forEach(option => {
       document.cookie = option
     })
   }

@@ -16,18 +16,16 @@ export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('insights')
 
-  const hasGoalsWithProgress = goals.some(
-    (goal) => goal.progress > 0 || goal.status === 'completed'
-  )
+  const hasGoalsWithProgress = goals.some(goal => goal.progress > 0 || goal.status === 'completed')
   const availableTabs = [
     { id: 'insights', label: 'AI Insights', show: goals.length > 0 },
     { id: 'analytics', label: 'Analytics', show: hasGoalsWithProgress },
-  ].filter((tab) => tab.show)
+  ].filter(tab => tab.show)
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const tab = searchParams.get('tab')
-    if (tab && availableTabs.some((t) => t.id === tab)) {
+    if (tab && availableTabs.some(t => t.id === tab)) {
       setActiveTab(tab)
     } else if (availableTabs.length > 0) {
       // If current tab is not available, default to first available tab
@@ -51,12 +49,12 @@ export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
   }
 
   return (
-    <div className='space-y-6'>
-      <nav className='flex gap-8'>
-        {availableTabs.map((tab) => {
+    <div className="space-y-6">
+      <nav className="flex gap-8">
+        {availableTabs.map(tab => {
           const isActive = activeTab === tab.id
           return (
-            <motion.div key={tab.id} className='relative'>
+            <motion.div key={tab.id} className="relative">
               <button
                 onClick={() => handleTabChange(tab.id)}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
@@ -67,8 +65,8 @@ export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
               </button>
               {isActive && (
                 <motion.div
-                  className='absolute h-[1.5px] w-full bg-electricPurple'
-                  layoutId='activeTabUnderline'
+                  className="absolute h-[1.5px] w-full bg-electricPurple"
+                  layoutId="activeTabUnderline"
                 />
               )}
             </motion.div>

@@ -7,8 +7,8 @@ const GoogleAnalytics = () => {
   return (
     <>
       <Script
-        id='google-analytics-consent'
-        strategy='beforeInteractive'
+        id="google-analytics-consent"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
@@ -33,9 +33,9 @@ const GoogleAnalytics = () => {
       />
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        strategy='afterInteractive'
+        strategy="afterInteractive"
       />
-      <Script id='google-analytics' strategy='afterInteractive'>
+      <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}

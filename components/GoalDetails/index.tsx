@@ -24,16 +24,10 @@ export const targetBadgeStyles =
 
 export default function GoalDetails({ goal }: GoalDetailsProps) {
   const [activeTab, setActiveTab] = useState('summary')
-  const fromInsights =
-    new URLSearchParams(window.location.search).get('from') === 'insights'
-  const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(
-    goal.goal_id
-  )
+  const fromInsights = new URLSearchParams(window.location.search).get('from') === 'insights'
+  const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(goal.goal_id)
 
-  const handleProgressNoteEdit = (
-    noteId: string,
-    note: { title: string; content: string }
-  ) => {
+  const handleProgressNoteEdit = (noteId: string, note: { title: string; content: string }) => {
     try {
       updateProgressNote({ noteId, title: note.title, content: note.content })
       toast.success('Progress note updated')
@@ -68,14 +62,14 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className='bg-paper'
+      className="bg-paper"
     >
-      <div className='max-w-7xl mx-auto'>
-        <div className='space-y-2'>
+      <div className="max-w-7xl mx-auto">
+        <div className="space-y-2">
           <GoalBanner goal={goal} />
 
-          <div className='sticky top-0 z-10'>
-            <div className='max-w-7xl'>
+          <div className="sticky top-0 z-10">
+            <div className="max-w-7xl">
               <AnimatedTabs
                 items={[
                   { id: 'summary', label: 'Summary' },
@@ -84,14 +78,14 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
                 ]}
                 selected={activeTab}
                 onChange={setActiveTab}
-                layoutId='activeTabUnderline'
-                className='h-4 justify-start gap-2 bg-paper py-4 px-2 min-h-12 rounded'
-                variant='underline'
+                layoutId="activeTabUnderline"
+                className="h-4 justify-start gap-2 bg-paper py-4 px-2 min-h-12 rounded"
+                variant="underline"
               />
             </div>
           </div>
 
-          <div className='pt-0'>
+          <div className="pt-0">
             {activeTab === 'summary' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -134,7 +128,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className='mt-8'
+            className="mt-8"
           >
             <BackToInsights />
           </motion.div>

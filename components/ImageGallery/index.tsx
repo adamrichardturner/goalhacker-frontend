@@ -19,9 +19,7 @@ export const ImageGallery = memo(function ImageGallery({
   selectedImage,
   existingImage,
 }: ImageGalleryProps) {
-  const [uploadPreview, setUploadPreview] = useState<string>(
-    existingImage || ''
-  )
+  const [uploadPreview, setUploadPreview] = useState<string>(existingImage || '')
   const { uploadImage, isUploading } = useImageGallery()
 
   const handleFileChange = useCallback(
@@ -54,20 +52,20 @@ export const ImageGallery = memo(function ImageGallery({
   )
 
   return (
-    <Card className='w-full p-0'>
-      <CardContent className='p-2 sm:p-4'>
-        <Tabs defaultValue='upload' className='w-full'>
-          <TabsList className='grid w-full grid-cols-2 gap-2 bg-muted-foreground/10'>
-            <TabsTrigger value='upload' className='text-xs sm:text-sm py-2'>
+    <Card className="w-full p-0">
+      <CardContent className="p-2 sm:p-4">
+        <Tabs defaultValue="upload" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 gap-2 bg-muted-foreground/10">
+            <TabsTrigger value="upload" className="text-xs sm:text-sm py-2">
               Upload
             </TabsTrigger>
-            <TabsTrigger value='default' className='text-xs sm:text-sm py-2'>
+            <TabsTrigger value="default" className="text-xs sm:text-sm py-2">
               Gallery
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value='upload' className='mt-4'>
-            <div className='flex flex-col items-center space-y-4'>
+          <TabsContent value="upload" className="mt-4">
+            <div className="flex flex-col items-center space-y-4">
               <label
                 className={cn(
                   'flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer',
@@ -79,15 +77,15 @@ export const ImageGallery = memo(function ImageGallery({
                   <>
                     <img
                       src={uploadPreview}
-                      alt='Upload preview'
-                      className='absolute inset-0 w-full h-full object-cover'
+                      alt="Upload preview"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className='absolute inset-0 bg-black/50 flex flex-col items-center justify-center'>
-                      <Upload className='w-8 h-8 mb-2 text-white' />
-                      <p className='text-sm text-white font-medium'>
+                    <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
+                      <Upload className="w-8 h-8 mb-2 text-white" />
+                      <p className="text-sm text-white font-medium">
                         {isUploading ? (
-                          <span className='flex items-center'>
-                            <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                          <span className="flex items-center">
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                             Uploading...
                           </span>
                         ) : (
@@ -97,12 +95,12 @@ export const ImageGallery = memo(function ImageGallery({
                     </div>
                   </>
                 ) : (
-                  <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                    <Upload className='w-8 h-8 mb-2 text-gray-500' />
-                    <p className='sm:text-sm text-xs text-center sm:text-left p-4 text-gray-500'>
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-8 h-8 mb-2 text-gray-500" />
+                    <p className="sm:text-sm text-xs text-center sm:text-left p-4 text-gray-500">
                       {isUploading ? (
-                        <span className='flex items-center'>
-                          <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                        <span className="flex items-center">
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                           Uploading...
                         </span>
                       ) : (
@@ -112,9 +110,9 @@ export const ImageGallery = memo(function ImageGallery({
                   </div>
                 )}
                 <input
-                  type='file'
-                  className='hidden'
-                  accept='image/*'
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
                   onChange={handleFileChange}
                   disabled={isUploading}
                 />
@@ -122,11 +120,8 @@ export const ImageGallery = memo(function ImageGallery({
             </div>
           </TabsContent>
 
-          <TabsContent value='default' className='mt-4 sm:h-[420px]'>
-            <DefaultImagesGrid
-              onImageSelect={onImageSelect}
-              selectedImage={selectedImage}
-            />
+          <TabsContent value="default" className="mt-4 sm:h-[420px]">
+            <DefaultImagesGrid onImageSelect={onImageSelect} selectedImage={selectedImage} />
           </TabsContent>
         </Tabs>
       </CardContent>

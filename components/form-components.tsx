@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from './ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 
 export const AuthCard = ({
   children,
@@ -16,7 +10,7 @@ export const AuthCard = ({
   description: string
 }) => {
   return (
-    <Card className='max-w-[400px]'>
+    <Card className="max-w-[400px]">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

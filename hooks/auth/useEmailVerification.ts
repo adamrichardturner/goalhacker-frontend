@@ -10,12 +10,10 @@ export const useEmailVerification = () => {
       await authService.verifyEmail(token, email)
       await refetchUser()
       toast.success('Email verified successfully! Redirecting to login...')
-      await new Promise((resolve) => setTimeout(resolve, 5000))
+      await new Promise(resolve => setTimeout(resolve, 5000))
       window.location.href = '/login'
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Email verification failed'
-      )
+      toast.error(error instanceof Error ? error.message : 'Email verification failed')
       window.location.href = '/error'
       throw error
     }
@@ -27,11 +25,7 @@ export const useEmailVerification = () => {
       toast.success('Verification email sent! Please check your inbox.')
       window.location.href = '/await-verification'
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : 'Failed to send verification email'
-      )
+      toast.error(error instanceof Error ? error.message : 'Failed to send verification email')
       throw error
     }
   }

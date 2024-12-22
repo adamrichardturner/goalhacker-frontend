@@ -15,8 +15,8 @@ export const Summary = ({ goal }: { goal: Goal }) => {
     {
       id: 'aims',
       title: (
-        <div className='flex items-center gap-2'>
-          <Target className='h-3 w-3 mr-1' />
+        <div className="flex items-center gap-2">
+          <Target className="h-3 w-3 mr-1" />
           Aims
         </div>
       ),
@@ -25,8 +25,8 @@ export const Summary = ({ goal }: { goal: Goal }) => {
     {
       id: 'steps',
       title: (
-        <div className='flex items-center gap-2'>
-          <ListChecks className='h-3 w-3 mr-1' />
+        <div className="flex items-center gap-2">
+          <ListChecks className="h-3 w-3 mr-1" />
           Steps to Completion
         </div>
       ),
@@ -36,35 +36,32 @@ export const Summary = ({ goal }: { goal: Goal }) => {
     {
       id: 'measurement',
       title: (
-        <div className='flex items-center gap-2'>
-          <LineChart className='h-3 w-3 mr-1' />
+        <div className="flex items-center gap-2">
+          <LineChart className="h-3 w-3 mr-1" />
           Measurement Method
         </div>
       ),
       content: goal.measurement_method,
       isHtml: true,
     },
-  ].map((item) => ({
+  ].map(item => ({
     id: item.id,
     title: item.title,
     content: item.isHtml ? (
-      <div
-        className='prose-content'
-        dangerouslySetInnerHTML={{ __html: item.content }}
-      />
+      <div className="prose-content" dangerouslySetInnerHTML={{ __html: item.content }} />
     ) : (
       item.content
     ),
   }))
 
   return (
-    <Card className='rounded-xl relative w-full'>
-      <CardContent className='mt-6 space-y-8 w-full'>
-        <div className='flex items-center p-1 justify-between'>
+    <Card className="rounded-xl relative w-full">
+      <CardContent className="mt-6 space-y-8 w-full">
+        <div className="flex items-center p-1 justify-between">
           {goal.category && (
-            <div className='flex items-center gap-2'>
+            <div className="flex items-center gap-2">
               <Badge
-                className='bg-electricPurple py-1 px-4 text-white font-semibold pointer-events-none'
+                className="bg-electricPurple py-1 px-4 text-white font-semibold pointer-events-none"
                 style={{
                   backgroundColor: `${colors.electricViolet}`,
                   borderColor: `${colors.electricViolet}33`,
@@ -82,10 +79,10 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           items={accordionItems}
           openItem={openItem}
           onOpenChange={setOpenItem}
-          variant='purple'
+          variant="purple"
         />
 
-        <div className='w-full flex justify-end'>
+        <div className="w-full flex justify-end">
           <GoalStatusEditor goal={goal} />
         </div>
       </CardContent>

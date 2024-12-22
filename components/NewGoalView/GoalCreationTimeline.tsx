@@ -30,7 +30,7 @@ const GoalCreationTimeline = ({
   }
 
   return (
-    <div className='flex w-full items-end justify-end pt-2 pb-4'>
+    <div className="flex w-full items-end justify-end pt-2 pb-4">
       {stages.map((stage, index) => {
         const completed = isStepCompleted(stage)
         const current = stage === currentStage
@@ -40,9 +40,7 @@ const GoalCreationTimeline = ({
           <div
             key={stage}
             onClick={() => clickable && onNavigateToStep(index + 1)}
-            className={`flex items-center ${
-              clickable ? 'cursor-pointer' : ''
-            } ${
+            className={`flex items-center ${clickable ? 'cursor-pointer' : ''} ${
               index < stages.indexOf(currentStage)
                 ? 'text-electricPurple'
                 : index === stages.indexOf(currentStage)
@@ -52,11 +50,7 @@ const GoalCreationTimeline = ({
           >
             <div
               className={`w-4 h-4 text-xs p-2 rounded-full flex items-center justify-center border 
-                ${
-                  index <= stages.indexOf(currentStage)
-                    ? 'border-electricPurple'
-                    : 'border-muted'
-                }
+                ${index <= stages.indexOf(currentStage) ? 'border-electricPurple' : 'border-muted'}
                 ${clickable ? 'hover:bg-accent/50 transition-colors' : ''}
               `}
             >
@@ -65,9 +59,7 @@ const GoalCreationTimeline = ({
             {index < stages.length - 1 && (
               <div
                 className={`w-full h-[1px] px-2 ${
-                  index < stages.indexOf(currentStage)
-                    ? 'bg-electricPurple'
-                    : 'bg-muted'
+                  index < stages.indexOf(currentStage) ? 'bg-electricPurple' : 'bg-muted'
                 }`}
               />
             )}

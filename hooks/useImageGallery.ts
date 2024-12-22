@@ -35,10 +35,9 @@ export const useImageGallery = (initialPage = 1) => {
       ...(category ? { category } : {}),
     })
 
-    const response = await axios.get(
-      `${API_URL}/api/images/default-goal-images?${params}`,
-      { withCredentials: true }
-    )
+    const response = await axios.get(`${API_URL}/api/images/default-goal-images?${params}`, {
+      withCredentials: true,
+    })
     return response.data
   }
 
@@ -60,7 +59,7 @@ export const useImageGallery = (initialPage = 1) => {
   })
 
   // Transform the API response into a more usable format
-  const defaultImages = data?.images.map((img) => ({
+  const defaultImages = data?.images.map(img => ({
     id: img.key,
     url: `${API_URL}${img.url}`,
     category: img.category,
@@ -78,16 +77,12 @@ export const useImageGallery = (initialPage = 1) => {
       const formData = new FormData()
       formData.append('image', file)
 
-      const response = await axios.post(
-        `${API_URL}/api/images/upload`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: true,
-        }
-      )
+      const response = await axios.post(`${API_URL}/api/images/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      })
 
       return response.data
     },
@@ -117,9 +112,7 @@ export const useImageGallery = (initialPage = 1) => {
   return {
     defaultImages,
     categories,
-    total: selectedCategory
-      ? Math.min(data?.total || 0, IMAGES_PER_CATEGORY)
-      : data?.total || 0,
+    total: selectedCategory ? Math.min(data?.total || 0, IMAGES_PER_CATEGORY) : data?.total || 0,
     isLoadingDefaultImages,
     isLoadingNextPage: isFetching,
     uploadImage,

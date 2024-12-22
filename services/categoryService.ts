@@ -16,10 +16,7 @@ export const categoryService = {
     return response.data
   },
 
-  async updateCategory(
-    categoryId: string,
-    data: Partial<Category>
-  ): Promise<Category> {
+  async updateCategory(categoryId: string, data: Partial<Category>): Promise<Category> {
     const response = await api.put(`/api/categories/${categoryId}`, data, {
       withCredentials: true,
     })

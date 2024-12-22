@@ -25,15 +25,11 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className='flex flex-col items-center justify-center min-h-[200px] p-4 text-center'>
-            <h2 className='text-lg font-semibold mb-2'>
-              Oops. Something went wrong.
-            </h2>
-            <p className='text-sm text-muted-foreground mb-4'>
-              Try to refresh or contact support
-            </p>
+          <div className="flex flex-col items-center justify-center min-h-[200px] p-4 text-center">
+            <h2 className="text-lg font-semibold mb-2">Oops. Something went wrong.</h2>
+            <p className="text-sm text-muted-foreground mb-4">Try to refresh or contact support</p>
             <Button
-              variant='outline'
+              variant="outline"
               onClick={() => {
                 this.setState({ hasError: false })
                 window.location.reload()

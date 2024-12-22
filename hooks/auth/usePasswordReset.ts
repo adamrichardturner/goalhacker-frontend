@@ -21,9 +21,8 @@ export const usePasswordReset = () => {
     onSuccess: () => {
       toast.success('Password reset successful! You can now log in.')
     },
-    onError: (err) => {
-      const message =
-        err instanceof Error ? err.message : 'Failed to reset password'
+    onError: err => {
+      const message = err instanceof Error ? err.message : 'Failed to reset password'
       setError(message)
       toast.error(message)
     },
@@ -35,8 +34,7 @@ export const usePasswordReset = () => {
       toast.success('Password reset email sent! Please check your inbox.')
       return true
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : 'Failed to send reset email'
+      const message = error instanceof Error ? error.message : 'Failed to send reset email'
       toast.error(message)
       throw error
     }

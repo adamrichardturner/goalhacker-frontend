@@ -1,9 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  insightsService,
-  InsightResponse,
-  Insight,
-} from '@/services/insightsService'
+import { insightsService, InsightResponse, Insight } from '@/services/insightsService'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { useUser } from './auth/useUser'
@@ -41,7 +37,7 @@ export function useInsights(forceGenerate = false) {
 
   const generateMutation = useMutation({
     mutationFn: () => insightsService.getInsights(true),
-    onSuccess: (newData) => {
+    onSuccess: newData => {
       queryClient.setQueryData(['insights'], newData)
       queryClient.invalidateQueries({ queryKey: ['insights-history'] })
     },

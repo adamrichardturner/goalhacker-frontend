@@ -14,8 +14,7 @@ export interface User {
 }
 
 export const isOwner = (user: User) => user.plan_type === 'owner'
-export const isAdmin = (user: User) =>
-  user.plan_type === 'admin' || user.plan_type === 'owner'
+export const isAdmin = (user: User) => user.plan_type === 'admin' || user.plan_type === 'owner'
 export const isPro = (user: User) => user.plan_type === 'pro' || isAdmin(user)
 
 export interface ApiUser {

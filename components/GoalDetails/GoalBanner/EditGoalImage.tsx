@@ -1,13 +1,7 @@
 import { Goal } from '@/types/goal'
 import { Button } from '../../ui/button'
 import { Pen, Trash2 } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '../../ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog'
 import { useState, useCallback, useMemo } from 'react'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
@@ -54,7 +48,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
   }
 
   const handleImageSelect = useCallback((image: Image) => {
-    setEditedGoal((prev) => ({
+    setEditedGoal(prev => ({
       ...prev,
       default_image_key: image.id,
       image_url: image.url,
@@ -82,29 +76,25 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
     <>
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogTrigger asChild>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='bg-input hover:bg-input/98 h-8 w-8'
-          >
-            <Pen className='h-4 w-4 text-primary' />
+          <Button variant="ghost" size="icon" className="bg-input hover:bg-input/98 h-8 w-8">
+            <Pen className="h-4 w-4 text-primary" />
           </Button>
         </DialogTrigger>
-        <DialogContent className='sm:max-w-3xl bg-card max-w-[90vw] overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg'>
+        <DialogContent className="sm:max-w-3xl bg-card max-w-[90vw] overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg">
           <DialogHeader>
-            <DialogTitle className='text-xl font-semibold text-primary'>
+            <DialogTitle className="text-xl font-semibold text-primary">
               Edit Goal Image
             </DialogTitle>
           </DialogHeader>
-          <div className='py-4'>
+          <div className="py-4">
             <ImageGallery
               onImageSelect={handleImageSelect}
               selectedImage={selectedImage}
               existingImage={editedGoal.image_url}
             />
           </div>
-          <div className='flex justify-end gap-2 pt-4'>
-            <Button variant='outline' onClick={() => setIsEditing(false)}>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setIsEditing(false)}>
               Cancel
             </Button>
             <Button onClick={handleSave}>Save Changes</Button>
@@ -114,28 +104,26 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
       <AlertDialog open={isDeleting} onOpenChange={setIsDeleting}>
         <AlertDialogTrigger asChild>
           <Button
-            variant='destructive'
-            size='sm'
-            className='flex items-center gap-2 shrink-0 h-8 w-8'
+            variant="destructive"
+            size="sm"
+            className="flex items-center gap-2 shrink-0 h-8 w-8"
           >
-            <Trash2 className='h-4 w-4' />
+            <Trash2 className="h-4 w-4" />
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              goal and all its subgoals.
+              This action cannot be undone. This will permanently delete your goal and all its
+              subgoals.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDeleting(false)}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setIsDeleting(false)}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleGoalDelete}
-              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete Goal
             </AlertDialogAction>

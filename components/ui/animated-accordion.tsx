@@ -38,13 +38,13 @@ export function AnimatedAccordion({
 
   return (
     <Accordion
-      type='single'
+      type="single"
       value={openItem || undefined}
       onValueChange={onOpenChange}
       collapsible
       className={cn('space-y-4', className)}
     >
-      {items.map((item) => (
+      {items.map(item => (
         <AccordionItem
           key={item.id}
           value={item.id}

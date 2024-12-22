@@ -14,14 +14,14 @@ export default function ArchivedGoalsClient() {
   if (!user) return null
 
   return (
-    <div className='container min-h-screen max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+    <div className="container min-h-screen max-w-3xl flex flex-col gap-6 sm:px-4 w-full">
       <Header user={user} />
-      <div className='mb-0 px-4'>
-        <Link href='/goals'>
-          <Button variant='ghost'>← Back to Goals</Button>
+      <div className="mb-0 px-4">
+        <Link href="/goals">
+          <Button variant="ghost">← Back to Goals</Button>
         </Link>
       </div>
-      <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
+      <main className="flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm">
         <GoalsView goals={goals} user={user} isArchived />
       </main>
     </div>

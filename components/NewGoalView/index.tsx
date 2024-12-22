@@ -11,13 +11,7 @@ import SmartDialog from '../SmartDialog'
 import GoalCreationTimeline from './GoalCreationTimeline'
 import { useUser } from '@/hooks/auth/useUser'
 
-export const stages = [
-  'BasicInfo',
-  'Timeline',
-  'Measure',
-  'Steps',
-  'Review',
-] as const
+export const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
 export type Stage = (typeof stages)[number]
 
 export default function NewGoalView() {
@@ -32,7 +26,7 @@ export default function NewGoalView() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const updateGoalData = (data: Partial<Goal>) => {
-    setGoalData((prev) => ({ ...prev, ...data }))
+    setGoalData(prev => ({ ...prev, ...data }))
   }
 
   const handleNext = () => {
@@ -57,7 +51,7 @@ export default function NewGoalView() {
 
     try {
       setIsSubmitting(true)
-      const subgoals = goalData.subgoals?.filter((subgoal) => subgoal.title)
+      const subgoals = goalData.subgoals?.filter(subgoal => subgoal.title)
       await goalsService.createGoal({
         ...goalData,
         subgoals: subgoals?.length ? subgoals : undefined,
@@ -66,9 +60,7 @@ export default function NewGoalView() {
       toast.success('Goal created successfully!')
       router.push('/goals')
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to create goal'
-      )
+      toast.error(error instanceof Error ? error.message : 'Failed to create goal')
     } finally {
       setIsSubmitting(false)
     }
@@ -79,7 +71,7 @@ export default function NewGoalView() {
   }
 
   if (userLoading) {
-    return <Loading className='h-screen' />
+    return <Loading className="h-screen" />
   }
 
   const renderStage = () => {
@@ -102,33 +94,28 @@ export default function NewGoalView() {
       case 'Steps':
         return <NewGoalStages.Steps {...props} />
       case 'Review':
-        return (
-          <NewGoalStages.Review
-            {...props}
-            onNavigateToStep={handleNavigateToStep}
-          />
-        )
+        return <NewGoalStages.Review {...props} onNavigateToStep={handleNavigateToStep} />
     }
   }
 
   const goalCreationStage = renderStage()
 
   return (
-    <div className='w-full mx-auto bg-card px-4 sm:p-12 py-8 rounded-2xl'>
-      <div className='w-full'>
-        <div className='flex flex-col sm:flex-row items-start justify-between border-b border-border'>
+    <div className="w-full mx-auto bg-card px-4 sm:p-12 py-8 rounded-2xl">
+      <div className="w-full">
+        <div className="flex flex-col sm:flex-row items-start justify-between border-b border-border">
           <div>
-            <h1 className='text-xl font-semibold'>Create a new goal</h1>
-            <div className='flex flex-col gap-0 text-xs'>
-              <p className='text-muted-foreground'>
+            <h1 className="text-xl font-semibold">Create a new goal</h1>
+            <div className="flex flex-col gap-0 text-xs">
+              <p className="text-muted-foreground">
                 Plan your goal for success with the SMART framework.
               </p>
-              <div className='flex pb-6'>
+              <div className="flex pb-6">
                 <SmartDialog />
               </div>
             </div>
           </div>
-          <div className='w-full sm:w-auto'>
+          <div className="w-full sm:w-auto">
             <GoalCreationTimeline
               stages={stages}
               currentStage={currentStage}

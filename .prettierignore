@@ -1,10 +1,12 @@
 .next
+out
 node_modules
+ios
+android
+*.d.ts
 public
 build
-dist
 coverage
-.vercel
 .env*
 package-lock.json
 yarn.lock

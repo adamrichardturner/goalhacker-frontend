@@ -61,21 +61,18 @@ export function useGoal(id?: string) {
     }) => {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
-      const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/subgoals`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            title,
-            target_date: target_date || null,
-            status,
-          }),
-        }
-      )
+      const response = await fetch(`${API_URL}/api/goals/${goal.goal_id}/subgoals`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          title,
+          target_date: target_date || null,
+          status,
+        }),
+      })
 
       if (!response.ok) {
         const error = await response.json()
@@ -84,7 +81,7 @@ export function useGoal(id?: string) {
 
       return response.json()
     },
-    onMutate: async (newSubgoal) => {
+    onMutate: async newSubgoal => {
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
       const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
 
@@ -121,13 +118,7 @@ export function useGoal(id?: string) {
   })
 
   const { mutate: updateSubgoalStatus } = useMutation({
-    mutationFn: async ({
-      subgoalId,
-      status,
-    }: {
-      subgoalId: string
-      status: SubgoalStatus
-    }) => {
+    mutationFn: async ({ subgoalId, status }: { subgoalId: string; status: SubgoalStatus }) => {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
       const response = await fetch(
@@ -154,19 +145,13 @@ export function useGoal(id?: string) {
       queryClient.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Status updated successfully')
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error.message || 'Failed to update status')
     },
   })
 
   const { mutate: updateSubgoalTitle } = useMutation({
-    mutationFn: async ({
-      subgoalId,
-      title,
-    }: {
-      subgoalId: string
-      title: string
-    }) => {
+    mutationFn: async ({ subgoalId, title }: { subgoalId: string; title: string }) => {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
       const response = await fetch(
@@ -193,7 +178,7 @@ export function useGoal(id?: string) {
       queryClient.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Title updated successfully')
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error.message || 'Failed to update title')
     },
   })
@@ -240,9 +225,7 @@ export function useGoal(id?: string) {
         return {
           ...old,
           subgoals: old.subgoals?.map((subgoal: Subgoal) =>
-            subgoal.subgoal_id === subgoalId
-              ? { ...subgoal, target_date }
-              : subgoal
+            subgoal.subgoal_id === subgoalId ? { ...subgoal, target_date } : subgoal
           ),
         }
       })
@@ -268,13 +251,10 @@ export function useGoal(id?: string) {
     mutationFn: async (subgoalId: string) => {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
-      const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-        }
-      )
+      const response = await fetch(`${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
 
       if (!response.ok) {
         const error = await response.json()
@@ -286,7 +266,7 @@ export function useGoal(id?: string) {
       queryClient.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Subgoal deleted successfully')
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error.message || 'Failed to delete subgoal')
     },
   })
@@ -301,7 +281,7 @@ export function useGoal(id?: string) {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
       queryClient.invalidateQueries({ queryKey: ['goals'] })
     },
-    onError: (error) => {
+    onError: error => {
       toast.error('Failed to update goal')
       console.error('Error updating goal:', error)
     },
@@ -318,13 +298,7 @@ export function useGoal(id?: string) {
   })
 
   const { mutate: addProgressNote } = useMutation({
-    mutationFn: async ({
-      title,
-      content,
-    }: {
-      title: string
-      content: string
-    }) => {
+    mutationFn: async ({ title, content }: { title: string; content: string }) => {
       if (!id) throw new Error('Goal ID is required')
       const response = await fetch(`${API_URL}/api/goals/${id}/notes`, {
         method: 'POST',
@@ -341,7 +315,7 @@ export function useGoal(id?: string) {
       if (!response.ok) throw new Error('Failed to add progress note')
       return response.json()
     },
-    onMutate: async (newNote) => {
+    onMutate: async newNote => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
 
@@ -392,32 +366,29 @@ export function useGoal(id?: string) {
       content: string
     }) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(
-        `${API_URL}/api/goals/${id}/notes/${noteId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            note_id: noteId,
-            title: title,
-            content: content,
-          }),
-        }
-      )
+      const response = await fetch(`${API_URL}/api/goals/${id}/notes/${noteId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          note_id: noteId,
+          title: title,
+          content: content,
+        }),
+      })
       if (!response.ok) throw new Error('Failed to update progress note')
       return response.json()
     },
-    onMutate: async (updatedNote) => {
+    onMutate: async updatedNote => {
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
       const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
 
       if (previousGoal) {
         queryClient.setQueryData<Goal>(['goal', id], {
           ...previousGoal,
-          progress_notes: previousGoal.progress_notes?.map((note) =>
+          progress_notes: previousGoal.progress_notes?.map(note =>
             note.note_id === updatedNote.noteId
               ? {
                   ...note,
@@ -446,26 +417,21 @@ export function useGoal(id?: string) {
   const { mutate: deleteProgressNote } = useMutation({
     mutationFn: async (noteId: string) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(
-        `${API_URL}/api/goals/${id}/notes/${noteId}`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-        }
-      )
+      const response = await fetch(`${API_URL}/api/goals/${id}/notes/${noteId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
       if (!response.ok) throw new Error('Failed to delete progress note')
       return response.json()
     },
-    onMutate: async (noteId) => {
+    onMutate: async noteId => {
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
       const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
 
       if (previousGoal) {
         queryClient.setQueryData<Goal>(['goal', id], {
           ...previousGoal,
-          progress_notes: previousGoal.progress_notes?.filter(
-            (note) => note.note_id !== noteId
-          ),
+          progress_notes: previousGoal.progress_notes?.filter(note => note.note_id !== noteId),
         })
       }
 
@@ -505,16 +471,14 @@ export function useGoal(id?: string) {
         }, 500)
       })
     },
-    onMutate: async (updates) => {
+    onMutate: async updates => {
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
       const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
 
       if (previousGoal) {
         const reorderedSubgoals = [...(previousGoal.subgoals || [])]
         updates.forEach(({ subgoal_id, order }) => {
-          const subgoal = reorderedSubgoals.find(
-            (s) => s.subgoal_id === subgoal_id
-          )
+          const subgoal = reorderedSubgoals.find(s => s.subgoal_id === subgoal_id)
           if (subgoal) subgoal.order = order
         })
         reorderedSubgoals.sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -553,22 +517,17 @@ export function useGoal(id?: string) {
       })
       return response
     },
-    onSuccess: (newGoal) => {
+    onSuccess: newGoal => {
       // Invalidate and refetch goals list
       queryClient.invalidateQueries({ queryKey: ['goals'] })
 
       // Add the new goal to the cache
-      queryClient.setQueryData<Goal[]>(['goals'], (old = []) => [
-        ...old,
-        newGoal,
-      ])
+      queryClient.setQueryData<Goal[]>(['goals'], (old = []) => [...old, newGoal])
 
       toast.success('Goal created successfully')
     },
-    onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to create goal'
-      )
+    onError: error => {
+      toast.error(error instanceof Error ? error.message : 'Failed to create goal')
     },
   })
 

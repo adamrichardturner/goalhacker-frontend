@@ -31,39 +31,34 @@ export function ForgotPasswordForm() {
 
   return (
     <AuthCard
-      title='Reset Password'
+      title="Reset Password"
       description="Enter your email address and we'll send you a link to reset your password."
     >
-      <form onSubmit={handleSubmit} className='space-y-6'>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <Input
-          type='email'
-          placeholder='Email'
+          type="email"
+          placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           required
           disabled={isLoading}
-          className='h-12 px-4 text-base'
+          className="h-12 px-4 text-base"
         />
-        {error && <Alert variant='destructive'>{error}</Alert>}
-        <Button
-          type='submit'
-          className='w-full h-12 text-base'
-          disabled={isDisabled}
-          size='lg'
-        >
+        {error && <Alert variant="destructive">{error}</Alert>}
+        <Button type="submit" className="w-full h-12 text-base" disabled={isDisabled} size="lg">
           {isLoading ? (
             <>
-              <div className='mr-2 h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+              <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               Sending...
             </>
           ) : (
             'Send reset link'
           )}
         </Button>
-        <div className='pt-2'>
+        <div className="pt-2">
           <Link
-            href='/login'
-            className='w-full py-4 text-base text-center text-blue-600 active:text-blue-800 block touch-manipulation'
+            href="/login"
+            className="w-full py-4 text-base text-center text-blue-600 active:text-blue-800 block touch-manipulation"
           >
             Back to login
           </Link>

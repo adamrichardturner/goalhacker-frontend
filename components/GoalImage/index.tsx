@@ -18,8 +18,7 @@ interface GoalImageProps {
   className?: string
 }
 
-const badgeBaseStyles =
-  'px-2 py-1 font-[500] text-white rounded-full text-[10px] backdrop-blur'
+const badgeBaseStyles = 'px-2 py-1 font-[500] text-white rounded-full text-[10px] backdrop-blur'
 const targetBadgeStyles =
   'px-2 py-1 rounded-full font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 
@@ -114,22 +113,22 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
   return (
     <AspectRatio ratio={16 / 9} className={className}>
       {isLoading ? (
-        <Skeleton className='h-full w-full rounded-2xl' />
+        <Skeleton className="h-full w-full rounded-2xl" />
       ) : (
         <div
-          className='relative w-full h-[200px] rounded-t-2xl sm:rounded-2xl overflow-hidden group'
+          className="relative w-full h-[200px] rounded-t-2xl sm:rounded-2xl overflow-hidden group"
           style={{
             backgroundImage: `url(${cachedUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
-          <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60' />
-          <div className='absolute inset-0 p-4 flex flex-col justify-between md:justify-between'>
-            <h3 className='text-white font-semibold text-[1.25rem] leading-tight drop-shadow-lg line-clamp-3 mb-auto mt-auto text-left'>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60" />
+          <div className="absolute inset-0 p-4 flex flex-col justify-between md:justify-between">
+            <h3 className="text-white font-semibold text-[1.25rem] leading-tight drop-shadow-lg line-clamp-3 mb-auto mt-auto text-left">
               {goal.title}
             </h3>
-            <div className='flex flex-wrap gap-2 justify-start'>
+            <div className="flex flex-wrap gap-2 justify-start">
               <Badge
                 className={`${badgeBaseStyles} ${statusConfig.className} pointer-events-none`}
                 style={{

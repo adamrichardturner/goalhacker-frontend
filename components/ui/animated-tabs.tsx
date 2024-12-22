@@ -28,11 +28,11 @@ export function AnimatedTabs({
 }: AnimatedTabsProps) {
   return (
     <nav className={cn('flex gap-8 items-center', className)}>
-      <div className='flex gap-6 items-center'>
-        {items.map((item) => {
+      <div className="flex gap-6 items-center">
+        {items.map(item => {
           const isSelected = selected === item.id
           return (
-            <motion.div key={item.id} className='relative'>
+            <motion.div key={item.id} className="relative">
               <button
                 onClick={() => onChange(item.id)}
                 disabled={isLoading || item.disabled}
@@ -41,9 +41,7 @@ export function AnimatedTabs({
                   isSelected
                     ? 'text-primary font-semibold'
                     : 'text-muted-foreground hover:text-foreground',
-                  isLoading || item.disabled
-                    ? 'opacity-50 cursor-not-allowed'
-                    : '',
+                  isLoading || item.disabled ? 'opacity-50 cursor-not-allowed' : '',
                   variant === 'underline' && 'pb-2'
                 )}
               >

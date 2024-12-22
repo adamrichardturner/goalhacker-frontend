@@ -32,9 +32,7 @@ export function Logo({ className, showIcon = true, size = 'sm' }: LogoProps) {
       >
         Goal Hacker
       </h1>
-      {showIcon && (
-        <Mountain className='text-electricPurple' size={sizeClasses[size]} />
-      )}
+      {showIcon && <Mountain className="text-electricPurple" size={sizeClasses[size]} />}
     </div>
   )
 }

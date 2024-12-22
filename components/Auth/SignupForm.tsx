@@ -22,7 +22,7 @@ export default function SignupForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,7 +39,7 @@ export default function SignupForm() {
         email: formData.email,
         password: formData.password,
       })
-      await new Promise((resolve) => setTimeout(resolve, 1100))
+      await new Promise(resolve => setTimeout(resolve, 1100))
     } catch {
       // Error handled by mutation
     } finally {
@@ -65,23 +65,20 @@ export default function SignupForm() {
   const isDisabled = isLoading || isRouting || !isValidForm
 
   return (
-    <AuthCard
-      title='Create an account'
-      description='Enter your details to get started'
-    >
-      <form onSubmit={handleSubmit} className='space-y-4'>
-        <div className='grid grid-cols-2 gap-4'>
+    <AuthCard title="Create an account" description="Enter your details to get started">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
           <Input
-            name='firstName'
-            placeholder='First Name'
+            name="firstName"
+            placeholder="First Name"
             value={formData.firstName}
             onChange={handleChange}
             required
             disabled={isLoading || isRouting}
           />
           <Input
-            name='lastName'
-            placeholder='Last Name'
+            name="lastName"
+            placeholder="Last Name"
             value={formData.lastName}
             onChange={handleChange}
             required
@@ -89,52 +86,47 @@ export default function SignupForm() {
           />
         </div>
         <Input
-          name='username'
-          placeholder='Username'
+          name="username"
+          placeholder="Username"
           value={formData.username}
           onChange={handleChange}
           required
           disabled={isLoading || isRouting}
         />
         <Input
-          name='email'
-          type='email'
-          placeholder='Email'
+          name="email"
+          type="email"
+          placeholder="Email"
           value={formData.email}
           onChange={handleChange}
           required
           disabled={isLoading || isRouting}
         />
         <Input
-          name='password'
-          type='password'
-          placeholder='Password'
+          name="password"
+          type="password"
+          placeholder="Password"
           value={formData.password}
           onChange={handleChange}
           required
           disabled={isLoading || isRouting}
         />
         <Input
-          name='confirmPassword'
-          type='password'
-          placeholder='Confirm Password'
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleChange}
           required
           disabled={isLoading || isRouting}
         />
-        {error && <Alert variant='destructive'>{error}</Alert>}
-        <Button
-          type='submit'
-          className='w-full'
-          disabled={isDisabled}
-          size='lg'
-        >
+        {error && <Alert variant="destructive">{error}</Alert>}
+        <Button type="submit" className="w-full" disabled={isDisabled} size="lg">
           {isLoading || isRouting ? 'Creating account...' : 'Create account'}
         </Button>
-        <p className='text-sm text-center text-muted-foreground'>
+        <p className="text-sm text-center text-muted-foreground">
           Already have an account?{' '}
-          <Link href='/login' className='text-blue-600 hover:underline'>
+          <Link href="/login" className="text-blue-600 hover:underline">
             Login
           </Link>
         </p>

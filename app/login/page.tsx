@@ -7,7 +7,7 @@ import LoginForm from '@/components/Auth/LoginForm'
 
 export default function LoginPage() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center'>
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <PublicLogo />
       <Suspense fallback={<div>Loading login form...</div>}>
         <LoginForm />

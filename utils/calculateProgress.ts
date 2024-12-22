@@ -12,9 +12,7 @@ interface ProgressStats {
   inProgressCount: number
 }
 
-export const calculateProgress = (
-  subgoals: Subgoal[] | undefined
-): ProgressStats => {
+export const calculateProgress = (subgoals: Subgoal[] | undefined): ProgressStats => {
   if (!subgoals || subgoals.length === 0) {
     return {
       progressPercentage: 0,

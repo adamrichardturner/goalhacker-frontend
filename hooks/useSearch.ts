@@ -21,9 +21,7 @@ export function useSearch() {
       setError(undefined)
 
       try {
-        const { data, error } = await searchService.searchGoals(
-          searchQuery.trim()
-        )
+        const { data, error } = await searchService.searchGoals(searchQuery.trim())
         if (error) {
           setError(error)
           setResults([])

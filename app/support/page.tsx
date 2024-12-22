@@ -10,13 +10,13 @@ import { Textarea } from '@/components/ui/textarea'
 
 function FormSkeleton() {
   return (
-    <div className='container flex h-screen w-screen flex-col items-center justify-center'>
-      <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
-        <div className='flex flex-col space-y-2 text-center'>
-          <Skeleton className='h-8 w-full' />
-          <Skeleton className='h-4 w-3/4 mx-auto' />
+    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="flex flex-col space-y-2 text-center">
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-4 w-3/4 mx-auto" />
         </div>
-        <Skeleton className='h-[200px] w-full' />
+        <Skeleton className="h-[200px] w-full" />
       </div>
     </div>
   )
@@ -24,14 +24,12 @@ function FormSkeleton() {
 
 function SupportContent() {
   return (
-    <div className='container flex h-screen w-screen flex-col items-center justify-center'>
-      <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]'>
-        <div className='flex flex-col space-y-2 text-center'>
-          <Logo className='mx-auto h-6 w-6' />
-          <h1 className='text-2xl font-semibold tracking-tight'>Support</h1>
-          <p className='text-sm text-muted-foreground'>
-            How can we help you today?
-          </p>
+    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
+        <div className="flex flex-col space-y-2 text-center">
+          <Logo className="mx-auto h-6 w-6" />
+          <h1 className="text-2xl font-semibold tracking-tight">Support</h1>
+          <p className="text-sm text-muted-foreground">How can we help you today?</p>
         </div>
         <Suspense fallback={<FormSkeleton />}>
           <SupportForm />
@@ -62,7 +60,7 @@ function SupportForm() {
 
     try {
       // TODO: Implement support form submission
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000))
       alert('Support request sent! We will get back to you soon.')
       setEmail('')
       setMessage('')
@@ -74,44 +72,44 @@ function SupportForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-4'>
-      <div className='grid gap-2'>
-        <div className='grid gap-1'>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid gap-2">
+        <div className="grid gap-1">
           <Input
-            id='email'
-            name='email'
-            placeholder='name@example.com'
-            type='email'
-            autoComplete='email'
+            id="email"
+            name="email"
+            placeholder="name@example.com"
+            type="email"
+            autoComplete="email"
             required
             disabled={isLoading}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            aria-label='Email address'
+            onChange={e => setEmail(e.target.value)}
+            aria-label="Email address"
           />
         </div>
-        <div className='grid gap-1'>
+        <div className="grid gap-1">
           <Textarea
-            id='message'
-            name='message'
-            placeholder='How can we help you?'
+            id="message"
+            name="message"
+            placeholder="How can we help you?"
             required
             disabled={isLoading}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            aria-label='Support message'
+            onChange={e => setMessage(e.target.value)}
+            aria-label="Support message"
             rows={4}
           />
         </div>
         {error && (
-          <Alert variant='destructive' role='alert'>
+          <Alert variant="destructive" role="alert">
             {error}
           </Alert>
         )}
-        <Button type='submit' disabled={isLoading} className='w-full'>
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? (
             <>
-              <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               Sending...
             </>
           ) : (

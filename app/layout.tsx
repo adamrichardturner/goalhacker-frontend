@@ -14,25 +14,21 @@ import { CapacitorBackHandler } from '@/components/CapacitorBackHandler'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta
-          name='viewport'
-          content='width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover'
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
         />
-        <meta name='theme-color' content='#744afc' />
+        <meta name="theme-color" content="#744afc" />
       </head>
       <body className={`${inter.className} scroll-smooth overflow-y-scroll`}>
         <Providers>
           <ThemeProvider>
             {children}
-            <Sonner position='top-center' />
+            <Sonner position="top-center" />
             <BackToTop />
             <FloatingInsights />
             <Suspense>

@@ -47,14 +47,12 @@ export const authService = {
       }
 
       // Add a small delay to ensure cookie is set
-      await new Promise((resolve) => setTimeout(resolve, 100))
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       return response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(
-          error.response?.data?.error || 'Invalid email or password'
-        )
+        throw new Error(error.response?.data?.error || 'Invalid email or password')
       }
       throw error
     }
@@ -62,13 +60,9 @@ export const authService = {
 
   async register(userData: Partial<User>) {
     try {
-      const response = await api.post<RegisterResponse>(
-        '/api/users/register',
-        userData,
-        {
-          withCredentials: true,
-        }
-      )
+      const response = await api.post<RegisterResponse>('/api/users/register', userData, {
+        withCredentials: true,
+      })
 
       if (!response.data.success) {
         throw new Error(response.data.error || 'Registration failed')
@@ -77,9 +71,7 @@ export const authService = {
       return response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(
-          error.response?.data?.error || 'Failed to register user'
-        )
+        throw new Error(error.response?.data?.error || 'Failed to register user')
       }
       throw error
     }
@@ -98,9 +90,7 @@ export const authService = {
       return response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(
-          error.response?.data?.error || 'Failed to get user profile'
-        )
+        throw new Error(error.response?.data?.error || 'Failed to get user profile')
       }
       throw error
     }
@@ -159,19 +149,13 @@ export const authService = {
       return response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(
-          error.response?.data?.error || 'Failed to send reset password email'
-        )
+        throw new Error(error.response?.data?.error || 'Failed to send reset password email')
       }
       throw error
     }
   },
 
-  async resetPasswordConfirm(
-    token: string,
-    email: string,
-    newPassword: string
-  ) {
+  async resetPasswordConfirm(token: string, email: string, newPassword: string) {
     try {
       const response = await api.post<{ success: boolean }>(
         '/api/users/reset-password/confirm',
@@ -181,9 +165,7 @@ export const authService = {
       return response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(
-          error.response?.data?.error || 'Failed to reset password'
-        )
+        throw new Error(error.response?.data?.error || 'Failed to reset password')
       }
       throw error
     }

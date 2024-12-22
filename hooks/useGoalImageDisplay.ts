@@ -2,8 +2,30 @@ import { Goal } from '@/types/goal'
 import { useMemo } from 'react'
 import { Capacitor } from '@capacitor/core'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+// Get the API URL based on platform and environment
+const getApiUrl = () => {
+  const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'development'
+
+  if (Capacitor.isNativePlatform()) {
+    // For native platforms (iOS/Android)
+    if (isDev) {
+      // Development: use localhost for iOS and 10.0.2.2 for Android
+      return Capacitor.getPlatform() === 'ios'
+        ? process.env.NEXT_PUBLIC_DEV_API_URL || 'http://localhost:5000'
+        : 'http://10.0.2.2:5000' // Android emulator special case
+    }
+    // Production: use the production API URL
+    return process.env.NEXT_PUBLIC_PROD_API_URL || 'https://api.goalhacker.app'
+  }
+
+  // For web platform
+  return isDev
+    ? process.env.NEXT_PUBLIC_DEV_API_URL || 'http://localhost:5000'
+    : process.env.NEXT_PUBLIC_PROD_API_URL || 'https://api.goalhacker.app'
+}
+
+const API_URL = getApiUrl()
+const IS_PRODUCTION = process.env.NEXT_PUBLIC_APP_ENV === 'production'
 
 export default function useGoalImageDisplay(goal: Goal) {
   const getPlatform = () => {
@@ -37,20 +59,12 @@ export default function useGoalImageDisplay(goal: Goal) {
     // If the goal has an image_url, use it
     if (goal.image_url) {
       // If it's already a full URL or file:// URL, use it as is
-      if (
-        goal.image_url.startsWith('http') ||
-        goal.image_url.startsWith('file://')
-      ) {
+      if (goal.image_url.startsWith('http') || goal.image_url.startsWith('file://')) {
         return goal.image_url
       }
 
-      // In production, prepend /api/images to the path
-      if (IS_PRODUCTION) {
-        return `${API_URL}/api/images${goal.image_url}`
-      }
-
-      // In development, use the original path
-      return `${API_URL}${goal.image_url}`
+      // Always prepend the API URL for image paths
+      return `${API_URL}/api/images${goal.image_url}`
     }
 
     // If no image_url but has a default_image_key, construct the URL

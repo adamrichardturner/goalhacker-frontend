@@ -9,7 +9,7 @@ interface PublicLogoProps {
 
 export function PublicLogo({ size = 'lg' }: PublicLogoProps) {
   return (
-    <Link href='/' className='w-full pb-6 flex justify-center'>
+    <Link href="/" className="w-full pb-6 flex justify-center">
       <Logo size={size} />
     </Link>
   )

@@ -39,23 +39,19 @@ export function VerifyEmailContent() {
   }, [params.token, params.email, verifyEmail])
 
   if (!params.token || !params.email) {
-    return (
-      <Alert variant='destructive'>
-        Invalid verification link. Please request a new one.
-      </Alert>
-    )
+    return <Alert variant="destructive">Invalid verification link. Please request a new one.</Alert>
   }
 
   if (error) {
-    return <Alert variant='destructive'>{error}</Alert>
+    return <Alert variant="destructive">{error}</Alert>
   }
 
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       <Alert>Verifying your email...</Alert>
-      <Button disabled className='w-full'>
+      <Button disabled className="w-full">
         {isLoading && (
-          <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         )}
         Please wait...
       </Button>

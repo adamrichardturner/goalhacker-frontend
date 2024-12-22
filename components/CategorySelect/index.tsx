@@ -63,26 +63,19 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
   }
 
   return (
-    <div className='flex gap-2 items-start'>
+    <div className="flex gap-2 items-start">
       <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className='bg-input'>
-          <SelectValue
-            placeholder={
-              isLoading ? 'Loading categories...' : 'Select a category'
-            }
-          />
+        <SelectTrigger className="bg-input">
+          <SelectValue placeholder={isLoading ? 'Loading categories...' : 'Select a category'} />
         </SelectTrigger>
-        <SelectContent className='bg-input'>
+        <SelectContent className="bg-input">
           {isLoading ? (
-            <SelectItem value='loading' disabled>
+            <SelectItem value="loading" disabled>
               Loading...
             </SelectItem>
           ) : (
-            categories.map((category) => (
-              <SelectItem
-                key={category.category_id}
-                value={category.category_id}
-              >
+            categories.map(category => (
+              <SelectItem key={category.category_id} value={category.category_id}>
                 {category.name}
               </SelectItem>
             ))
@@ -92,34 +85,28 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button variant='outline' size='icon' className='h-12 w-12'>
-            <PlusCircle className='h-5 w-5' />
+          <Button variant="outline" size="icon" className="h-12 w-12">
+            <PlusCircle className="h-5 w-5" />
           </Button>
         </DialogTrigger>
-        <DialogContent className='max-w-[90vw] sm:max-w-md rounded-lg'>
+        <DialogContent className="max-w-[90vw] sm:max-w-md rounded-lg">
           <DialogHeader>
             <DialogTitle>Create New Category</DialogTitle>
-            <DialogDescription>
-              Add a new category to organize your goals.
-            </DialogDescription>
+            <DialogDescription>Add a new category to organize your goals.</DialogDescription>
           </DialogHeader>
-          <div className='space-y-4 py-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='name'>Name</Label>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
               <Input
-                id='name'
-                placeholder='Enter category name'
+                id="name"
+                placeholder="Enter category name"
                 value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
+                onChange={e => setNewCategory(e.target.value)}
               />
             </div>
           </div>
-          <DialogFooter className='flex justify-end gap-4'>
-            <Button
-              variant='outline'
-              onClick={() => setIsOpen(false)}
-              disabled={isCreating}
-            >
+          <DialogFooter className="flex justify-end gap-4">
+            <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isCreating}>
               Cancel
             </Button>
             <Button onClick={handleCreateCategory} disabled={isCreating}>

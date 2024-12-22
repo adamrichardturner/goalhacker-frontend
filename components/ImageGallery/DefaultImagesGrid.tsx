@@ -33,9 +33,9 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
       ? Array.from({ length: 6 }).map((_, index) => (
           <div
             key={`skeleton-${index}`}
-            className='relative rounded-lg overflow-hidden border-2 border-transparent p-[0.5px] aspect-[16/9]'
+            className="relative rounded-lg overflow-hidden border-2 border-transparent p-[0.5px] aspect-[16/9]"
           >
-            <Skeleton className='w-full h-full rounded-lg' />
+            <Skeleton className="w-full h-full rounded-lg" />
           </div>
         ))
       : defaultImages?.map((image: Image) => (
@@ -44,22 +44,20 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             className={cn(
               'relative cursor-pointer rounded-lg overflow-hidden border-2 p-[0.5px] aspect-[16/9]',
               'hover:border-electricPurple',
-              selectedImage?.id === image.id
-                ? 'border-electricPurple'
-                : 'border-transparent'
+              selectedImage?.id === image.id ? 'border-electricPurple' : 'border-transparent'
             )}
             onClick={() => onImageSelect(image)}
           >
             <img
               src={image.url}
               alt={`${image.category} image`}
-              className='w-full h-full object-cover object-center rounded-lg'
+              className="w-full h-full object-cover object-center rounded-lg"
             />
           </div>
         ))
 
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       {categories && (
         <CategorySelector
           categories={categories}
@@ -68,28 +66,28 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
         />
       )}
 
-      <ScrollArea className='relative'>
-        <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 p-1 sm:transition-all sm:duration-300 sm:ease-in-out'>
+      <ScrollArea className="relative">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 p-1 sm:transition-all sm:duration-300 sm:ease-in-out">
           {gridItems}
         </div>
       </ScrollArea>
 
       {totalPages > 1 && (
-        <div className='flex justify-center gap-2 mt-4'>
+        <div className="flex justify-center gap-2 mt-4">
           <Button
-            variant='outline'
-            size='sm'
+            variant="outline"
+            size="sm"
             onClick={() => changePage(page - 1)}
             disabled={page === 1 || isLoadingNextPage}
           >
             Prev
           </Button>
-          <span className='flex text-xs sm:text-sm items-center px-3'>
+          <span className="flex text-xs sm:text-sm items-center px-3">
             {page}/{totalPages}
           </span>
           <Button
-            variant='outline'
-            size='sm'
+            variant="outline"
+            size="sm"
             onClick={() => changePage(page + 1)}
             disabled={page === totalPages || isLoadingNextPage}
           >

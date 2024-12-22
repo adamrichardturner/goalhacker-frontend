@@ -3,13 +3,7 @@
 import { Goal } from '@/types/goal'
 import { BasicInfo, Timeline, Measure, Steps, Review } from './stages'
 
-export const stages = [
-  'BasicInfo',
-  'Timeline',
-  'Measure',
-  'Steps',
-  'Review',
-] as const
+export const stages = ['BasicInfo', 'Timeline', 'Measure', 'Steps', 'Review'] as const
 
 export type Stage = (typeof stages)[number]
 

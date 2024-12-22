@@ -47,14 +47,14 @@ export default function ProgressNotes({
   const [openItem, setOpenItem] = useState<string | null>(null)
 
   const accordionItems =
-    goal.progress_notes?.map((note) => ({
+    goal.progress_notes?.map(note => ({
       id: note.note_id || '',
       title: (
-        <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2'>
-          <h3 className='text-base font-semibold' title={note.title}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2">
+          <h3 className="text-base font-semibold" title={note.title}>
             {truncateText(note.title, 30)}
           </h3>
-          <span className='text-xs text-white/80 shrink-0'>
+          <span className="text-xs text-white/80 shrink-0">
             {note.created_at &&
               `${formatDate(note.created_at, settings?.date_format)} at ${formatTime(note.created_at)}`}
           </span>
@@ -63,33 +63,33 @@ export default function ProgressNotes({
       content: (
         <>
           <div
-            className='prose prose-sm max-w-none'
+            className="prose prose-sm max-w-none"
             dangerouslySetInnerHTML={{ __html: note.content }}
           />
-          <div className='flex justify-end gap-2 mt-4'>
+          <div className="flex justify-end gap-2 mt-4">
             {onDeleteNote && (
               <Button
-                variant='ghost'
-                size='sm'
-                onClick={(e) => {
+                variant="ghost"
+                size="sm"
+                onClick={e => {
                   e.stopPropagation()
                   setDeletingNote(note.note_id || '')
                 }}
-                className='hover:bg-destructive/10 bg-destructive/10 hover:text-destructive text-destructive/80'
+                className="hover:bg-destructive/10 bg-destructive/10 hover:text-destructive text-destructive/80"
               >
-                <Trash2 className='h-4 w-4' />
+                <Trash2 className="h-4 w-4" />
               </Button>
             )}
             <Button
-              variant='ghost'
-              size='sm'
-              onClick={(e) => {
+              variant="ghost"
+              size="sm"
+              onClick={e => {
                 e.stopPropagation()
                 setEditingNote(note.note_id || '')
               }}
-              className='bg-input hover:bg-input/98 h-8 w-8'
+              className="bg-input hover:bg-input/98 h-8 w-8"
             >
-              <Pen className='h-4 w-4 text-primary' />
+              <Pen className="h-4 w-4 text-primary" />
             </Button>
           </div>
         </>
@@ -98,28 +98,20 @@ export default function ProgressNotes({
 
   return (
     <Card>
-      <CardHeader className='flex flex-row justify-between items-center'>
-        <CardTitle className='text-xl sm:text-2xl font-semibold'>
-          Notes
-        </CardTitle>
+      <CardHeader className="flex flex-row justify-between items-center">
+        <CardTitle className="text-xl sm:text-2xl font-semibold">Notes</CardTitle>
 
         <Dialog open={showProgressNote} onOpenChange={setShowProgressNote}>
           <DialogTrigger asChild>
-            <Button
-              size='md'
-              className='bg-electricPurple hover:bg-electricPurple/90'
-            >
+            <Button size="md" className="bg-electricPurple hover:bg-electricPurple/90">
               Add Note
             </Button>
           </DialogTrigger>
-          <DialogContent className='sm:max-w-[600px]'>
+          <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>Add Progress Note</DialogTitle>
             </DialogHeader>
-            <ProgressNoteEditor
-              onSubmit={onAddNote}
-              onCancel={() => setShowProgressNote(false)}
-            />
+            <ProgressNoteEditor onSubmit={onAddNote} onCancel={() => setShowProgressNote(false)} />
           </DialogContent>
         </Dialog>
       </CardHeader>
@@ -129,34 +121,32 @@ export default function ProgressNotes({
             items={accordionItems}
             openItem={openItem}
             onOpenChange={setOpenItem}
-            variant='purple'
+            variant="purple"
           />
         ) : (
-          <div className='flex flex-col items-center justify-center py-8 text-center space-y-2'>
-            <ScrollText className='h-12 w-12 text-muted-foreground' />
-            <p className='text-muted-foreground'>No progress notes yet.</p>
-            <p className='text-sm text-muted-foreground'>
+          <div className="flex flex-col items-center justify-center py-8 text-center space-y-2">
+            <ScrollText className="h-12 w-12 text-muted-foreground" />
+            <p className="text-muted-foreground">No progress notes yet.</p>
+            <p className="text-sm text-muted-foreground">
               Click &quot;Add Note&quot; to track your progress and milestones.
             </p>
           </div>
         )}
 
         <Dialog open={!!editingNote} onOpenChange={() => setEditingNote(null)}>
-          <DialogContent className='sm:max-w-[600px]'>
+          <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>Edit Progress Note</DialogTitle>
             </DialogHeader>
             {editingNote && (
               <ProgressNoteEditor
                 initialTitle={
-                  goal.progress_notes?.find((n) => n.note_id === editingNote)
-                    ?.title || ''
+                  goal.progress_notes?.find(n => n.note_id === editingNote)?.title || ''
                 }
                 initialContent={
-                  goal.progress_notes?.find((n) => n.note_id === editingNote)
-                    ?.content || ''
+                  goal.progress_notes?.find(n => n.note_id === editingNote)?.content || ''
                 }
-                onSubmit={(note) => {
+                onSubmit={note => {
                   onEditNote(editingNote, note)
                   setEditingNote(null)
                 }}
@@ -166,22 +156,16 @@ export default function ProgressNotes({
           </DialogContent>
         </Dialog>
 
-        <AlertDialog
-          open={!!deletingNote}
-          onOpenChange={() => setDeletingNote(null)}
-        >
+        <AlertDialog open={!!deletingNote} onOpenChange={() => setDeletingNote(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Progress Note</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete this progress note? This action
-                cannot be undone.
+                Are you sure you want to delete this progress note? This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setDeletingNote(null)}>
-                Cancel
-              </AlertDialogCancel>
+              <AlertDialogCancel onClick={() => setDeletingNote(null)}>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
                   if (deletingNote && onDeleteNote) {
@@ -189,7 +173,7 @@ export default function ProgressNotes({
                     setDeletingNote(null)
                   }
                 }}
-                className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 Delete
               </AlertDialogAction>

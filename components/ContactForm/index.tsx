@@ -49,69 +49,65 @@ export function ContactForm() {
     } catch (error) {
       console.error('Error sending message:', error)
       toast.error(
-        error instanceof Error
-          ? error.message
-          : 'Failed to send message. Please try again.'
+        error instanceof Error ? error.message : 'Failed to send message. Please try again.'
       )
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-6'>
-      <div className='space-y-4'>
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-          <div className='space-y-2'>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
             <Input
-              id='name'
-              name='name'
-              type='text'
-              placeholder='Your Name'
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Your Name"
               required
               minLength={2}
               value={formData.name}
               onChange={handleChange}
-              className='h-12 bg-muted/5'
+              className="h-12 bg-muted/5"
               disabled={isSubmitting}
             />
           </div>
-          <div className='space-y-2'>
+          <div className="space-y-2">
             <Input
-              id='email'
-              name='email'
-              type='email'
-              placeholder='Your Email'
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Your Email"
               required
               value={formData.email}
               onChange={handleChange}
-              className='h-12 bg-muted/5'
+              className="h-12 bg-muted/5"
               disabled={isSubmitting}
             />
           </div>
         </div>
-        <div className='space-y-2'>
+        <div className="space-y-2">
           <Textarea
-            id='message'
-            name='message'
-            placeholder='Your Message'
+            id="message"
+            name="message"
+            placeholder="Your Message"
             required
             minLength={10}
             value={formData.message}
             onChange={handleChange}
-            className='min-h-[150px] bg-paper resize-none'
+            className="min-h-[150px] bg-paper resize-none"
             disabled={isSubmitting}
           />
         </div>
       </div>
-      <Button type='submit' disabled={isSubmitting} className='w-full h-12'>
+      <Button type="submit" disabled={isSubmitting} className="w-full h-12">
         {isSubmitting ? 'Sending...' : 'Send Message'}
       </Button>
     </form>

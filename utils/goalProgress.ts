@@ -21,9 +21,7 @@ export const calculateGoalProgress = (goal: Goal): ProgressResult => {
     }
   }
 
-  const completedSteps = goal.subgoals!.filter(
-    (subgoal) => subgoal.status === 'completed'
-  ).length
+  const completedSteps = goal.subgoals!.filter(subgoal => subgoal.status === 'completed').length
   const totalSteps = goal.subgoals!.length
 
   return {

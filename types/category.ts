@@ -10,9 +10,7 @@ export interface Category {
 
 export type CategoryCreateInput = Pick<Category, 'name' | 'description'>
 
-export type CategoryUpdateInput = Partial<
-  Pick<Category, 'name' | 'description'>
->
+export type CategoryUpdateInput = Partial<Pick<Category, 'name' | 'description'>>
 
 export interface CategoryWithGoalCount extends Category {
   goal_count: number

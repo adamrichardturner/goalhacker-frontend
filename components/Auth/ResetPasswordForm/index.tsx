@@ -38,38 +38,36 @@ export function ResetPasswordForm() {
 
   if (!params.token || !params.email) {
     return (
-      <Alert variant='destructive'>
-        Invalid reset password link. Please request a new one.
-      </Alert>
+      <Alert variant="destructive">Invalid reset password link. Please request a new one.</Alert>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-4'>
-      <div className='grid gap-2'>
-        <div className='grid gap-1'>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid gap-2">
+        <div className="grid gap-1">
           <Input
-            id='password'
-            name='password'
-            placeholder='New password'
-            type='password'
-            autoComplete='new-password'
+            id="password"
+            name="password"
+            placeholder="New password"
+            type="password"
+            autoComplete="new-password"
             required
             disabled={isLoading}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            aria-label='New password'
+            onChange={e => setPassword(e.target.value)}
+            aria-label="New password"
           />
         </div>
         {error && (
-          <Alert variant='destructive' role='alert'>
+          <Alert variant="destructive" role="alert">
             {error}
           </Alert>
         )}
-        <Button type='submit' disabled={isLoading} className='w-full'>
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? (
             <>
-              <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               Resetting...
             </>
           ) : (

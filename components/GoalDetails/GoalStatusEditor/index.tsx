@@ -31,10 +31,7 @@ const GOAL_STATUSES: { label: string; value: GoalStatus }[] = [
   { label: 'Archived', value: 'archived' },
 ]
 
-export function GoalStatusEditor({
-  goal,
-  onStatusUpdate,
-}: GoalStatusEditorProps) {
+export function GoalStatusEditor({ goal, onStatusUpdate }: GoalStatusEditorProps) {
   const [selectedStatus, setSelectedStatus] = useState<GoalStatus>(goal.status)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { updateGoal } = useGoal(goal.goal_id)
@@ -58,16 +55,16 @@ export function GoalStatusEditor({
   }
 
   return (
-    <div className='flex flex-col gap-2 sm:w-[192px] w-full rounded-lg'>
-      <div className='flex flex-col items-end gap-1'>
-        <Label className='text-xs'>Goal Status</Label>
-        <div className='flex items-center justify-start gap-2'>
+    <div className="flex flex-col gap-2 sm:w-[192px] w-full rounded-lg">
+      <div className="flex flex-col items-end gap-1">
+        <Label className="text-xs">Goal Status</Label>
+        <div className="flex items-center justify-start gap-2">
           <Select value={selectedStatus} onValueChange={handleStatusChange}>
-            <SelectTrigger className='w-full sm:w-[118px]'>
-              <SelectValue placeholder='Select status' />
+            <SelectTrigger className="w-full sm:w-[118px]">
+              <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-              {GOAL_STATUSES.map((status) => (
+              {GOAL_STATUSES.map(status => (
                 <SelectItem key={status.value} value={status.value}>
                   {status.label}
                 </SelectItem>
@@ -75,10 +72,7 @@ export function GoalStatusEditor({
             </SelectContent>
           </Select>
 
-          <Button
-            onClick={handleSaveClick}
-            disabled={selectedStatus === goal.status}
-          >
+          <Button onClick={handleSaveClick} disabled={selectedStatus === goal.status}>
             Save
           </Button>
         </div>
@@ -90,11 +84,11 @@ export function GoalStatusEditor({
             <DialogTitle>Update Goal Status</DialogTitle>
             <DialogDescription>
               Are you sure you want to change the status of this goal to{' '}
-              {GOAL_STATUSES.find((s) => s.value === selectedStatus)?.label}?
+              {GOAL_STATUSES.find(s => s.value === selectedStatus)?.label}?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant='outline' onClick={() => setIsDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
             <Button onClick={handleConfirmStatusChange}>Confirm Change</Button>

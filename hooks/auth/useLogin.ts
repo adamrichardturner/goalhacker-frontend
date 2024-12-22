@@ -9,13 +9,7 @@ export function useLogin() {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
-  const login = async ({
-    email,
-    password,
-  }: {
-    email: string
-    password: string
-  }) => {
+  const login = async ({ email, password }: { email: string; password: string }) => {
     setIsLoading(true)
     setError(null)
 

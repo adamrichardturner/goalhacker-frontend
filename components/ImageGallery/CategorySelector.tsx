@@ -19,25 +19,22 @@ export function CategorySelector({
   onSelectCategory,
 }: CategorySelectorProps) {
   return (
-    <div className='space-y-2'>
-      <Label htmlFor='category'>Category</Label>
+    <div className="space-y-2">
+      <Label htmlFor="category">Category</Label>
       <Select
         value={selectedCategory || 'all'}
-        onValueChange={(value) =>
-          onSelectCategory(value === 'all' ? '' : value)
-        }
+        onValueChange={value => onSelectCategory(value === 'all' ? '' : value)}
       >
-        <SelectTrigger className='w-[180px]' id='category'>
-          <SelectValue placeholder='Select category'>
+        <SelectTrigger className="w-[180px]" id="category">
+          <SelectValue placeholder="Select category">
             {selectedCategory
-              ? selectedCategory.charAt(0).toUpperCase() +
-                selectedCategory.slice(1)
+              ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)
               : 'All Categories'}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value='all'>All Categories</SelectItem>
-          {categories.map((category) => (
+          <SelectItem value="all">All Categories</SelectItem>
+          {categories.map(category => (
             <SelectItem key={category} value={category}>
               {category.charAt(0).toUpperCase() + category.slice(1)}
             </SelectItem>

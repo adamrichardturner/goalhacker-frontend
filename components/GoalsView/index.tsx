@@ -8,13 +8,7 @@ import Link from 'next/link'
 import Goal from '../Goal'
 import { Skeleton } from '../ui/skeleton'
 import EmptyGoalsState from './EmptyGoalsState'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Label } from '../ui/label'
 import { AnimatedTabs } from '../ui/animated-tabs'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -29,12 +23,7 @@ interface GoalsViewProps {
   isArchived?: boolean
 }
 
-const GoalsView = ({
-  goals = [],
-  user,
-  isLoading = false,
-  isArchived = false,
-}: GoalsViewProps) => {
+const GoalsView = ({ goals = [], user, isLoading = false, isArchived = false }: GoalsViewProps) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('All')
   const [delayedLoading, setDelayedLoading] = useState(true)
   const [selectedGoal, setSelectedGoal] = useState<GoalType | null>(null)
@@ -46,7 +35,7 @@ const GoalsView = ({
   useEffect(() => {
     const selectedId = searchParams.get('selected')
     if (selectedId && goals.length > 0) {
-      const goal = goals.find((g) => g.goal_id === selectedId)
+      const goal = goals.find(g => g.goal_id === selectedId)
       setSelectedGoal(goal || null)
     } else {
       setSelectedGoal(null)
@@ -64,33 +53,27 @@ const GoalsView = ({
     }
   }, [isLoading, user])
 
-  const nonArchivedGoals = goals.filter((goal) => goal.status !== 'archived')
+  const nonArchivedGoals = goals.filter(goal => goal.status !== 'archived')
   const statusCounts: Record<FilterType, number> = {
     All: nonArchivedGoals.length,
-    Planned: nonArchivedGoals.filter((goal) => goal.status === 'planned')
-      .length,
-    Active: nonArchivedGoals.filter((goal) => goal.status === 'in_progress')
-      .length,
-    Completed: nonArchivedGoals.filter((goal) => goal.status === 'completed')
-      .length,
+    Planned: nonArchivedGoals.filter(goal => goal.status === 'planned').length,
+    Active: nonArchivedGoals.filter(goal => goal.status === 'in_progress').length,
+    Completed: nonArchivedGoals.filter(goal => goal.status === 'completed').length,
   }
 
   // Only show filters that have goals
-  const availableFilters = filters.filter((filter) =>
+  const availableFilters = filters.filter(filter =>
     filter === 'All' ? nonArchivedGoals.length > 0 : statusCounts[filter] > 0
   )
 
   // If selected filter is not available, switch to 'All' or first available filter
   useEffect(() => {
-    if (
-      !availableFilters.includes(selectedFilter) &&
-      availableFilters.length > 0
-    ) {
+    if (!availableFilters.includes(selectedFilter) && availableFilters.length > 0) {
       setSelectedFilter(availableFilters[0])
     }
   }, [availableFilters, selectedFilter])
 
-  const filteredGoals = goals.filter((goal) => {
+  const filteredGoals = goals.filter(goal => {
     if (isArchived) {
       return goal.status === 'archived'
     }
@@ -111,7 +94,7 @@ const GoalsView = ({
     }
   })
 
-  const archivedGoals = goals.filter((goal) => goal.status === 'archived')
+  const archivedGoals = goals.filter(goal => goal.status === 'archived')
   const displayGoals = isArchived ? archivedGoals : filteredGoals
 
   const handleBackToGoals = () => {
@@ -122,12 +105,12 @@ const GoalsView = ({
 
   if (selectedGoal) {
     return (
-      <div className='space-y-4'>
-        <div className='mb-0'>
+      <div className="space-y-4">
+        <div className="mb-0">
           <Button
-            variant='ghost'
+            variant="ghost"
             onClick={handleBackToGoals}
-            className='text-muted-foreground hover:text-foreground'
+            className="text-muted-foreground hover:text-foreground"
           >
             ← Back to Goals
           </Button>
@@ -138,17 +121,17 @@ const GoalsView = ({
   }
 
   return (
-    <div className='space-y-6'>
-      <div className='flex justify-between items-center'>
-        <div className='flex justify-between items-center w-full'>
-          <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center w-full">
+          <h1 className="text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty">
             {isArchived ? 'Archived Goals' : `Welcome, ${user?.first_name} 👋`}
           </h1>
 
-          <div className='flex items-center gap-4'>
+          <div className="flex items-center gap-4">
             {goals.length > 0 && !isArchived && (
-              <Link href='/goals/new'>
-                <Button className='bg-electricPurple p-5 hover:bg-electricPurple/95 hover:drop-shadow-sm font-regular text-white text-xs'>
+              <Link href="/goals/new">
+                <Button className="bg-electricPurple p-5 hover:bg-electricPurple/95 hover:drop-shadow-sm font-regular text-white text-xs">
                   New Goal
                 </Button>
               </Link>
@@ -158,39 +141,33 @@ const GoalsView = ({
       </div>
 
       {nonArchivedGoals.length > 0 && !isArchived && (
-        <nav className='border-border sm:border-b sm:pb-4'>
-          <div className='hidden sm:block'>
+        <nav className="border-border sm:border-b sm:pb-4">
+          <div className="hidden sm:block">
             <AnimatedTabs
-              items={availableFilters.map((filter) => ({
+              items={availableFilters.map(filter => ({
                 id: filter,
                 label: filter,
                 disabled: false,
               }))}
               selected={selectedFilter}
-              onChange={(value) => setSelectedFilter(value as FilterType)}
+              onChange={value => setSelectedFilter(value as FilterType)}
               isLoading={delayedLoading}
-              layoutId='activeFilter'
-              variant='underline'
+              layoutId="activeFilter"
+              variant="underline"
             />
           </div>
-          <div className='sm:hidden w-full'>
-            <Label className='text-xs font-light'>Filter goals</Label>
+          <div className="sm:hidden w-full">
+            <Label className="text-xs font-light">Filter goals</Label>
             <Select
               value={selectedFilter}
-              onValueChange={(value: string) =>
-                setSelectedFilter(value as FilterType)
-              }
+              onValueChange={(value: string) => setSelectedFilter(value as FilterType)}
             >
-              <SelectTrigger className='border-0 shadow focus:ring-0'>
-                <SelectValue placeholder='Filter goals' />
+              <SelectTrigger className="border-0 shadow focus:ring-0">
+                <SelectValue placeholder="Filter goals" />
               </SelectTrigger>
               <SelectContent>
-                {availableFilters.map((filter) => (
-                  <SelectItem
-                    key={filter}
-                    value={filter}
-                    disabled={delayedLoading}
-                  >
+                {availableFilters.map(filter => (
+                  <SelectItem key={filter} value={filter} disabled={delayedLoading}>
                     {filter}
                   </SelectItem>
                 ))}
@@ -200,21 +177,21 @@ const GoalsView = ({
         </nav>
       )}
 
-      <div className='grid grid-cols-1 gap-4'>
+      <div className="grid grid-cols-1 gap-4">
         {delayedLoading ? (
           Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className='h-[200px] bg-paper border rounded-2xl'>
-              <div className='flex h-full'>
-                <Skeleton className='w-1/2 h-full rounded-l-2xl' />
-                <div className='w-1/2 p-4 flex flex-col justify-between'>
-                  <Skeleton className='h-20 w-full' />
-                  <Skeleton className='h-8 w-full' />
+            <div key={index} className="h-[200px] bg-paper border rounded-2xl">
+              <div className="flex h-full">
+                <Skeleton className="w-1/2 h-full rounded-l-2xl" />
+                <div className="w-1/2 p-4 flex flex-col justify-between">
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-8 w-full" />
                 </div>
               </div>
             </div>
           ))
         ) : displayGoals.length === 0 ? (
-          <div className='text-center text-muted-foreground'>
+          <div className="text-center text-muted-foreground">
             {isArchived ? 'No archived goals yet' : <EmptyGoalsState />}
           </div>
         ) : (
@@ -223,12 +200,9 @@ const GoalsView = ({
               <Goal key={goal.goal_id} goal={goal} index={index} />
             ))}
             {!isArchived && archivedGoals.length > 0 && (
-              <div className='flex justify-end mt-4'>
-                <Link href='/goals/archived'>
-                  <Button
-                    variant='ghost'
-                    className='text-muted-foreground hover:text-foreground'
-                  >
+              <div className="flex justify-end mt-4">
+                <Link href="/goals/archived">
+                  <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
                     View Archived Goals ({archivedGoals.length})
                   </Button>
                 </Link>

@@ -1,10 +1,7 @@
 import { format } from 'date-fns'
 import { DateFormat } from '@/hooks/useSettings'
 
-export const formatDate = (
-  date: Date | string | null,
-  userFormat?: DateFormat | null
-): string => {
+export const formatDate = (date: Date | string | null, userFormat?: DateFormat | null): string => {
   if (!date) return ''
 
   const dateObj = typeof date === 'string' ? new Date(date) : date

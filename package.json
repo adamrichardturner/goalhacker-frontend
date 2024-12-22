@@ -3,16 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "rm -rf .next && rm -rf out && rm -rf node_modules/.cache && next build --no-lint && next lint",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write .",
-    "build:mobile": "rm -rf .next && rm -rf out && rm -rf node_modules/.cache && next build --no-lint && next lint && next export && npx cap sync",
-    "open:ios": "npx cap open ios",
-    "open:android": "npx cap open android",
-    "build:ios": "rm -rf .next && rm -rf out && rm -rf node_modules/.cache && next build --no-lint && next lint && npx cap sync ios",
-    "build:android": "rm -rf .next && rm -rf out && rm -rf node_modules/.cache && next build --no-lint && next lint && npx cap sync android"
+    "clean": "rm -rf .next out ios/App/App/public android/app/src/main/assets/public node_modules/.cache",
+    "dev:ios": "NEXT_PUBLIC_APP_ENV=development npm run clean && next build && npx cap sync ios && npx cap open ios && npx cap run ios",
+    "dev:android": "NEXT_PUBLIC_APP_ENV=development npm run clean && next build && npx cap sync android && npx cap open android && npx cap run android",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "dependencies": {
     "@capacitor/android": "^6.2.0",

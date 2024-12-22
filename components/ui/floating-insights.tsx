@@ -30,11 +30,11 @@ export function FloatingInsights() {
   return (
     <Button
       onClick={handleClick}
-      size='sm'
+      size="sm"
       variant={showInsights ? 'default' : 'outline'}
-      className='fixed bottom-4 right-4 z-50 gap-2'
+      className="fixed bottom-4 right-4 z-50 gap-2"
     >
-      <Sparkles className='h-4 w-4' />
+      <Sparkles className="h-4 w-4" />
       {showInsights ? 'Hide Insights' : 'Show Insights'}
     </Button>
   )

@@ -1,13 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -95,10 +89,7 @@ export default function Settings() {
       const cooldownMs = 10 * 60 * 1000 // 10 minutes
       if (timeSinceLastReset < cooldownMs) {
         setIsInCooldown(true)
-        setTimeout(
-          () => setIsInCooldown(false),
-          cooldownMs - timeSinceLastReset
-        )
+        setTimeout(() => setIsInCooldown(false), cooldownMs - timeSinceLastReset)
       }
     }
   }, [])
@@ -134,7 +125,7 @@ export default function Settings() {
       if (!response.ok) throw new Error('Failed to upload avatar')
 
       const data = await response.json()
-      setUserProfile((prev) => ({ ...prev, avatar_url: data.avatar_url }))
+      setUserProfile(prev => ({ ...prev, avatar_url: data.avatar_url }))
       await queryClient.invalidateQueries({ queryKey: ['user'] })
       toast.success('Avatar updated successfully')
     } catch (error) {
@@ -157,22 +148,22 @@ export default function Settings() {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
       {/* Profile Information */}
-      <Card className='bg-paper'>
+      <Card className="bg-paper">
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>
           <CardDescription>Update your personal information</CardDescription>
         </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='grid grid-cols-2 gap-4'>
-            <div className='space-y-2'>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
               <Label>First Name</Label>
               <Input
-                placeholder='First Name'
+                placeholder="First Name"
                 value={userProfile.first_name}
-                onChange={(e) =>
-                  setUserProfile((prev) => ({
+                onChange={e =>
+                  setUserProfile(prev => ({
                     ...prev,
                     first_name: e.target.value,
                   }))
@@ -180,13 +171,13 @@ export default function Settings() {
                 disabled={!isEditingName || isUpdatingProfile}
               />
             </div>
-            <div className='space-y-2'>
+            <div className="space-y-2">
               <Label>Last Name</Label>
               <Input
-                placeholder='Last Name'
+                placeholder="Last Name"
                 value={userProfile.last_name}
-                onChange={(e) =>
-                  setUserProfile((prev) => ({
+                onChange={e =>
+                  setUserProfile(prev => ({
                     ...prev,
                     last_name: e.target.value,
                   }))
@@ -195,7 +186,7 @@ export default function Settings() {
               />
             </div>
           </div>
-          <div className='flex justify-between gap-2'>
+          <div className="flex justify-between gap-2">
             <Button
               onClick={handleProfileUpdate}
               disabled={
@@ -206,15 +197,12 @@ export default function Settings() {
             >
               {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
             </Button>
-            <div className='flex flex-col items-end gap-1 w-[100px]'>
-              <Label
-                htmlFor='edit-name'
-                className='text-xs text-muted-foreground'
-              >
+            <div className="flex flex-col items-end gap-1 w-[100px]">
+              <Label htmlFor="edit-name" className="text-xs text-muted-foreground">
                 Edit Name
               </Label>
               <Switch
-                id='edit-name'
+                id="edit-name"
                 checked={isEditingName}
                 onCheckedChange={setIsEditingName}
                 disabled={isUpdatingProfile}
@@ -225,71 +213,57 @@ export default function Settings() {
       </Card>
 
       {/* Avatar */}
-      <Card className='bg-paper'>
+      <Card className="bg-paper">
         <CardHeader>
           <CardTitle>Profile Picture</CardTitle>
-          <CardDescription>
-            Click the avatar to update your profile picture
-          </CardDescription>
+          <CardDescription>Click the avatar to update your profile picture</CardDescription>
         </CardHeader>
-        <CardContent className='flex flex-col items-center gap-4'>
+        <CardContent className="flex flex-col items-center gap-4">
           <input
-            type='file'
+            type="file"
             ref={fileInputRef}
-            className='hidden'
-            accept='image/*'
+            className="hidden"
+            accept="image/*"
             onChange={handleFileChange}
           />
           <Avatar
-            className='h-24 w-24 cursor-pointer hover:opacity-80 transition-opacity'
+            className="h-24 w-24 cursor-pointer hover:opacity-80 transition-opacity"
             onClick={() => fileInputRef.current?.click()}
           >
             <AvatarImage src={userProfile.avatar_url || undefined} />
-            <AvatarFallback>
-              {settings?.username?.[0]?.toUpperCase() || 'U'}
-            </AvatarFallback>
+            <AvatarFallback>{settings?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
           </Avatar>
         </CardContent>
       </Card>
 
       {/* Password Reset */}
-      <Card className='bg-paper'>
+      <Card className="bg-paper">
         <CardHeader>
           <CardTitle>Password</CardTitle>
           <CardDescription>
-            We&apos;ll send you an email with a secure link to reset your
-            password
+            We&apos;ll send you an email with a secure link to reset your password
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button
-            variant='outline'
-            onClick={handlePasswordReset}
-            disabled={isInCooldown}
-          >
-            {isInCooldown
-              ? 'Try again in 10 minutes'
-              : 'Send Password Reset Email'}
+          <Button variant="outline" onClick={handlePasswordReset} disabled={isInCooldown}>
+            {isInCooldown ? 'Try again in 10 minutes' : 'Send Password Reset Email'}
           </Button>
           {isInCooldown && (
-            <p className='text-sm text-muted-foreground mt-2'>
-              For security reasons, you can only request one password reset
-              every 10 minutes.
+            <p className="text-sm text-muted-foreground mt-2">
+              For security reasons, you can only request one password reset every 10 minutes.
             </p>
           )}
         </CardContent>
       </Card>
 
       {/* Date Format */}
-      <Card className='bg-paper'>
+      <Card className="bg-paper">
         <CardHeader>
           <CardTitle>Date Format</CardTitle>
-          <CardDescription>
-            Choose how you want dates to be displayed
-          </CardDescription>
+          <CardDescription>Choose how you want dates to be displayed</CardDescription>
         </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='space-y-1'>
+        <CardContent className="space-y-4">
+          <div className="space-y-1">
             <Label>Format</Label>
             <Select
               value={settings?.date_format || 'MMM d, yyyy'}
@@ -300,7 +274,7 @@ export default function Settings() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {DATE_FORMATS.map((format) => (
+                {DATE_FORMATS.map(format => (
                   <SelectItem key={format.value} value={format.value}>
                     {format.label}
                   </SelectItem>
@@ -312,24 +286,22 @@ export default function Settings() {
       </Card>
 
       {/* Theme */}
-      <Card className='bg-paper'>
+      <Card className="bg-paper">
         <CardHeader>
           <CardTitle>Appearance</CardTitle>
-          <CardDescription>
-            Customize how Goal Hacker looks on your device
-          </CardDescription>
+          <CardDescription>Customize how Goal Hacker looks on your device</CardDescription>
         </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='space-y-1'>
+        <CardContent className="space-y-4">
+          <div className="space-y-1">
             <Label>Theme</Label>
             <Select value={theme} onValueChange={setTheme}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='light'>Light</SelectItem>
-                <SelectItem value='dark'>Dark</SelectItem>
-                <SelectItem value='system'>System</SelectItem>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="system">System</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -337,20 +309,15 @@ export default function Settings() {
       </Card>
 
       {/* Delete Account */}
-      <Card className='bg-paper'>
+      <Card className="bg-paper">
         <CardHeader>
           <CardTitle>Delete Account</CardTitle>
-          <CardDescription>
-            Permanently delete your account and all associated data
-          </CardDescription>
+          <CardDescription>Permanently delete your account and all associated data</CardDescription>
         </CardHeader>
         <CardContent>
-          <AlertDialog
-            open={isDeleteDialogOpen}
-            onOpenChange={setIsDeleteDialogOpen}
-          >
+          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <AlertDialogTrigger asChild>
-              <Button variant='destructive' disabled={isDeleting}>
+              <Button variant="destructive" disabled={isDeleting}>
                 Delete Account
               </Button>
             </AlertDialogTrigger>
@@ -358,8 +325,8 @@ export default function Settings() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove all associated data from our servers.
+                  This action cannot be undone. This will permanently delete your account and remove
+                  all associated data from our servers.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -367,11 +334,11 @@ export default function Settings() {
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault()
                     deleteAccount()
                   }}
-                  className='bg-destructive hover:bg-destructive/90'
+                  className="bg-destructive hover:bg-destructive/90"
                 >
                   Delete Account
                 </AlertDialogAction>
