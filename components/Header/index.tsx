@@ -22,7 +22,7 @@ import {
 import { User } from '@/types/auth'
 import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
-import { ClientLogo } from '../Logo'
+import Logo from '../Logo'
 import { Search } from '../Search'
 import {
   Settings,
@@ -111,7 +111,7 @@ const Header = ({ user }: HeaderProps) => {
       <div className='hidden sm:flex w-full justify-between items-center'>
         <div className='flex items-center gap-4'>
           <Link href='/goals'>
-            <ClientLogo size='sm' />
+            <Logo size='sm' />
           </Link>
         </div>
 
@@ -202,7 +202,7 @@ const Header = ({ user }: HeaderProps) => {
       <div className='flex sm:hidden w-full items-center justify-between'>
         <div className='flex items-center gap-4'>
           <Link href='/goals'>
-            <ClientLogo size='sm' />
+            <Logo size='sm' />
           </Link>
         </div>
 

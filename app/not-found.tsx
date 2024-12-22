@@ -1,7 +1,9 @@
+'use client'
+
 import { Suspense } from 'react'
 import { Footer } from '@/components/Footer'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ClientLogo } from '@/components/Logo'
+import Logo from '@/components/Logo'
 import NotFoundContent from './not-found-content'
 
 function NotFoundSkeleton() {
@@ -29,7 +31,7 @@ export default function NotFound() {
   return (
     <div className='min-h-screen flex flex-col items-center justify-center bg-background'>
       <Suspense fallback={<NotFoundSkeleton />}>
-        <NotFoundContent Logo={ClientLogo} />
+        <NotFoundContent Logo={Logo} />
       </Suspense>
       <Footer />
     </div>

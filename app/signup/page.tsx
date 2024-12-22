@@ -3,7 +3,7 @@
 import { Suspense } from 'react'
 import { PublicLogo } from '@/components/PublicLogo'
 import { Footer } from '@/components/Footer'
-import SignupForm from './signup-form'
+import SignupForm from '@/components/Auth/SignupForm'
 
 export default function SignupPage() {
   return (

@@ -1,35 +1,48 @@
 'use client'
 
 import { Suspense } from 'react'
+import { Logo } from '@/components/Logo'
 import { Skeleton } from '@/components/ui/skeleton'
-import ForgotPasswordClient from './ForgotPasswordClient'
-import { PublicLogo } from '@/components/PublicLogo'
-import { Footer } from '@/components/Footer'
+import { ForgotPasswordForm } from '@/components/Auth/ForgotPasswordForm'
 
-function ForgotPasswordSkeleton() {
+function FormSkeleton() {
   return (
-    <div className='w-full max-w-md space-y-8 bg-card p-8 rounded-lg shadow-sm'>
-      <div className='space-y-2 text-center'>
-        <Skeleton className='h-8 w-48 mx-auto' />
-        <Skeleton className='h-4 w-64 mx-auto' />
+    <div className='container flex h-screen w-screen flex-col items-center justify-center'>
+      <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
+        <div className='flex flex-col space-y-2 text-center'>
+          <Skeleton className='h-8 w-full' />
+          <Skeleton className='h-4 w-3/4 mx-auto' />
+        </div>
+        <Skeleton className='h-[200px] w-full' />
       </div>
-      <div className='space-y-4'>
-        <Skeleton className='h-10 w-full' />
-        <Skeleton className='h-10 w-full' />
+    </div>
+  )
+}
+
+function ForgotPasswordContent() {
+  return (
+    <div className='container flex h-screen w-screen flex-col items-center justify-center'>
+      <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
+        <div className='flex flex-col space-y-2 text-center'>
+          <Logo className='mx-auto h-6 w-6' />
+          <h1 className='text-2xl font-semibold tracking-tight'>
+            Reset Password
+          </h1>
+          <p className='text-sm text-muted-foreground'>
+            Enter your email address and we&apos;ll send you a link to reset
+            your password.
+          </p>
+        </div>
+        <ForgotPasswordForm />
       </div>
-      <Skeleton className='h-4 w-32 mx-auto' />
     </div>
   )
 }
 
 export default function ForgotPasswordPage() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center'>
-      <PublicLogo />
-      <Suspense fallback={<ForgotPasswordSkeleton />}>
-        <ForgotPasswordClient />
-      </Suspense>
-      <Footer />
-    </div>
+    <Suspense fallback={<FormSkeleton />}>
+      <ForgotPasswordContent />
+    </Suspense>
   )
 }

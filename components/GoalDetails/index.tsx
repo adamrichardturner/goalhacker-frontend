@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Goal } from '@/types/goal'
 import { useGoal } from '@/hooks/useGoal'
 import { toast } from 'sonner'
@@ -9,9 +10,7 @@ import ProgressNotes from './ProgressNotes'
 import { Summary } from './Summary'
 import { AnimatedTabs } from '../ui/animated-tabs'
 import { BackToInsights } from '../ui/back-to-insights'
-import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
 
 interface GoalDetailsProps {
   goal: Goal
@@ -24,9 +23,9 @@ export const targetBadgeStyles =
   'px-2 py-1 rounded-full pointer-events-none font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 
 export default function GoalDetails({ goal }: GoalDetailsProps) {
-  const searchParams = useSearchParams()
-  const fromInsights = searchParams.get('from') === 'insights'
   const [activeTab, setActiveTab] = useState('summary')
+  const fromInsights =
+    new URLSearchParams(window.location.search).get('from') === 'insights'
   const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(
     goal.goal_id
   )

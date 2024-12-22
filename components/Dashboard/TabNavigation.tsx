@@ -1,48 +1,35 @@
 'use client'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useRouter, useSearchParams } from 'next/navigation'
-import GoalInsights from './GoalInsights'
-import DashboardCharts from './DashboardCharts'
-import Loading from '../ui/loading'
-import { Goal } from '@/types/goal'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-interface TabNavigationProps {
-  goals: Goal[]
-  goalsLoading: boolean
-}
-
-export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
+export function TabNavigation() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const tab = searchParams.get('tab')
+  const [activeTab, setActiveTab] = useState('all')
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const tab = searchParams.get('tab')
+    if (tab) {
+      setActiveTab(tab)
+    }
+  }, [])
 
   const handleTabChange = (value: string) => {
-    router.push(`/dashboard?tab=${value}`)
+    setActiveTab(value)
+    const newUrl = value === 'all' ? '/goals' : `/goals?tab=${value}`
+    router.push(newUrl)
   }
 
   return (
-    <Tabs
-      defaultValue={tab || 'insights'}
-      className='w-full'
-      onValueChange={handleTabChange}
-    >
-      <TabsList className='grid w-full grid-cols-2'>
-        <TabsTrigger value='insights'>AI Insights</TabsTrigger>
-        <TabsTrigger value='analytics'>Analytics</TabsTrigger>
+    <Tabs value={activeTab} onValueChange={handleTabChange}>
+      <TabsList>
+        <TabsTrigger value='all'>All Goals</TabsTrigger>
+        <TabsTrigger value='active'>Active</TabsTrigger>
+        <TabsTrigger value='completed'>Completed</TabsTrigger>
+        <TabsTrigger value='archived'>Archived</TabsTrigger>
       </TabsList>
-      <TabsContent value='insights' className='mt-4'>
-        <GoalInsights />
-      </TabsContent>
-      <TabsContent value='analytics' className='mt-4'>
-        {goalsLoading ? (
-          <Loading className='h-[400px]' />
-        ) : (
-          <div>
-            <DashboardCharts goals={goals} isLoading={goalsLoading} />
-          </div>
-        )}
-      </TabsContent>
     </Tabs>
   )
 }

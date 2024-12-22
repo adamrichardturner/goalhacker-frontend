@@ -1,18 +1,34 @@
 'use client'
 
-import { Footer } from '@/components/Footer'
-import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
+import { Footer } from '@/components/Footer'
 
-function TermsAndConditionsContent() {
-  const router = useRouter()
-
+function TermsAndConditionsSkeleton() {
   return (
     <div className='max-w-4xl min-h-screen mx-auto px-4 py-8'>
-      <Button variant='ghost' className='mb-8' onClick={() => router.back()}>
+      <Skeleton className='h-10 w-24 mb-8' />
+      <Skeleton className='h-12 w-72 mb-8' />
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className='mb-8'>
+          <Skeleton className='h-8 w-48 mb-4' />
+          <Skeleton className='h-24 w-full' />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function TermsAndConditionsContent() {
+  return (
+    <div className='max-w-4xl min-h-screen mx-auto px-4 py-8'>
+      <Button
+        variant='ghost'
+        className='mb-8'
+        onClick={() => window.history.back()}
+      >
         <ArrowLeft className='w-4 h-4 mr-2' />
         Back
       </Button>
@@ -145,21 +161,6 @@ function TermsAndConditionsContent() {
       </section>
 
       <Footer />
-    </div>
-  )
-}
-
-function TermsAndConditionsSkeleton() {
-  return (
-    <div className='max-w-4xl min-h-screen mx-auto px-4 py-8'>
-      <Skeleton className='h-10 w-24 mb-8' />
-      <Skeleton className='h-12 w-72 mb-8' />
-      {[...Array(6)].map((_, i) => (
-        <div key={i} className='mb-8'>
-          <Skeleton className='h-8 w-48 mb-4' />
-          <Skeleton className='h-24 w-full' />
-        </div>
-      ))}
     </div>
   )
 }
