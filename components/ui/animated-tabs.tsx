@@ -28,7 +28,7 @@ export function AnimatedTabs({
 }: AnimatedTabsProps) {
   return (
     <nav className={cn('flex gap-8 items-center', className)}>
-      <div className='flex gap-8 items-center'>
+      <div className='flex gap-6 items-center'>
         {items.map((item) => {
           const isSelected = selected === item.id
           return (

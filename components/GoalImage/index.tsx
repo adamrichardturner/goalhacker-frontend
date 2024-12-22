@@ -35,39 +35,48 @@ const cacheImage = async (url: string): Promise<string> => {
   }
 
   const platform = Capacitor.getPlatform()
-  const fileName = url.split('/').pop() || 'default.jpg'
-  
+  if (platform === 'web') {
+    return url
+  }
+
   try {
+    const fileName = url.split('/').pop() || 'default.jpg'
+
     // Check if the file already exists in cache
     try {
       const existingFile = await Filesystem.getUri({
         path: fileName,
-        directory: Directory.Cache
+        directory: Directory.Cache,
       })
       if (existingFile?.uri) {
-        return platform === 'web' ? url : existingFile.uri
+        return existingFile.uri
       }
-    } catch {
-      // File doesn't exist in cache, continue to download
+    } catch (error) {
+      // File doesn't exist in cache or permission denied, continue to download
+      console.debug('Cache check failed:', error)
     }
 
     // Download and cache the file
-    const result = await Filesystem.downloadFile({
-      url,
-      path: fileName,
-      directory: Directory.Cache
-    })
-
-    if (result?.path) {
-      // Get the proper URI for the cached file
-      const fileUri = await Filesystem.getUri({
-        path: result.path,
-        directory: Directory.Cache
+    try {
+      const result = await Filesystem.downloadFile({
+        url,
+        path: fileName,
+        directory: Directory.Cache,
       })
-      
-      return platform === 'web' ? url : fileUri.uri
+
+      if (result?.path) {
+        const fileUri = await Filesystem.getUri({
+          path: result.path,
+          directory: Directory.Cache,
+        })
+        return fileUri.uri
+      }
+    } catch (error) {
+      console.error('Download failed:', error)
+      // Fall back to original URL if download fails
+      return url
     }
-    
+
     return url
   } catch (error) {
     console.error('Error caching image:', error)
@@ -82,7 +91,7 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
 
   useEffect(() => {
     let isMounted = true
-    
+
     const loadCachedImage = async () => {
       const cached = await cacheImage(imageUrl)
       if (isMounted) {

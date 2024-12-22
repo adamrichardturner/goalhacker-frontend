@@ -362,7 +362,9 @@ export default function GoalInsights() {
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
-                              <Link href={`/goals?selected=${goalId}&from=insights`}>
+                              <Link
+                                href={`/goals?selected=${goalId}&from=insights`}
+                              >
                                 <Button variant='default' size='md'>
                                   View Goal
                                 </Button>
@@ -438,7 +440,9 @@ export default function GoalInsights() {
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
-                              <Link href={`/goals?selected=${goalId}&from=insights`}>
+                              <Link
+                                href={`/goals?selected=${goalId}&from=insights`}
+                              >
                                 <Button variant='default' size='md'>
                                   View Goal
                                 </Button>
@@ -515,7 +519,9 @@ export default function GoalInsights() {
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
-                              <Link href={`/goals?selected=${goalId}&from=insights`}>
+                              <Link
+                                href={`/goals?selected=${goalId}&from=insights`}
+                              >
                                 <Button variant='default' size='md'>
                                   View Goal
                                 </Button>

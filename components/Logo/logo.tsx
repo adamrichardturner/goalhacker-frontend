@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { Mountain } from 'lucide-react'
 
 interface LogoProps {
   className?: string
@@ -9,49 +10,19 @@ interface LogoProps {
 }
 
 const sizeClasses = {
-  xs: 'h-4',
-  sm: 'h-6',
-  md: 'h-8',
-  lg: 'h-10',
-  xl: 'h-12',
+  xs: 12,
+  sm: 16,
+  md: 20,
+  lg: 24,
+  xl: 28,
 }
 
-export function Logo({ className, showIcon = true, size = 'md' }: LogoProps) {
+export function Logo({ className, showIcon = true, size = 'sm' }: LogoProps) {
   return (
-    <div className={cn('flex items-center gap-2', className)}>
-      {showIcon && (
-        <svg
-          className={cn('text-electricPurple', sizeClasses[size])}
-          viewBox='0 0 24 24'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path
-            d='M12 2L2 7L12 12L22 7L12 2Z'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path
-            d='M2 17L12 22L22 17'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path
-            d='M2 12L12 17L22 12'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-        </svg>
-      )}
-      <span
+    <div className={cn('flex items-center gap-1', className)}>
+      <h1
         className={cn(
-          'font-bold tracking-tight text-foreground',
+          'font-bold tracking-tight bg-gradient-to-r from-electricPurple to-electricPurple/80 text-transparent bg-clip-text',
           size === 'xs' && 'text-sm',
           size === 'sm' && 'text-base',
           size === 'md' && 'text-xl',
@@ -60,7 +31,10 @@ export function Logo({ className, showIcon = true, size = 'md' }: LogoProps) {
         )}
       >
         Goal Hacker
-      </span>
+      </h1>
+      {showIcon && (
+        <Mountain className='text-electricPurple' size={sizeClasses[size]} />
+      )}
     </div>
   )
 }

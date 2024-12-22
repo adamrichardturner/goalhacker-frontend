@@ -46,7 +46,7 @@ const GoalsView = ({
   useEffect(() => {
     const selectedId = searchParams.get('selected')
     if (selectedId && goals.length > 0) {
-      const goal = goals.find(g => g.goal_id === selectedId)
+      const goal = goals.find((g) => g.goal_id === selectedId)
       setSelectedGoal(goal || null)
     } else {
       setSelectedGoal(null)
@@ -74,6 +74,21 @@ const GoalsView = ({
     Completed: nonArchivedGoals.filter((goal) => goal.status === 'completed')
       .length,
   }
+
+  // Only show filters that have goals
+  const availableFilters = filters.filter((filter) =>
+    filter === 'All' ? nonArchivedGoals.length > 0 : statusCounts[filter] > 0
+  )
+
+  // If selected filter is not available, switch to 'All' or first available filter
+  useEffect(() => {
+    if (
+      !availableFilters.includes(selectedFilter) &&
+      availableFilters.length > 0
+    ) {
+      setSelectedFilter(availableFilters[0])
+    }
+  }, [availableFilters, selectedFilter])
 
   const filteredGoals = goals.filter((goal) => {
     if (isArchived) {
@@ -109,8 +124,8 @@ const GoalsView = ({
     return (
       <div className='space-y-4'>
         <div className='mb-0'>
-          <Button 
-            variant='ghost' 
+          <Button
+            variant='ghost'
             onClick={handleBackToGoals}
             className='text-muted-foreground hover:text-foreground'
           >
@@ -146,10 +161,10 @@ const GoalsView = ({
         <nav className='border-border sm:border-b sm:pb-4'>
           <div className='hidden sm:block'>
             <AnimatedTabs
-              items={filters.map((filter) => ({
+              items={availableFilters.map((filter) => ({
                 id: filter,
                 label: filter,
-                disabled: statusCounts[filter] === 0,
+                disabled: false,
               }))}
               selected={selectedFilter}
               onChange={(value) => setSelectedFilter(value as FilterType)}
@@ -170,20 +185,15 @@ const GoalsView = ({
                 <SelectValue placeholder='Filter goals' />
               </SelectTrigger>
               <SelectContent>
-                {filters.map((filter) => {
-                  if (statusCounts[filter] === 0) {
-                    return false
-                  }
-                  return (
-                    <SelectItem
-                      key={filter}
-                      value={filter}
-                      disabled={delayedLoading}
-                    >
-                      {filter}
-                    </SelectItem>
-                  )
-                })}
+                {availableFilters.map((filter) => (
+                  <SelectItem
+                    key={filter}
+                    value={filter}
+                    disabled={delayedLoading}
+                  >
+                    {filter}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

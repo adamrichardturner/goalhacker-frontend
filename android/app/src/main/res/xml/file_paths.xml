@@ -5,4 +5,6 @@
     <files-path name="my_files" path="." />
     <external-cache-path name="my_external_cache" path="." />
     <external-files-path name="my_external_files" path="." />
+    <external-media-path name="my_media" path="." />
+    <external-downloads-path name="my_downloads" path="." />
 </paths>

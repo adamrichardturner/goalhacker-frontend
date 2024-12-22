@@ -68,14 +68,14 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className='min-h-screen bg-background'
+      className='bg-paper'
     >
       <div className='max-w-7xl mx-auto'>
-        <div className='space-y-4'>
+        <div className='space-y-2'>
           <GoalBanner goal={goal} />
 
-          <div className='sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
-            <div className='max-w-7xl mx-auto'>
+          <div className='sticky top-0 z-10'>
+            <div className='max-w-7xl'>
               <AnimatedTabs
                 items={[
                   { id: 'summary', label: 'Summary' },
@@ -85,13 +85,13 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
                 selected={activeTab}
                 onChange={setActiveTab}
                 layoutId='activeTabUnderline'
-                className='h-4 w-full justify-start gap-2 bg-transparent'
+                className='h-4 justify-start gap-2 bg-paper py-4 px-2 min-h-12 rounded'
                 variant='underline'
               />
             </div>
           </div>
 
-          <div className='mt-3'>
+          <div className='pt-0'>
             {activeTab === 'summary' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
