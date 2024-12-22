@@ -85,7 +85,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
       <DialogTrigger asChild>
         <Button
           size='icon'
-          className='absolute top-4 right-4 bg-black/50 hover:bg-black/70 h-8 w-8'
+          className='absolute top-4 right-4 bg-black/50 m-2 hover:bg-black/70 h-8 w-8'
         >
           <Pen className='h-4 w-4 text-white' />
         </Button>

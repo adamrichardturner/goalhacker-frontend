@@ -13,11 +13,7 @@ export default function SupportPage() {
   return (
     <div className='min-h-screen flex flex-col'>
       <div className='max-w-2xl mx-auto px-4 py-8 flex-1 w-full'>
-        <Button
-          variant='ghost'
-          className='mb-8'
-          onClick={() => router.back()}
-        >
+        <Button variant='ghost' className='mb-8' onClick={() => router.back()}>
           <ArrowLeft className='w-4 h-4 mr-2' />
           Back
         </Button>

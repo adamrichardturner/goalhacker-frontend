@@ -3,7 +3,6 @@ import { Goal } from '@/types/goal'
 import { EditSummary } from './EditSummary'
 import { Badge } from '@/components/ui/badge'
 import { GoalStatusEditor } from '../GoalStatusEditor'
-import { getGoalStatus } from '@/utils/goalStatus'
 import { colors } from '@/theme/colors'
 import {
   Accordion,
@@ -15,19 +14,18 @@ import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 export const Summary = ({ goal }: { goal: Goal }) => {
-  const statusConfig = getGoalStatus(goal.status)
   const [openItem, setOpenItem] = useState('aims')
 
   return (
     <Card className='rounded-xl relative w-full'>
-      <CardContent className='pt-6 space-y-8 w-full'>
-        <div className='flex items-center justify-between'>
+      <CardContent className='mt-6 space-y-8 w-full'>
+        <div className='flex items-center p-1 justify-between'>
           {goal.category && (
             <div className='flex items-center gap-2'>
               <Badge
-                className={`bg-electricPurple/90  ${statusConfig.className} py-1 px-4 text-primary/80 font-semibold pointer-events-none`}
+                className={`bg-electricPurple py-1 px-4 text-white font-semibold pointer-events-none`}
                 style={{
-                  backgroundColor: `${colors.electricViolet}40`,
+                  backgroundColor: `${colors.electricViolet}`,
                   borderColor: `${colors.electricViolet}33`,
                   boxShadow: `0 0 12px ${colors.electricViolet}40`,
                 }}
@@ -44,7 +42,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           value={openItem}
           onValueChange={setOpenItem}
           collapsible
-          className='flex flex-col gap-4'
+          className='flex flex-col gap-4 text-white text-shadow-lg'
         >
           {[
             { id: 'aims', title: 'Aims', content: goal.aims },
@@ -68,9 +66,9 @@ export const Summary = ({ goal }: { goal: Goal }) => {
             >
               <AccordionTrigger
                 className={cn(
-                  'hover:no-underline h-[70px] p-4 transition-colors text-white',
+                  'hover:no-underline h-[70px] p-4 transition-colors text-white [&>svg]:text-white',
                   openItem === item.id
-                    ? 'bg-electricPurple'
+                    ? 'bg-electricPurple/95 text-white'
                     : 'bg-electricPurple/80 hover:bg-electricPurple/90'
                 )}
               >
