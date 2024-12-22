@@ -25,9 +25,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Insight } from '@/services/insightsService'
 import { motion } from 'framer-motion'
-import {
-  AnimatedAccordion,
-} from '@/components/ui/animated-accordion'
+import { AnimatedAccordion } from '@/components/ui/animated-accordion'
 
 const MAX_TITLE_LENGTH = 60
 

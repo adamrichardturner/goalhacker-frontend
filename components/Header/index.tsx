@@ -277,17 +277,15 @@ const Header = ({ user }: HeaderProps) => {
                     <FileText className='mr-2 h-4 w-4' />
                     Terms & Conditions
                   </Link>
+                  <div
+                    onClick={handleLogout}
+                    className='text-lg font-medium text-muted-foreground transition-colors hover:text-primary flex items-center cursor-pointer'
+                  >
+                    <LogOut className='mr-2 h-4 w-4' />
+                    Sign out
+                  </div>
                 </div>
               </SheetHeader>
-              <SheetFooter className='flex flex-col gap-4'>
-                <div
-                  onClick={handleLogout}
-                  className='text-lg font-medium text-muted-foreground transition-colors hover:text-primary flex items-center cursor-pointer'
-                >
-                  <LogOut className='mr-2 h-4 w-4' />
-                  Sign out
-                </div>
-              </SheetFooter>
             </SheetContent>
           </Sheet>
         </div>
