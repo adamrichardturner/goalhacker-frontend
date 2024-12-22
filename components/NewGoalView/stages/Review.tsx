@@ -8,6 +8,8 @@ import { format } from 'date-fns'
 import { ImageGallery } from '@/components/ImageGallery'
 import { Badge } from '@/components/ui/badge'
 import { useCallback } from 'react'
+import { formatDate } from '@/utils/dateFormat'
+import { useSettings } from '@/hooks/useSettings'
 
 interface ReviewProps {
   onBack?: () => void
@@ -28,6 +30,8 @@ export function Review({
   updateGoalData,
   onNavigateToStep,
 }: ReviewProps) {
+  const { settings } = useSettings()
+
   const handleImageSelect = useCallback(
     (image: Image) => {
       updateGoalData({
@@ -146,7 +150,7 @@ export function Review({
                       Target Date
                     </label>
                     <p className='text-xs sm:text-sm text-muted-foreground'>
-                      {format(new Date(goalData.target_date), 'PPP')}
+                      {formatDate(goalData.target_date, settings?.date_format)}
                     </p>
                   </div>
                 )}

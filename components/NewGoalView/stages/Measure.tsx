@@ -3,8 +3,9 @@
 import { Goal } from '@/types/goal'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { format } from 'date-fns'
 import { Calendar } from '@/components/ui/calendar'
+import { formatDate } from '@/utils/dateFormat'
+import { useSettings } from '@/hooks/useSettings'
 import {
   Select,
   SelectContent,
@@ -38,6 +39,8 @@ export function Measure({
   goalData,
   isLoading = false,
 }: MeasureProps) {
+  const { settings } = useSettings()
+
   if (isLoading) {
     return (
       <div className='space-y-4'>
@@ -129,7 +132,7 @@ export function Measure({
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />
                     {goalData.target_date ? (
-                      format(new Date(goalData.target_date), 'PPP')
+                      formatDate(goalData.target_date, settings?.date_format)
                     ) : (
                       <span>Pick a date</span>
                     )}

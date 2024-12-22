@@ -32,17 +32,11 @@ export const useLogin = () => {
 
       const profileResponse = await authService.getProfile()
 
-      // Check cookies after successful login
-      const cookies = document.cookie.split(';')
-      console.log('Cookies after login:', cookies)
-
       return transformUserData(profileResponse.user)
     },
     onSuccess: (user) => {
-      console.log('Login successful, setting user data')
       queryClient.setQueryData(['user'], user)
       setTimeout(() => {
-        console.log('Redirecting to /goals')
         router.push('/goals')
       }, 500)
     },

@@ -32,6 +32,8 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { CategorySelect } from '@/components/CategorySelect'
 import { api } from '@/services/api'
 import { startOfDay } from 'date-fns'
+import { formatDate } from '@/utils/dateFormat'
+import { useSettings } from '@/hooks/useSettings'
 
 interface EditSummaryProps {
   goal: Goal
@@ -49,6 +51,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
     priority: goal.priority || 'medium',
     category_id: goal.category?.category_id || '',
   })
+  const { settings } = useSettings()
 
   const handleSave = async () => {
     try {
@@ -157,7 +160,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />
                     {editedGoal.target_date ? (
-                      format(new Date(editedGoal.target_date), 'PPP')
+                      formatDate(editedGoal.target_date, settings?.date_format)
                     ) : (
                       <span>Pick a date</span>
                     )}

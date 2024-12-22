@@ -39,6 +39,19 @@ import { useQueryClient } from '@tanstack/react-query'
 import { settingsService } from '@/services/settingsService'
 import { useUser } from '@/hooks/auth/useUser'
 
+interface UserProfile {
+  avatar_url?: string | null
+  first_name: string
+  last_name: string
+}
+
+type LoadingState =
+  | 'idle'
+  | 'updating-profile'
+  | 'uploading-avatar'
+  | 'requesting-reset'
+  | 'deleting'
+
 const DATE_FORMATS: { value: DateFormat; label: string }[] = [
   { value: 'MMM d, yyyy', label: 'Jan 15, 2024' },
   { value: 'MM/dd/yyyy', label: '01/15/2024' },
@@ -59,25 +72,27 @@ export default function Settings() {
     isUpdatingProfile,
     isDeleting,
   } = useSettings()
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
-  const queryClient = useQueryClient()
-  const [firstName, setFirstName] = useState(user?.first_name || '')
-  const [lastName, setLastName] = useState(user?.last_name || '')
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [isRequestingReset, setIsRequestingReset] = useState(false)
-  const [isInCooldown, setIsInCooldown] = useState(false)
 
-  // Fetch avatar on mount
-  useState(() => {
-    fetch(`${API_URL}/api/users/avatar`, {
-      credentials: 'include',
-    })
-      .then((res) => res.json())
-      .then((data) => setAvatarUrl(data.avatar_url))
-      .catch(console.error)
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
+    avatar_url: user?.avatar_url || null,
   })
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [isInCooldown, setIsInCooldown] = useState(false)
+  const queryClient = useQueryClient()
+
+  // Fetch profile on mount and when user changes
+  useEffect(() => {
+    if (user) {
+      setUserProfile({
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        avatar_url: user.avatar_url || null,
+      })
+    }
+  }, [user])
 
   // Check for existing cooldown on mount
   useEffect(() => {
@@ -87,7 +102,6 @@ export default function Settings() {
       const cooldownMs = 10 * 60 * 1000 // 10 minutes
       if (timeSinceLastReset < cooldownMs) {
         setIsInCooldown(true)
-        // Remove cooldown after it expires
         setTimeout(
           () => setIsInCooldown(false),
           cooldownMs - timeSinceLastReset
@@ -96,18 +110,27 @@ export default function Settings() {
     }
   }, [])
 
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click()
+  const handleProfileUpdate = async () => {
+    try {
+      await updateProfile({
+        firstName: userProfile.first_name,
+        lastName: userProfile.last_name,
+      })
+      setIsEditingName(false)
+    } catch (error) {
+      console.error('Error updating profile:', error)
+    }
   }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file) {
+      return
+    }
 
     const formData = new FormData()
     formData.append('avatar', file)
 
-    setIsUploadingAvatar(true)
     try {
       const response = await fetch(`${API_URL}/api/users/avatar`, {
         method: 'POST',
@@ -118,42 +141,25 @@ export default function Settings() {
       if (!response.ok) throw new Error('Failed to upload avatar')
 
       const data = await response.json()
-      setAvatarUrl(data.avatar_url)
+      setUserProfile((prev) => ({ ...prev, avatar_url: data.avatar_url }))
       await queryClient.invalidateQueries({ queryKey: ['user'] })
       toast.success('Avatar updated successfully')
     } catch (error) {
       toast.error('Failed to update avatar')
       console.error('Error uploading avatar:', error)
-    } finally {
-      setIsUploadingAvatar(false)
     }
   }
 
-  const handleProfileUpdate = async () => {
-    try {
-      await updateProfile({ firstName, lastName })
-      toast.success('Profile updated successfully')
-      setIsEditingName(false)
-    } catch (error) {
-      toast.error('Failed to update profile')
-      console.error('Error updating profile:', error)
-    }
-  }
-
-  const requestPasswordReset = async () => {
-    setIsRequestingReset(true)
+  const handlePasswordReset = async () => {
     try {
       await settingsService.requestPasswordReset()
       toast.success('Password reset email sent. Please check your inbox.')
-      // Set cooldown
       localStorage.setItem('lastPasswordResetRequest', Date.now().toString())
       setIsInCooldown(true)
       setTimeout(() => setIsInCooldown(false), 10 * 60 * 1000)
     } catch (error) {
       console.error('Error sending password reset email:', error)
       toast.error('Failed to send reset email. Please try again.')
-    } finally {
-      setIsRequestingReset(false)
     }
   }
 
@@ -161,11 +167,9 @@ export default function Settings() {
     <div className='space-y-6'>
       {/* Profile Information */}
       <Card className='bg-paper'>
-        <CardHeader className='flex flex-row items-center justify-between space-y-0'>
-          <div>
-            <CardTitle>Profile Information</CardTitle>
-            <CardDescription>Update your personal information</CardDescription>
-          </div>
+        <CardHeader>
+          <CardTitle>Profile Information</CardTitle>
+          <CardDescription>Update your personal information</CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='grid grid-cols-2 gap-4'>
@@ -173,8 +177,13 @@ export default function Settings() {
               <Label>First Name</Label>
               <Input
                 placeholder='First Name'
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                value={userProfile.first_name}
+                onChange={(e) =>
+                  setUserProfile((prev) => ({
+                    ...prev,
+                    first_name: e.target.value,
+                  }))
+                }
                 disabled={!isEditingName || isUpdatingProfile}
               />
             </div>
@@ -182,8 +191,13 @@ export default function Settings() {
               <Label>Last Name</Label>
               <Input
                 placeholder='Last Name'
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={userProfile.last_name}
+                onChange={(e) =>
+                  setUserProfile((prev) => ({
+                    ...prev,
+                    last_name: e.target.value,
+                  }))
+                }
                 disabled={!isEditingName || isUpdatingProfile}
               />
             </div>
@@ -192,7 +206,9 @@ export default function Settings() {
             <Button
               onClick={handleProfileUpdate}
               disabled={
-                !isEditingName || isUpdatingProfile || (!firstName && !lastName)
+                !isEditingName ||
+                isUpdatingProfile ||
+                (!userProfile.first_name && !userProfile.last_name)
               }
             >
               {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
@@ -233,16 +249,13 @@ export default function Settings() {
           />
           <Avatar
             className='h-24 w-24 cursor-pointer hover:opacity-80 transition-opacity'
-            onClick={handleAvatarClick}
+            onClick={() => fileInputRef.current?.click()}
           >
-            <AvatarImage src={avatarUrl || undefined} />
+            <AvatarImage src={userProfile.avatar_url || undefined} />
             <AvatarFallback>
               {settings?.username?.[0]?.toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
-          {isUploadingAvatar && (
-            <p className='text-sm text-muted-foreground'>Uploading...</p>
-          )}
         </CardContent>
       </Card>
 
@@ -258,14 +271,12 @@ export default function Settings() {
         <CardContent>
           <Button
             variant='outline'
-            onClick={requestPasswordReset}
-            disabled={isRequestingReset || isInCooldown}
+            onClick={handlePasswordReset}
+            disabled={isInCooldown}
           >
-            {isRequestingReset
-              ? 'Sending Reset Email...'
-              : isInCooldown
-                ? 'Try again in 10 minutes'
-                : 'Send Password Reset Email'}
+            {isInCooldown
+              ? 'Try again in 10 minutes'
+              : 'Send Password Reset Email'}
           </Button>
           {isInCooldown && (
             <p className='text-sm text-muted-foreground mt-2'>
