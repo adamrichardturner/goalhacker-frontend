@@ -3,10 +3,18 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import GoalInsights from './GoalInsights'
+import DashboardCharts from './DashboardCharts'
+import { Goal } from '@/types/goal'
 
-export function TabNavigation() {
+interface TabNavigationProps {
+  goals: Goal[]
+  goalsLoading: boolean
+}
+
+export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState('all')
+  const [activeTab, setActiveTab] = useState('insights')
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
@@ -18,18 +26,23 @@ export function TabNavigation() {
 
   const handleTabChange = (value: string) => {
     setActiveTab(value)
-    const newUrl = value === 'all' ? '/goals' : `/goals?tab=${value}`
+    const searchParams = new URLSearchParams(window.location.search)
+    searchParams.set('tab', value)
+    const newUrl = `/dashboard?${searchParams.toString()}`
     router.push(newUrl)
   }
 
   return (
-    <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <TabsList>
-        <TabsTrigger value='all'>All Goals</TabsTrigger>
-        <TabsTrigger value='active'>Active</TabsTrigger>
-        <TabsTrigger value='completed'>Completed</TabsTrigger>
-        <TabsTrigger value='archived'>Archived</TabsTrigger>
-      </TabsList>
-    </Tabs>
+    <div className='space-y-6'>
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
+        <TabsList className='flex gap-4 justify-start'>
+          <TabsTrigger value='insights'>AI Insights</TabsTrigger>
+          <TabsTrigger value='analytics'>Analytics</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      {activeTab === 'insights' && <GoalInsights />}
+      {activeTab === 'analytics' && <DashboardCharts goals={goals} isLoading={goalsLoading} />}
+    </div>
   )
 }

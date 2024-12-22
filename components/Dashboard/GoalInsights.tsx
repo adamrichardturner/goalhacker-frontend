@@ -48,7 +48,7 @@ const renderGoalText = (text: string, insight: Insight) => {
           return (
             <Link
               key={`${id}-${index}`}
-              href={`/goals/${id}?from=insights`}
+              href={`/goals?selected=${id}&from=insights`}
               className='text-primary hover:underline inline'
             >
               {truncatedTitle}
@@ -362,7 +362,7 @@ export default function GoalInsights() {
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
-                              <Link href={`/goals/${goalId}?from=insights`}>
+                              <Link href={`/goals?selected=${goalId}&from=insights`}>
                                 <Button variant='default' size='md'>
                                   View Goal
                                 </Button>
@@ -438,7 +438,7 @@ export default function GoalInsights() {
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
-                              <Link href={`/goals/${goalId}?from=insights`}>
+                              <Link href={`/goals?selected=${goalId}&from=insights`}>
                                 <Button variant='default' size='md'>
                                   View Goal
                                 </Button>
@@ -515,7 +515,7 @@ export default function GoalInsights() {
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
-                              <Link href={`/goals/${goalId}?from=insights`}>
+                              <Link href={`/goals?selected=${goalId}&from=insights`}>
                                 <Button variant='default' size='md'>
                                   View Goal
                                 </Button>

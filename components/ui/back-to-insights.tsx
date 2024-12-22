@@ -9,7 +9,7 @@ export function BackToInsights() {
   const router = useRouter()
 
   const handleClick = () => {
-    router.push('/dashboard')
+    router.push('/dashboard?tab=insights')
   }
 
   return (

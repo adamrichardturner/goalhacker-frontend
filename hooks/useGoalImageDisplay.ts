@@ -12,9 +12,22 @@ export default function useGoalImageDisplay(goal: Goal) {
 
   const handleImageDisplay = (imageUrl: string) => {
     const platform = getPlatform()
-    if (platform === 'ios' || platform === 'android') {
+    
+    // If it's a file:// URL, return as is for native platforms
+    if (imageUrl.startsWith('file://')) {
       return imageUrl
     }
+    
+    // If it's a data URL or absolute URL, return as is
+    if (imageUrl.startsWith('data:') || imageUrl.startsWith('http')) {
+      return imageUrl
+    }
+    
+    // For local public directory images, return as is
+    if (imageUrl.startsWith('/')) {
+      return imageUrl
+    }
+    
     return imageUrl
   }
 
@@ -23,8 +36,8 @@ export default function useGoalImageDisplay(goal: Goal) {
 
     // If the goal has an image_url, use it
     if (goal.image_url) {
-      // If it's already a full URL, use it as is
-      if (goal.image_url.startsWith('http')) {
+      // If it's already a full URL or file:// URL, use it as is
+      if (goal.image_url.startsWith('http') || goal.image_url.startsWith('file://')) {
         return goal.image_url
       }
 

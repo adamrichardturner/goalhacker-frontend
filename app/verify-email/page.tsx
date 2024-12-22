@@ -3,7 +3,7 @@
 import { Suspense } from 'react'
 import { AuthCard } from '@/components/form-components'
 import Loading from '@/components/ui/loading'
-import VerifyEmailContent from '@/components/Auth/VerifyEmailContent'
+import { VerifyEmailContent } from '@/components/Auth/VerifyEmailContent'
 import { Footer } from '@/components/Footer'
 
 export default function VerifyEmailPage() {

@@ -36,24 +36,6 @@ const PRIORITIES = {
   high: { name: 'High', color: 'hsl(0, 84%, 60%)' },
 }
 
-const getCategoryDistribution = (goals: Goal[]) => {
-  const categoryCount = goals.reduce(
-    (acc, goal) => {
-      const category = goal.category?.name || 'Uncategorized'
-      acc[category] = (acc[category] || 0) + 1
-      return acc
-    },
-    {} as Record<string, number>
-  )
-
-  return Object.entries(categoryCount)
-    .sort((a, b) => b[1] - a[1])
-    .map(([category, count]) => ({
-      category,
-      count,
-    }))
-}
-
 const RADIAN = Math.PI / 180
 const renderCustomizedLabel = ({
   cx,
@@ -74,17 +56,36 @@ const renderCustomizedLabel = ({
   const x = cx + radius * Math.cos(-midAngle * RADIAN)
   const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
-  return percent === 0 ? null : (
+  return percent > 0 ? (
     <text
       x={x}
       y={y}
       fill='white'
       textAnchor='middle'
       dominantBaseline='central'
+      className='text-xs'
     >
       {`${(percent * 100).toFixed(0)}%`}
     </text>
+  ) : null
+}
+
+const getCategoryDistribution = (goals: Goal[]) => {
+  const categoryCount = goals.reduce(
+    (acc, goal) => {
+      const category = goal.category?.name || 'Uncategorized'
+      acc[category] = (acc[category] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
   )
+
+  return Object.entries(categoryCount)
+    .sort((a, b) => b[1] - a[1])
+    .map(([category, count]) => ({
+      category,
+      count,
+    }))
 }
 
 export default function DashboardCharts({

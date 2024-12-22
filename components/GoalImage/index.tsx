@@ -10,6 +10,7 @@ import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
 import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
 import { Filesystem, Directory } from '@capacitor/filesystem'
+import { Capacitor } from '@capacitor/core'
 import { useState, useEffect } from 'react'
 
 interface GoalImageProps {
@@ -23,14 +24,51 @@ const targetBadgeStyles =
   'px-2 py-1 rounded-full font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 
 const cacheImage = async (url: string): Promise<string> => {
+  // Don't cache if it's already a local file or data URL
+  if (url.startsWith('file://') || url.startsWith('data:')) {
+    return url
+  }
+
+  // Don't cache default images from the public directory
+  if (url.startsWith('/')) {
+    return url
+  }
+
+  const platform = Capacitor.getPlatform()
   const fileName = url.split('/').pop() || 'default.jpg'
+  
   try {
+    // Check if the file already exists in cache
+    try {
+      const existingFile = await Filesystem.getUri({
+        path: fileName,
+        directory: Directory.Cache
+      })
+      if (existingFile?.uri) {
+        return platform === 'web' ? url : existingFile.uri
+      }
+    } catch {
+      // File doesn't exist in cache, continue to download
+    }
+
+    // Download and cache the file
     const result = await Filesystem.downloadFile({
       url,
       path: fileName,
-      directory: Directory.Cache,
+      directory: Directory.Cache
     })
-    return result.path || url
+
+    if (result?.path) {
+      // Get the proper URI for the cached file
+      const fileUri = await Filesystem.getUri({
+        path: result.path,
+        directory: Directory.Cache
+      })
+      
+      return platform === 'web' ? url : fileUri.uri
+    }
+    
+    return url
   } catch (error) {
     console.error('Error caching image:', error)
     return url
@@ -43,7 +81,20 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
   const [cachedUrl, setCachedUrl] = useState(imageUrl)
 
   useEffect(() => {
-    cacheImage(imageUrl).then(setCachedUrl)
+    let isMounted = true
+    
+    const loadCachedImage = async () => {
+      const cached = await cacheImage(imageUrl)
+      if (isMounted) {
+        setCachedUrl(cached)
+      }
+    }
+
+    loadCachedImage()
+
+    return () => {
+      isMounted = false
+    }
   }, [imageUrl])
 
   if (!goal) return null

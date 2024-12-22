@@ -17,8 +17,11 @@ export function FloatingInsights() {
   }, [])
 
   const handleClick = () => {
-    const newUrl = showInsights ? pathname : `${pathname}?insights=true`
-    router.push(newUrl)
+    if (showInsights) {
+      router.push(pathname)
+    } else {
+      router.push('/dashboard?tab=insights')
+    }
     setShowInsights(!showInsights)
   }
 

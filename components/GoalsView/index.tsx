@@ -17,6 +17,8 @@ import {
 } from '../ui/select'
 import { Label } from '../ui/label'
 import { AnimatedTabs } from '../ui/animated-tabs'
+import { useSearchParams, useRouter } from 'next/navigation'
+import GoalDetails from '../GoalDetails'
 
 type FilterType = 'All' | 'Planned' | 'Active' | 'Completed'
 
@@ -27,8 +29,6 @@ interface GoalsViewProps {
   isArchived?: boolean
 }
 
-// GoalsView
-
 const GoalsView = ({
   goals = [],
   user,
@@ -37,7 +37,21 @@ const GoalsView = ({
 }: GoalsViewProps) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('All')
   const [delayedLoading, setDelayedLoading] = useState(true)
+  const [selectedGoal, setSelectedGoal] = useState<GoalType | null>(null)
   const filters: FilterType[] = ['All', 'Planned', 'Active', 'Completed']
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  // Monitor for changes in the selected goal ID
+  useEffect(() => {
+    const selectedId = searchParams.get('selected')
+    if (selectedId && goals.length > 0) {
+      const goal = goals.find(g => g.goal_id === selectedId)
+      setSelectedGoal(goal || null)
+    } else {
+      setSelectedGoal(null)
+    }
+  }, [searchParams, goals])
 
   useEffect(() => {
     if (isLoading || !user) {
@@ -85,8 +99,31 @@ const GoalsView = ({
   const archivedGoals = goals.filter((goal) => goal.status === 'archived')
   const displayGoals = isArchived ? archivedGoals : filteredGoals
 
+  const handleBackToGoals = () => {
+    const newSearchParams = new URLSearchParams(searchParams)
+    newSearchParams.delete('selected')
+    router.push(`/goals?${newSearchParams.toString()}`)
+  }
+
+  if (selectedGoal) {
+    return (
+      <div className='space-y-4'>
+        <div className='mb-0'>
+          <Button 
+            variant='ghost' 
+            onClick={handleBackToGoals}
+            className='text-muted-foreground hover:text-foreground'
+          >
+            ← Back to Goals
+          </Button>
+        </div>
+        <GoalDetails goal={selectedGoal} />
+      </div>
+    )
+  }
+
   return (
-    <div className='space-y-6 pb-12'>
+    <div className='space-y-6'>
       <div className='flex justify-between items-center'>
         <div className='flex justify-between items-center w-full'>
           <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
@@ -193,4 +230,5 @@ const GoalsView = ({
     </div>
   )
 }
+
 export default GoalsView

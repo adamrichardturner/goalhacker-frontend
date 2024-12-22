@@ -7,6 +7,7 @@ import GoalProgress from './GoalProgress'
 import { useCategory } from '@/hooks/useCategory'
 import { Card } from '../ui/card'
 import { motion } from 'framer-motion'
+import { useSearchParams } from 'next/navigation'
 
 interface GoalProps {
   goal: GoalType
@@ -18,12 +19,22 @@ interface GoalProps {
 export default function Goal({ goal, className = '', index = 0 }: GoalProps) {
   const { categories } = useCategory()
   const hasProgress = (goal.subgoals?.length ?? 0) > 0
+  const searchParams = useSearchParams()
 
   const category =
     goal.category ||
     (goal.category_id
       ? categories.find((c) => c.category_id === goal.category_id)
       : null)
+
+  // Preserve existing search params while adding/updating the selected goal
+  const newSearchParams = new URLSearchParams()
+  searchParams.forEach((value, key) => {
+    newSearchParams.set(key, value)
+  })
+  if (goal.goal_id) {
+    newSearchParams.set('selected', goal.goal_id)
+  }
 
   return (
     <motion.div
@@ -32,7 +43,7 @@ export default function Goal({ goal, className = '', index = 0 }: GoalProps) {
       transition={{ duration: 0.4, delay: index * 0.1 }}
     >
       <Link
-        href={`/goals/${goal.goal_id}`}
+        href={`/goals?${newSearchParams.toString()}`}
         className={`flex bg-paper flex-col sm:flex-row rounded-2xl sm:h-[200px] ${className}`}
       >
         <Card className='flex flex-col sm:flex-row border hover:shadow-lg w-full rounded-2xl hover:border-border-hover transition-shadow sm:h-[200px]'>
