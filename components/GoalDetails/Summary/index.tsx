@@ -4,7 +4,6 @@ import { EditSummary } from './EditSummary'
 import { Badge } from '@/components/ui/badge'
 import { GoalStatusEditor } from '../GoalStatusEditor'
 import { getGoalStatus } from '@/utils/goalStatus'
-import { badgeBaseStyles } from '..'
 import { colors } from '@/theme/colors'
 import {
   Accordion,
@@ -18,7 +17,7 @@ import { cn } from '@/lib/utils'
 export const Summary = ({ goal }: { goal: Goal }) => {
   const statusConfig = getGoalStatus(goal.status)
   const [openItem, setOpenItem] = useState('aims')
-  
+
   return (
     <Card className='rounded-xl relative w-full'>
       <CardContent className='pt-6 space-y-8 w-full'>
@@ -40,33 +39,51 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           <EditSummary goal={goal} />
         </div>
 
-        <Accordion type="single" value={openItem} onValueChange={setOpenItem} collapsible className="flex flex-col gap-4">
+        <Accordion
+          type='single'
+          value={openItem}
+          onValueChange={setOpenItem}
+          collapsible
+          className='flex flex-col gap-4'
+        >
           {[
             { id: 'aims', title: 'Aims', content: goal.aims },
-            { id: 'steps', title: 'Steps to Completion', content: goal.steps_to_completion, isHtml: true },
-            { id: 'measurement', title: 'Measurement Method', content: goal.measurement_method, isHtml: true }
+            {
+              id: 'steps',
+              title: 'Steps to Completion',
+              content: goal.steps_to_completion,
+              isHtml: true,
+            },
+            {
+              id: 'measurement',
+              title: 'Measurement Method',
+              content: goal.measurement_method,
+              isHtml: true,
+            },
           ].map((item) => (
-            <AccordionItem 
+            <AccordionItem
               key={item.id}
-              value={item.id} 
-              className="rounded-lg border border-border/50 overflow-hidden shadow-md hover:shadow-lg transition-all bg-muted/15"
+              value={item.id}
+              className='rounded-lg border border-border/50 overflow-hidden shadow-md hover:shadow-lg transition-all bg-muted/15'
             >
-              <AccordionTrigger 
+              <AccordionTrigger
                 className={cn(
-                  "hover:no-underline h-[70px] p-4 transition-colors text-white",
-                  openItem === item.id ? "bg-electricPurple" : "bg-electricPurple/80 hover:bg-electricPurple/90"
+                  'hover:no-underline h-[70px] p-4 transition-colors text-white',
+                  openItem === item.id
+                    ? 'bg-electricPurple'
+                    : 'bg-electricPurple/80 hover:bg-electricPurple/90'
                 )}
               >
-                <h3 className="text-base font-semibold">{item.title}</h3>
+                <h3 className='text-base font-semibold'>{item.title}</h3>
               </AccordionTrigger>
               <AccordionContent>
                 {item.isHtml ? (
                   <div
-                    className="prose-content text-sm text-muted-foreground p-6 bg-muted/5"
+                    className='prose-content text-sm text-muted-foreground p-6 bg-muted/5'
                     dangerouslySetInnerHTML={{ __html: item.content }}
                   />
                 ) : (
-                  <div className="text-sm text-muted-foreground p-6 bg-muted/5">
+                  <div className='text-sm text-muted-foreground p-6 bg-muted/5'>
                     {item.content}
                   </div>
                 )}

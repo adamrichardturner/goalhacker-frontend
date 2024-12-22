@@ -75,7 +75,11 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
         <div className='space-y-4'>
           <GoalBanner goal={goal} />
 
-          <Tabs defaultValue='summary' className='w-full' onValueChange={setActiveTab}>
+          <Tabs
+            defaultValue='summary'
+            className='w-full'
+            onValueChange={setActiveTab}
+          >
             <div className='sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
               <div className='max-w-7xl mx-auto'>
                 <TabsList className='h-8 w-full justify-start gap-2 bg-transparent rounded-none relative'>
@@ -96,9 +100,9 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
                             className='absolute -bottom-[10px] left-0 right-0 h-[1.5px] bg-electricPurple'
                             layoutId='activeTabUnderline'
                             transition={{
-                              type: "spring",
+                              type: 'spring',
                               stiffness: 500,
-                              damping: 30
+                              damping: 30,
                             }}
                           />
                         )}

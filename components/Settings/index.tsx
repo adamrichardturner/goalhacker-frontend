@@ -45,13 +45,6 @@ interface UserProfile {
   last_name: string
 }
 
-type LoadingState =
-  | 'idle'
-  | 'updating-profile'
-  | 'uploading-avatar'
-  | 'requesting-reset'
-  | 'deleting'
-
 const DATE_FORMATS: { value: DateFormat; label: string }[] = [
   { value: 'MMM d, yyyy', label: 'Jan 15, 2024' },
   { value: 'MM/dd/yyyy', label: '01/15/2024' },
