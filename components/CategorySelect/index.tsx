@@ -65,14 +65,14 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
   return (
     <div className='flex gap-2 items-start'>
       <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger>
+        <SelectTrigger className='bg-input'>
           <SelectValue
             placeholder={
               isLoading ? 'Loading categories...' : 'Select a category'
             }
           />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className='bg-input'>
           {isLoading ? (
             <SelectItem value='loading' disabled>
               Loading...

@@ -1,11 +1,5 @@
 import { Goal } from '@/types/goal'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -30,6 +24,8 @@ import { formatTime } from '@/utils/formatTime'
 import ProgressNoteEditor from '../ProgressNote'
 import { Trash2, Pen, ScrollText } from 'lucide-react'
 import { useSettings } from '@/hooks/useSettings'
+import { AnimatedAccordion } from '@/components/ui/animated-accordion'
+import { truncateText } from '@/lib/utils'
 
 interface ProgressNotesProps {
   goal: Goal
@@ -48,17 +44,73 @@ export default function ProgressNotes({
   const [editingNote, setEditingNote] = useState<string | null>(null)
   const [deletingNote, setDeletingNote] = useState<string | null>(null)
   const [showProgressNote, setShowProgressNote] = useState(false)
+  const [openItem, setOpenItem] = useState<string | null>(null)
+
+  const accordionItems =
+    goal.progress_notes?.map((note) => ({
+      id: note.note_id || '',
+      title: (
+        <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2'>
+          <h3 className='text-base font-semibold' title={note.title}>
+            {truncateText(note.title, 30)}
+          </h3>
+          <span className='text-xs text-white/80 shrink-0'>
+            {note.created_at &&
+              `${formatDate(note.created_at, settings?.date_format)} at ${formatTime(note.created_at)}`}
+          </span>
+        </div>
+      ),
+      content: (
+        <>
+          <div
+            className='prose prose-sm max-w-none'
+            dangerouslySetInnerHTML={{ __html: note.content }}
+          />
+          <div className='flex justify-end gap-2 mt-4'>
+            {onDeleteNote && (
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setDeletingNote(note.note_id || '')
+                }}
+                className='hover:bg-destructive/10 bg-destructive/10 hover:text-destructive text-destructive/80'
+              >
+                <Trash2 className='h-4 w-4' />
+              </Button>
+            )}
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={(e) => {
+                e.stopPropagation()
+                setEditingNote(note.note_id || '')
+              }}
+              className='hover:bg-white bg-white'
+            >
+              <Pen className='h-4 w-4' />
+            </Button>
+          </div>
+        </>
+      ),
+    })) || []
 
   return (
     <Card>
       <CardHeader className='flex flex-row justify-between items-center'>
         <CardTitle className='text-xl sm:text-2xl font-semibold'>
-          Progress Notes
+          Notes
         </CardTitle>
 
         <Dialog open={showProgressNote} onOpenChange={setShowProgressNote}>
           <DialogTrigger asChild>
-            <Button size='md'>Add Note</Button>
+            <Button
+              size='md'
+              className='bg-electricPurple hover:bg-electricPurple/90'
+            >
+              Add Note
+            </Button>
           </DialogTrigger>
           <DialogContent className='sm:max-w-[600px]'>
             <DialogHeader>
@@ -72,54 +124,13 @@ export default function ProgressNotes({
         </Dialog>
       </CardHeader>
       <CardContent>
-        {goal.progress_notes && goal.progress_notes.length > 0 ? (
-          <Accordion type='single' collapsible className='space-y-4'>
-            {goal.progress_notes.map((note, index) => (
-              <AccordionItem
-                key={note.note_id || index}
-                value={note.note_id || index.toString()}
-                className='border rounded-lg'
-              >
-                <AccordionTrigger className='hover:no-underline px-4 w-full'>
-                  <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2'>
-                    <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4'>
-                      <h3 className='font-semibold text-lg'>{note.title}</h3>
-                      <span className='text-xs text-muted-foreground'>
-                        {note.created_at &&
-                          `${formatDate(note.created_at, settings?.date_format)} at ${formatTime(note.created_at)}`}
-                      </span>
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className='px-4'>
-                  <div
-                    className='prose prose-sm max-w-none'
-                    dangerouslySetInnerHTML={{ __html: note.content }}
-                  />
-                  <div className='flex justify-end gap-2 mt-4'>
-                    {onDeleteNote && (
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        onClick={() => setDeletingNote(note.note_id || '')}
-                        className='bg-accent hover:bg-accent/80 text-destructive hover:text-destructive'
-                      >
-                        <Trash2 className='h-4 w-4' />
-                      </Button>
-                    )}
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      onClick={() => setEditingNote(note.note_id || '')}
-                      className='bg-accent hover:bg-accent/80'
-                    >
-                      <Pen className='h-4 w-4' />
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        {accordionItems.length > 0 ? (
+          <AnimatedAccordion
+            items={accordionItems}
+            openItem={openItem}
+            onOpenChange={setOpenItem}
+            variant='purple'
+          />
         ) : (
           <div className='flex flex-col items-center justify-center py-8 text-center space-y-2'>
             <ScrollText className='h-12 w-12 text-muted-foreground' />

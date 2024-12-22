@@ -90,20 +90,27 @@ export function EditSummary({ goal }: EditSummaryProps) {
           <Pen className='h-4 w-4 text-white' />
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] h-[70vh] overflow-y-auto rounded-lg'>
+      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] p-4 h-[70vh] overflow-y-auto rounded-lg'>
         <DialogHeader>
           <DialogTitle>Edit Goal Summary</DialogTitle>
         </DialogHeader>
-        <div className='space-y-6 py-4'>
-          <div className='space-y-2'>
-            <Label htmlFor='title'>Title</Label>
+        <div className='space-y-6 py-4 bg-paper'>
+          <div className='space-y-2 bg-paper'>
+            <div className='flex justify-between items-center'>
+              <Label htmlFor='title'>Title</Label>
+              <span className='text-xs text-muted-foreground'>
+                {editedGoal.title.length}/120
+              </span>
+            </div>
             <Input
               id='title'
               value={editedGoal.title}
               onChange={(e) =>
                 setEditedGoal((prev) => ({ ...prev, title: e.target.value }))
               }
+              maxLength={120}
               placeholder='Enter goal title'
+              className='bg-input'
             />
           </div>
           <div className='space-y-2'>
@@ -115,6 +122,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
                 setEditedGoal((prev) => ({ ...prev, aims: e.target.value }))
               }
               placeholder='What are you aiming to achieve?'
+              className='bg-input'
             />
           </div>
           <div className='space-y-2'>
@@ -128,7 +136,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
                 }))
               }
               placeholder='What steps will you take to complete this goal?'
-              className='min-h-[100px]'
+              className='min-h-[100px] bg-input'
             />
           </div>
           <div className='space-y-2'>
@@ -142,7 +150,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
                 }))
               }
               placeholder='How will you measure progress towards this goal?'
-              className='min-h-[100px]'
+              className='min-h-[100px] bg-input'
             />
           </div>
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
@@ -153,7 +161,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
                   <Button
                     variant='outline'
                     className={cn(
-                      'w-full justify-start text-left font-normal',
+                      'w-full justify-start text-left font-normal bg-input',
                       !editedGoal.target_date && 'text-muted-foreground'
                     )}
                   >
@@ -195,7 +203,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
                   setEditedGoal((prev) => ({ ...prev, priority: value }))
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className='bg-input'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

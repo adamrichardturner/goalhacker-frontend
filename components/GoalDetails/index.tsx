@@ -71,7 +71,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
       transition={{ duration: 0.5 }}
       className='min-h-screen bg-background'
     >
-      <div className='max-w-7xl mx-auto sm:px-6 lg:px-8'>
+      <div className='max-w-7xl mx-auto'>
         <div className='space-y-4'>
           <GoalBanner goal={goal} />
 

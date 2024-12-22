@@ -83,13 +83,15 @@ export default function ProgressNoteEditor({
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-6 bg-card rounded-xl p-6 border shadow-sm'>
       <div className='space-y-2'>
-        <Label htmlFor='title'>Title</Label>
+        <Label htmlFor='title' className='text-sm font-medium'>
+          Title
+        </Label>
         <div
           className={cn(
-            'rounded-md',
-            errors.title && 'ring-1 ring-destructive'
+            'rounded-lg overflow-hidden',
+            errors.title && 'ring-2 ring-destructive'
           )}
         >
           <Input
@@ -102,25 +104,31 @@ export default function ProgressNoteEditor({
               }
             }}
             placeholder='Enter a title for your progress note'
-            className={cn('border', errors.title && 'border-destructive')}
+            className={cn(
+              'border-0 bg-input focus-visible:ring-1 focus-visible:ring-electricPurple placeholder:text-muted-foreground/60',
+              errors.title && 'border-destructive'
+            )}
           />
         </div>
       </div>
       <div className='space-y-2'>
-        <Label>Content</Label>
+        <Label className='text-sm font-medium'>Content</Label>
         <div
           className={cn(
-            'border rounded-md',
-            errors.content && 'border-destructive ring-1 ring-destructive'
+            'rounded-lg overflow-hidden bg-muted/50',
+            errors.content && 'ring-2 ring-destructive'
           )}
         >
-          <div className='border-b p-2 flex gap-1'>
+          <div className='border-b border-border/50 p-2 flex gap-1 bg-background/50 backdrop-blur-sm'>
             <Button
               type='button'
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleBold().run()}
-              className={editor?.isActive('bold') ? 'bg-muted' : ''}
+              className={cn(
+                'h-8 px-2 hover:bg-muted',
+                editor?.isActive('bold') && 'bg-muted text-primary'
+              )}
             >
               <Bold className='h-4 w-4' />
             </Button>
@@ -129,7 +137,10 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleItalic().run()}
-              className={editor?.isActive('italic') ? 'bg-muted' : ''}
+              className={cn(
+                'h-8 px-2 hover:bg-muted',
+                editor?.isActive('italic') && 'bg-muted text-primary'
+              )}
             >
               <Italic className='h-4 w-4' />
             </Button>
@@ -138,7 +149,10 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleUnderline().run()}
-              className={editor?.isActive('underline') ? 'bg-muted' : ''}
+              className={cn(
+                'h-8 px-2 hover:bg-muted',
+                editor?.isActive('underline') && 'bg-muted text-primary'
+              )}
             >
               <Underline className='h-4 w-4' />
             </Button>
@@ -147,17 +161,23 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleStrike().run()}
-              className={editor?.isActive('strike') ? 'bg-muted' : ''}
+              className={cn(
+                'h-8 px-2 hover:bg-muted',
+                editor?.isActive('strike') && 'bg-muted text-primary'
+              )}
             >
               <Strikethrough className='h-4 w-4' />
             </Button>
-            <span className='w-px h-4 bg-border my-auto mx-1' />
+            <span className='w-px h-4 bg-border/50 my-auto mx-1' />
             <Button
               type='button'
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleBulletList().run()}
-              className={editor?.isActive('bulletList') ? 'bg-muted' : ''}
+              className={cn(
+                'h-8 px-2 hover:bg-muted',
+                editor?.isActive('bulletList') && 'bg-muted text-primary'
+              )}
             >
               <List className='h-4 w-4' />
             </Button>
@@ -166,19 +186,22 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-              className={editor?.isActive('orderedList') ? 'bg-muted' : ''}
+              className={cn(
+                'h-8 px-2 hover:bg-muted',
+                editor?.isActive('orderedList') && 'bg-muted text-primary'
+              )}
             >
               <ListOrdered className='h-4 w-4' />
             </Button>
           </div>
           <div
             ref={editorContainerRef}
-            className='p-4 min-h-[200px] cursor-text'
+            className='p-4 min-h-[200px] cursor-text bg-transparent'
             onClick={handleContainerClick}
           >
             <EditorContent
               editor={editor}
-              className='prose prose-sm max-w-none'
+              className='prose prose-sm max-w-none prose-p:leading-relaxed prose-p:my-1'
               onFocus={() => {
                 if (editor?.getHTML().trim()) {
                   setErrors((prev) => ({ ...prev, content: false }))
@@ -188,11 +211,20 @@ export default function ProgressNoteEditor({
           </div>
         </div>
       </div>
-      <div className='flex justify-end gap-2'>
-        <Button variant='outline' onClick={onCancel}>
+      <div className='flex justify-end gap-2 pt-2'>
+        <Button
+          variant='outline'
+          onClick={onCancel}
+          className='hover:bg-muted/50'
+        >
           Cancel
         </Button>
-        <Button onClick={handleSubmit}>Save Progress Note</Button>
+        <Button
+          onClick={handleSubmit}
+          className='bg-electricPurple hover:bg-electricPurple/90'
+        >
+          Save Progress Note
+        </Button>
       </div>
     </div>
   )

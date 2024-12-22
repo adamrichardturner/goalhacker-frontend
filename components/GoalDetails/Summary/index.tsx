@@ -4,17 +4,64 @@ import { EditSummary } from './EditSummary'
 import { Badge } from '@/components/ui/badge'
 import { GoalStatusEditor } from '../GoalStatusEditor'
 import { colors } from '@/theme/colors'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
+import { AnimatedAccordion } from '@/components/ui/animated-accordion'
+import { Target, ListChecks, LineChart } from 'lucide-react'
 
 export const Summary = ({ goal }: { goal: Goal }) => {
-  const [openItem, setOpenItem] = useState('aims')
+  const [openItem, setOpenItem] = useState<string | null>(null)
+
+  const accordionItems = [
+    {
+      id: 'aims',
+      title: (
+        <div className='flex items-center gap-2'>
+          <Badge variant='outline' className='text-primary'>
+            <Target className='h-3 w-3 mr-1' />
+            Aims
+          </Badge>
+        </div>
+      ),
+      content: goal.aims,
+    },
+    {
+      id: 'steps',
+      title: (
+        <div className='flex items-center gap-2'>
+          <Badge variant='outline' className='text-primary'>
+            <ListChecks className='h-3 w-3 mr-1' />
+            Steps to Completion
+          </Badge>
+        </div>
+      ),
+      content: goal.steps_to_completion,
+      isHtml: true,
+    },
+    {
+      id: 'measurement',
+      title: (
+        <div className='flex items-center gap-2'>
+          <Badge variant='outline' className='text-primary'>
+            <LineChart className='h-3 w-3 mr-1' />
+            Measurement Method
+          </Badge>
+        </div>
+      ),
+      content: goal.measurement_method,
+      isHtml: true,
+    },
+  ].map((item) => ({
+    id: item.id,
+    title: item.title,
+    content: item.isHtml ? (
+      <div
+        className='prose-content'
+        dangerouslySetInnerHTML={{ __html: item.content }}
+      />
+    ) : (
+      item.content
+    ),
+  }))
 
   return (
     <Card className='rounded-xl relative w-full'>
@@ -23,7 +70,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           {goal.category && (
             <div className='flex items-center gap-2'>
               <Badge
-                className={`bg-electricPurple py-1 px-4 text-white font-semibold pointer-events-none`}
+                className='bg-electricPurple py-1 px-4 text-white font-semibold pointer-events-none'
                 style={{
                   backgroundColor: `${colors.electricViolet}`,
                   borderColor: `${colors.electricViolet}33`,
@@ -37,58 +84,13 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           <EditSummary goal={goal} />
         </div>
 
-        <Accordion
-          type='single'
-          value={openItem}
-          onValueChange={setOpenItem}
-          collapsible
-          className='flex flex-col gap-4 text-white text-shadow-lg'
-        >
-          {[
-            { id: 'aims', title: 'Aims', content: goal.aims },
-            {
-              id: 'steps',
-              title: 'Steps to Completion',
-              content: goal.steps_to_completion,
-              isHtml: true,
-            },
-            {
-              id: 'measurement',
-              title: 'Measurement Method',
-              content: goal.measurement_method,
-              isHtml: true,
-            },
-          ].map((item) => (
-            <AccordionItem
-              key={item.id}
-              value={item.id}
-              className='rounded-lg border border-border/50 overflow-hidden shadow-md hover:shadow-lg transition-all bg-muted/15'
-            >
-              <AccordionTrigger
-                className={cn(
-                  'hover:no-underline h-[70px] p-4 transition-colors text-white [&>svg]:text-white',
-                  openItem === item.id
-                    ? 'bg-electricPurple/95 text-white'
-                    : 'bg-electricPurple/80 hover:bg-electricPurple/90'
-                )}
-              >
-                <h3 className='text-base font-semibold'>{item.title}</h3>
-              </AccordionTrigger>
-              <AccordionContent>
-                {item.isHtml ? (
-                  <div
-                    className='prose-content text-sm text-muted-foreground p-6 bg-muted/5'
-                    dangerouslySetInnerHTML={{ __html: item.content }}
-                  />
-                ) : (
-                  <div className='text-sm text-muted-foreground p-6 bg-muted/5'>
-                    {item.content}
-                  </div>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <AnimatedAccordion
+          items={accordionItems}
+          openItem={openItem}
+          onOpenChange={setOpenItem}
+          variant='purple'
+          className='accordion-content'
+        />
 
         <div className='w-full flex justify-end'>
           <GoalStatusEditor goal={goal} />
