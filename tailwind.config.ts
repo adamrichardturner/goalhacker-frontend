@@ -55,6 +55,13 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        accordion: {
+          bg: 'hsl(var(--accordion-bg))',
+          body: 'hsl(var(--accordion-body))',
+          bodyHover: 'hsl(var(--accordion-body-hover))',
+          hover: 'hsl(var(--accordion-hover))',
+          border: 'hsl(var(--accordion-border))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

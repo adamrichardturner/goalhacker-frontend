@@ -26,7 +26,7 @@ body {
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
-    --input: 0 0% 96%;
+    --input: 0 0% 95%;
     --success: 135 50% 47%;
     --success-hover: 135 50% 57%;
     --electricPurple: 254 97% 64%;
@@ -38,9 +38,11 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
     --shadow-sm: 0px 2px 7px 0px rgba(0, 0, 0, 0.02);
-    --accordion-bg: 0 0% 100%;
-    --accordion-hover: 254 97% 97%;
-    --accordion-border: 254 97% 90%;
+    --accordion-bg: 254 97% 64%;
+    --accordion-body: 254 97% 64%;
+    --accordion-body-hover: 254 97% 68%;
+    --accordion-hover: 254 97% 68%;
+    --accordion-border: 254 97% 60%;
   }
   .dark {
     --background: 218 40% 8%;
@@ -69,9 +71,11 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --accordion-bg: 215 28% 16%;
-    --accordion-hover: 254 97% 14%;
-    --accordion-border: 254 60% 20%;
+    --accordion-bg: 217 33% 24%;
+    --accordion-body: 217 33% 17%;
+    --accordion-body-hover: 217 33% 17%;
+    --accordion-hover: 217 33% 17%;
+    --accordion-border: 217 33% 14%;
   }
 }
 
