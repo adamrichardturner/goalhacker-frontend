@@ -82,8 +82,12 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
     <>
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogTrigger asChild>
-          <Button size='icon' className='bg-black/50 hover:bg-black/70 h-8 w-8'>
-            <Pen className='h-4 w-4 text-white' />
+          <Button
+            variant='ghost'
+            size='icon'
+            className='bg-input hover:bg-input/98 h-8 w-8'
+          >
+            <Pen className='h-4 w-4 text-primary' />
           </Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-3xl bg-card max-w-[90vw] overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg'>

@@ -87,9 +87,9 @@ export default function ProgressNotes({
                 e.stopPropagation()
                 setEditingNote(note.note_id || '')
               }}
-              className='hover:bg-white bg-white'
+              className='bg-input hover:bg-input/98 h-8 w-8'
             >
-              <Pen className='h-4 w-4' />
+              <Pen className='h-4 w-4 text-primary' />
             </Button>
           </div>
         </>

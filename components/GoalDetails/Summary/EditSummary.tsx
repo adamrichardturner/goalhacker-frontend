@@ -85,16 +85,16 @@ export function EditSummary({ goal }: EditSummaryProps) {
       <DialogTrigger asChild>
         <Button
           size='icon'
-          className='absolute top-4 right-4 bg-black/10 m-2 hover:bg-black/70 h-8 w-8'
+          className='absolute top-4 right-4 bg-input m-2 hover:bg-input/98 h-8 w-8'
         >
-          <Pen className='h-4 w-4 text-white' />
+          <Pen className='h-4 w-4 text-primary' />
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] p-4 h-[70vh] overflow-y-auto rounded-lg'>
+      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] p-4 h-[70vh] rounded-2xl overflow-y-auto sm:p-10'>
         <DialogHeader>
           <DialogTitle>Edit Goal Summary</DialogTitle>
         </DialogHeader>
-        <div className='space-y-6 py-4 bg-paper'>
+        <div className='space-y-6 px-6 py-8 bg-paper rounded-2xl'>
           <div className='space-y-2 bg-paper'>
             <div className='flex justify-between items-center'>
               <Label htmlFor='title'>Title</Label>
@@ -110,7 +110,7 @@ export function EditSummary({ goal }: EditSummaryProps) {
               }
               maxLength={120}
               placeholder='Enter goal title'
-              className='bg-input'
+              className='bg-input p-4'
             />
           </div>
           <div className='space-y-2'>

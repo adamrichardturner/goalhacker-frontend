@@ -554,14 +554,17 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   </Popover>
                   <Button
                     variant='ghost'
-                    size='icon'
-                    className='h-12 w-12 bg-accent hover:bg-accent/80'
-                    onClick={() =>
-                      subgoal.subgoal_id &&
-                      handleEditClick(subgoal.subgoal_id, subgoal.title)
-                    }
+                    size='sm'
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setEditing({
+                        subgoalId: subgoal.subgoal_id || null,
+                        title: subgoal.title,
+                      })
+                    }}
+                    className='bg-input hover:bg-input/98 h-8 w-8'
                   >
-                    <Pen className='h-4 w-4' />
+                    <Pen className='h-4 w-4 text-primary' />
                   </Button>
                   <Button
                     variant='ghost'
