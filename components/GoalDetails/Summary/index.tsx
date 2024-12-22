@@ -3,16 +3,29 @@ import { Goal } from '@/types/goal'
 import { EditSummary } from './EditSummary'
 import { Badge } from '@/components/ui/badge'
 import { GoalStatusEditor } from '../GoalStatusEditor'
-
+import { getGoalStatus } from '@/utils/goalStatus'
+import { badgeBaseStyles } from '..'
+import { colors } from '@/theme/colors'
 export const Summary = ({ goal }: { goal: Goal }) => {
+  const statusConfig = getGoalStatus(goal.status)
+
+  console.log('STATUS CONFIG', statusConfig)
+
   return (
     <Card className='rounded-xl relative'>
       <CardContent className='pt-6 space-y-6'>
         <div className='flex items-center justify-between'>
           {goal.category && (
             <div className='flex items-center gap-2'>
-              <span className='text-sm text-muted-foreground'>Category:</span>
-              <Badge variant='secondary' className='text-base'>
+              <Badge
+                className={`${badgeBaseStyles} ${statusConfig.className} pointer-events-none`}
+                style={{
+                  backgroundColor: `${colors.electricViolet}40`,
+                  borderColor: `${colors.electricViolet}33`,
+                  boxShadow: `0 0 12px ${colors.electricViolet}40`,
+                  color: 'white',
+                }}
+              >
                 {goal.category.name}
               </Badge>
             </div>

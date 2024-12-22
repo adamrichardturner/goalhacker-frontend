@@ -5,15 +5,10 @@ import { formatDate } from '@/utils/dateFormat'
 import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { useSettings } from '@/hooks/useSettings'
-
+import { badgeBaseStyles, targetBadgeStyles } from '../index'
 interface GoalBannerProps {
   goal: Goal
 }
-
-const badgeBaseStyles =
-  'px-2 py-1 font-[500] text-white rounded-full text-[10px] backdrop-blur'
-const targetBadgeStyles =
-  'px-2 py-1 rounded-full pointer-events-none font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 
 export default function GoalBanner({ goal }: GoalBannerProps) {
   const statusConfig = getGoalStatus(goal.status)
