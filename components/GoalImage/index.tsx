@@ -34,10 +34,9 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
         <div
           className='relative w-full h-[200px] rounded-t-2xl sm:rounded-2xl overflow-hidden group'
           style={{
-            backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
+            backgroundImage: `url(${imageUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            backgroundColor: !imageUrl ? 'hsl(var(--muted))' : undefined,
           }}
         >
           <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60' />

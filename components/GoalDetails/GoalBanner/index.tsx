@@ -6,6 +6,8 @@ import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { useSettings } from '@/hooks/useSettings'
 import { badgeBaseStyles, targetBadgeStyles } from '../index'
+import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
+
 interface GoalBannerProps {
   goal: Goal
 }
@@ -14,12 +16,14 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
   const statusConfig = getGoalStatus(goal.status)
   const priorityConfig = getPriorityConfig(goal.priority)
   const { settings } = useSettings()
+  const { imageUrl } = useGoalImageDisplay(goal)
+
   return (
     <>
       <div
         className='h-[270px] relative sm:rounded-lg overflow-hidden shadow-sm -mx-4 sm:mx-auto'
         style={{
-          backgroundImage: `url(${goal.image_url})`,
+          backgroundImage: `url(${imageUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

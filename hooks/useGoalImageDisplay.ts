@@ -6,7 +6,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 export default function useGoalImageDisplay(goal: Goal) {
   const imageUrl = useMemo(() => {
-    if (!goal) return null
+    if (!goal) return '/default-goal.jpg'
 
     // If the goal has an image_url, use it
     if (goal.image_url) {
@@ -29,7 +29,8 @@ export default function useGoalImageDisplay(goal: Goal) {
       return `${API_URL}/api/images/default-goal-images/${goal.default_image_key}`
     }
 
-    return null
+    // If no image is set, use the default goal image from public directory
+    return '/default-goal.jpg'
   }, [goal])
 
   return {

@@ -26,11 +26,8 @@ import Link from 'next/link'
 import { Insight } from '@/services/insightsService'
 import { motion } from 'framer-motion'
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
+  AnimatedAccordion,
+} from '@/components/ui/animated-accordion'
 
 const MAX_TITLE_LENGTH = 60
 
@@ -79,6 +76,15 @@ export default function GoalInsights() {
     insightHistory,
   } = useInsights()
   const [selectedInsight, setSelectedInsight] = useState(currentInsight)
+  const [topPerformingOpenItem, setTopPerformingOpenItem] = useState<
+    string | null
+  >(null)
+  const [needsWorkOpenItem, setNeedsWorkOpenItem] = useState<string | null>(
+    null
+  )
+  const [recommendationsOpenItem, setRecommendationsOpenItem] = useState<
+    string | null
+  >(null)
 
   useEffect(() => {
     setSelectedInsight(currentInsight)
@@ -90,6 +96,14 @@ export default function GoalInsights() {
     )
     if (historicalInsight) {
       setSelectedInsight(historicalInsight)
+    }
+  }
+
+  const handleGenerateNew = async () => {
+    await generateNewInsights()
+    // Reset to latest insight after successful generation
+    if (currentInsight) {
+      setSelectedInsight(currentInsight)
     }
   }
 
@@ -121,12 +135,7 @@ export default function GoalInsights() {
     )
   }
 
-  const hasEnoughData =
-    selectedInsight &&
-    selectedInsight.goal_stats.total > 0 &&
-    selectedInsight.goal_stats.completionRates.some(
-      (g) => g.completion > 0 || g.title.length > 0
-    )
+  const hasEnoughData = selectedInsight && selectedInsight.goal_stats.total > 0
 
   if (!hasEnoughData) {
     return (
@@ -145,7 +154,7 @@ export default function GoalInsights() {
             recommendations and analysis.
           </p>
           <Button
-            onClick={generateNewInsights}
+            onClick={handleGenerateNew}
             disabled={isGenerating || remainingGenerations === 0}
             className='gap-2'
           >
@@ -194,7 +203,7 @@ export default function GoalInsights() {
             personalized recommendations!
           </p>
           <Button
-            onClick={generateNewInsights}
+            onClick={handleGenerateNew}
             disabled={isGenerating || remainingGenerations === 0}
             className='gap-2'
           >
@@ -237,7 +246,7 @@ export default function GoalInsights() {
         <div className='flex flex-col items-end gap-1'>
           <div className='flex items-center gap-2'>
             <Button
-              onClick={generateNewInsights}
+              onClick={handleGenerateNew}
               disabled={isGenerating || remainingGenerations === 0}
               size='sm'
               variant='outline'
@@ -275,7 +284,7 @@ export default function GoalInsights() {
                 Summary
               </Badge>
             </div>
-            <div className='bg-accent rounded-lg p-6'>
+            <div className='bg-accordion-body rounded-lg p-6'>
               <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
                 {renderGoalText(selectedInsight.summary, selectedInsight)}
               </p>
@@ -296,7 +305,7 @@ export default function GoalInsights() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   key={index}
-                  className='bg-accent rounded-lg p-4'
+                  className='bg-accordion-body rounded-lg p-4'
                 >
                   <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
                     {renderGoalText(trend, selectedInsight)}
@@ -315,64 +324,69 @@ export default function GoalInsights() {
                 </Badge>
               </div>
               <div className='grid gap-3'>
-                <Accordion type='single' collapsible className='w-full'>
-                  {(selectedInsight.topPerforming ?? []).map((goal, index) => {
-                    const [goalRef, ...messageParts] = goal.split(':')
-                    const message = messageParts.join(':').trim()
-                    const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
-                    const goalData =
-                      selectedInsight.goal_stats.completionRates.find(
-                        (g) => g.goal_id === goalId
-                      )
+                <AnimatedAccordion
+                  items={(selectedInsight.topPerforming ?? [])
+                    .map((goal, index) => {
+                      const [goalRef, ...messageParts] = goal.split(':')
+                      const message = messageParts.join(':').trim()
+                      const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
+                      const goalData =
+                        selectedInsight.goal_stats.completionRates.find(
+                          (g) => g.goal_id === goalId
+                        )
 
-                    if (!goalData) return null
+                      if (!goalData) return null
 
-                    return (
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        key={index}
-                      >
-                        <AccordionItem
-                          value={`top-${index}`}
-                          className='border-0 mb-3'
-                        >
-                          <AccordionTrigger className='px-4 py-4 hover:no-underline bg-accent rounded-lg data-[state=open]:rounded-b-none'>
-                            <span className='text-sm font-medium'>
-                              {goalData.title}
-                            </span>
-                          </AccordionTrigger>
-                          <AccordionContent className='px-4 pb-4 bg-background rounded-b-lg border border-t-0 border-border'>
-                            <div className='flex flex-col gap-2 pt-2'>
-                              <p className='text-sm text-muted-foreground'>
-                                {message}
-                              </p>
-                              <div className='mt-2'>
-                                <div className='flex items-center justify-between text-xs text-muted-foreground mb-1'>
-                                  <span>Progress</span>
-                                  <span>{goalData.completion.toFixed(1)}%</span>
-                                </div>
+                      return {
+                        id: `top-${index}`,
+                        title: (
+                          <span className='text-sm font-medium'>
+                            {goalData.title}
+                          </span>
+                        ),
+                        content: (
+                          <div className='flex flex-col gap-2 pt-2'>
+                            <p className='text-sm text-muted-foreground'>
+                              {message}
+                            </p>
+                            <div className='mt-2 flex justify-end flex-col gap-1'>
+                              <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
+                                <span>
+                                  Progress {goalData.completion.toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className='flex items-center justify-end'>
                                 <Progress
                                   value={goalData.completion}
                                   className='h-1'
+                                  indicatorClassName='bg-electricPurple'
                                 />
                               </div>
-                              <div className='flex justify-end mt-4'>
-                                <Link
-                                  href={`/goals/${goalId}?from=insights`}
-                                  className='inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-4 py-2'
-                                >
-                                  View Goal
-                                </Link>
-                              </div>
                             </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </motion.div>
-                    )
-                  })}
-                </Accordion>
+                            <div className='flex justify-end mt-4'>
+                              <Link href={`/goals/${goalId}?from=insights`}>
+                                <Button variant='default' size='md'>
+                                  View Goal
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        ),
+                      }
+                    })
+                    .filter(
+                      (
+                        item
+                      ): item is {
+                        id: string
+                        title: JSX.Element
+                        content: JSX.Element
+                      } => item !== null
+                    )}
+                  openItem={topPerformingOpenItem}
+                  onOpenChange={setTopPerformingOpenItem}
+                  variant='purple'
+                />
               </div>
             </div>
           )}
@@ -386,63 +400,69 @@ export default function GoalInsights() {
                 </Badge>
               </div>
               <div className='grid gap-3'>
-                <Accordion type='single' collapsible className='w-full'>
-                  {(selectedInsight.needsWork ?? []).map((goal, index) => {
-                    const [goalRef, ...messageParts] = goal.split(':')
-                    const message = messageParts.join(':').trim()
-                    const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
-                    const goalData =
-                      selectedInsight.goal_stats.completionRates.find(
-                        (g) => g.goal_id === goalId
-                      )
+                <AnimatedAccordion
+                  items={(selectedInsight.needsWork ?? [])
+                    .map((goal, index) => {
+                      const [goalRef, ...messageParts] = goal.split(':')
+                      const message = messageParts.join(':').trim()
+                      const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
+                      const goalData =
+                        selectedInsight.goal_stats.completionRates.find(
+                          (g) => g.goal_id === goalId
+                        )
 
-                    if (!goalData) return null
+                      if (!goalData) return null
 
-                    return (
-                      <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        key={index}
-                      >
-                        <AccordionItem
-                          value={`needs-${index}`}
-                          className='border-0 mb-3'
-                        >
-                          <AccordionTrigger className='px-4 py-6 hover:no-underline bg-accent rounded-lg data-[state=open]:rounded-b-none'>
-                            <span className='text-sm font-medium'>
-                              {goalData.title}
-                            </span>
-                          </AccordionTrigger>
-                          <AccordionContent className='px-4 pb-4 bg-background rounded-b-lg border border-t-0 border-border'>
-                            <div className='flex flex-col gap-2 pt-2'>
-                              <p className='text-sm text-muted-foreground'>
-                                {message}
-                              </p>
-                              <div className='mt-2'>
-                                <div className='flex items-center justify-between text-xs text-muted-foreground mb-1'>
-                                  <span>Progress</span>
-                                  <span>{goalData.completion.toFixed(1)}%</span>
-                                </div>
+                      return {
+                        id: `needs-${index}`,
+                        title: (
+                          <span className='text-sm font-medium'>
+                            {goalData.title}
+                          </span>
+                        ),
+                        content: (
+                          <div className='flex flex-col gap-2 pt-2'>
+                            <p className='text-sm text-muted-foreground'>
+                              {message}
+                            </p>
+                            <div className='mt-2 flex justify-end flex-col gap-1'>
+                              <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
+                                <span>
+                                  Progress {goalData.completion.toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className='flex items-center justify-end'>
                                 <Progress
                                   value={goalData.completion}
                                   className='h-1'
+                                  indicatorClassName='bg-electricPurple'
                                 />
                               </div>
-                              <div className='flex justify-end mt-4'>
-                                <Link href={`/goals/${goalId}?from=insights`}>
-                                  <Button variant='default' size='md'>
-                                    View Goal
-                                  </Button>
-                                </Link>
-                              </div>
                             </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </motion.div>
-                    )
-                  })}
-                </Accordion>
+                            <div className='flex justify-end mt-4'>
+                              <Link href={`/goals/${goalId}?from=insights`}>
+                                <Button variant='default' size='md'>
+                                  View Goal
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        ),
+                      }
+                    })
+                    .filter(
+                      (
+                        item
+                      ): item is {
+                        id: string
+                        title: JSX.Element
+                        content: JSX.Element
+                      } => item !== null
+                    )}
+                  openItem={needsWorkOpenItem}
+                  onOpenChange={setNeedsWorkOpenItem}
+                  variant='purple'
+                />
               </div>
             </div>
           )}
@@ -456,9 +476,9 @@ export default function GoalInsights() {
                 </Badge>
               </div>
               <div className='grid gap-3'>
-                <Accordion type='single' collapsible className='w-full'>
-                  {selectedInsight.recommendations.map(
-                    (recommendation, index) => {
+                <AnimatedAccordion
+                  items={selectedInsight.recommendations
+                    .map((recommendation, index) => {
                       const [goalRef, ...messageParts] =
                         recommendation.split(':')
                       const message = messageParts.join(':').trim()
@@ -470,54 +490,56 @@ export default function GoalInsights() {
 
                       if (!goalData) return null
 
-                      return (
-                        <motion.div
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          key={index}
-                        >
-                          <AccordionItem
-                            value={`recommendation-${index}`}
-                            className='border-0 mb-3'
-                          >
-                            <AccordionTrigger className='px-4 py-6 hover:no-underline bg-accent rounded-lg data-[state=open]:rounded-b-none'>
-                              <span className='text-sm font-medium'>
-                                {goalData.title}
-                              </span>
-                            </AccordionTrigger>
-                            <AccordionContent className='px-4 pb-4 bg-background rounded-b-lg border border-t-0 border-border'>
-                              <div className='flex flex-col gap-2 pt-2'>
-                                <p className='text-sm text-muted-foreground'>
-                                  {message}
-                                </p>
-                                <div className='mt-2'>
-                                  <div className='flex items-center justify-between text-xs text-muted-foreground mb-1'>
-                                    <span>Progress</span>
-                                    <span>
-                                      {goalData.completion.toFixed(1)}%
-                                    </span>
-                                  </div>
-                                  <Progress
-                                    value={goalData.completion}
-                                    className='h-1'
-                                  />
-                                </div>
-                                <div className='flex justify-end mt-4'>
-                                  <Link href={`/goals/${goalId}?from=insights`}>
-                                    <Button variant='default' size='md'>
-                                      View Goal
-                                    </Button>
-                                  </Link>
-                                </div>
+                      return {
+                        id: `recommendation-${index}`,
+                        title: (
+                          <span className='text-sm font-medium'>
+                            {goalData.title}
+                          </span>
+                        ),
+                        content: (
+                          <div className='flex flex-col gap-2 pt-2'>
+                            <p className='text-sm text-muted-foreground'>
+                              {message}
+                            </p>
+                            <div className='mt-2 flex justify-end flex-col gap-1'>
+                              <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
+                                <span>
+                                  Progress {goalData.completion.toFixed(1)}%
+                                </span>
                               </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </motion.div>
-                      )
-                    }
-                  )}
-                </Accordion>
+                              <div className='flex items-center justify-end'>
+                                <Progress
+                                  value={goalData.completion}
+                                  className='h-1'
+                                  indicatorClassName='bg-electricPurple'
+                                />
+                              </div>
+                            </div>
+                            <div className='flex justify-end mt-4'>
+                              <Link href={`/goals/${goalId}?from=insights`}>
+                                <Button variant='default' size='md'>
+                                  View Goal
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        ),
+                      }
+                    })
+                    .filter(
+                      (
+                        item
+                      ): item is {
+                        id: string
+                        title: JSX.Element
+                        content: JSX.Element
+                      } => item !== null
+                    )}
+                  openItem={recommendationsOpenItem}
+                  onOpenChange={setRecommendationsOpenItem}
+                  variant='purple'
+                />
               </div>
             </div>
           )}

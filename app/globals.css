@@ -39,7 +39,7 @@ body {
     --radius: 0.5rem;
     --shadow-sm: 0px 2px 7px 0px rgba(0, 0, 0, 0.02);
     --accordion-bg: 254 97% 64%;
-    --accordion-body: 254 97% 64%;
+    --accordion-body: 0 0% 98%;
     --accordion-body-hover: 254 97% 68%;
     --accordion-hover: 254 97% 68%;
     --accordion-border: 254 97% 60%;

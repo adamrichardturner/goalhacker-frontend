@@ -62,12 +62,12 @@ export function useInsights(forceGenerate = false) {
     router.push('/login')
   }
 
-  const generateNewInsights = () => {
+  const generateNewInsights = async () => {
     if (!user || !hasSessionCookie) {
       router.push('/login')
       return
     }
-    generateMutation.mutate()
+    await generateMutation.mutateAsync()
   }
 
   return {
