@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/auth/useUser'
 import { Suspense } from 'react'
 
 function TabNavigationSkeleton() {
+  // TODO: Add a skeleton for the tab navigation
   return (
     <div className='flex flex-col gap-4'>
       <div className='h-12 bg-card rounded-lg animate-pulse' />
