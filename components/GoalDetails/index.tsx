@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { BackToInsights } from '../ui/back-to-insights'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
+import { useState } from 'react'
 
 interface GoalDetailsProps {
   goal: Goal
@@ -25,6 +26,7 @@ export const targetBadgeStyles =
 export default function GoalDetails({ goal }: GoalDetailsProps) {
   const searchParams = useSearchParams()
   const fromInsights = searchParams.get('from') === 'insights'
+  const [activeTab, setActiveTab] = useState('summary')
   const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(
     goal.goal_id
   )
@@ -70,63 +72,44 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
       className='min-h-screen bg-background'
     >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
-        <div className='space-y-8'>
+        <div className='space-y-4'>
           <GoalBanner goal={goal} />
 
-          <Tabs defaultValue='summary' className='w-full'>
-            <div className='sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border'>
+          <Tabs defaultValue='summary' className='w-full' onValueChange={setActiveTab}>
+            <div className='sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
               <div className='max-w-7xl mx-auto'>
-                <TabsList className='h-16 w-full justify-start gap-8 bg-transparent border-b rounded-none relative'>
-                  <TabsTrigger
-                    value='summary'
-                    className='relative h-full data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary'
-                  >
-                    <span className='relative z-10'>Summary</span>
-                    <motion.div
-                      className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary'
-                      initial={false}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                      }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value='progress'
-                    className='relative h-full data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary'
-                  >
-                    <span className='relative z-10'>Progress</span>
-                    <motion.div
-                      className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary'
-                      initial={false}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                      }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value='notes'
-                    className='relative h-full data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary'
-                  >
-                    <span className='relative z-10'>Notes</span>
-                    <motion.div
-                      className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary'
-                      initial={false}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                      }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  </TabsTrigger>
+                <TabsList className='h-8 w-full justify-start gap-2 bg-transparent rounded-none relative'>
+                  {[
+                    { value: 'summary', label: 'Summary' },
+                    { value: 'progress', label: 'Progress' },
+                    { value: 'notes', label: 'Notes' },
+                  ].map((tab) => (
+                    <TabsTrigger
+                      key={tab.value}
+                      value={tab.value}
+                      className='relative h-full data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-medium transition-colors hover:text-primary data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground'
+                    >
+                      <span className='relative'>
+                        {tab.label}
+                        {tab.value === activeTab && (
+                          <motion.div
+                            className='absolute -bottom-[10px] left-0 right-0 h-[1.5px] bg-electricPurple'
+                            layoutId='activeTabUnderline'
+                            transition={{
+                              type: "spring",
+                              stiffness: 500,
+                              damping: 30
+                            }}
+                          />
+                        )}
+                      </span>
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
               </div>
             </div>
 
-            <div className='mt-8'>
+            <div className='mt-3'>
               <TabsContent
                 value='summary'
                 className='mt-0 border-none focus-visible:outline-none focus-visible:ring-0'

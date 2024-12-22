@@ -6,24 +6,31 @@ import { GoalStatusEditor } from '../GoalStatusEditor'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { badgeBaseStyles } from '..'
 import { colors } from '@/theme/colors'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+
 export const Summary = ({ goal }: { goal: Goal }) => {
   const statusConfig = getGoalStatus(goal.status)
-
-  console.log('STATUS CONFIG', statusConfig)
-
+  const [openItem, setOpenItem] = useState('aims')
+  
   return (
-    <Card className='rounded-xl relative'>
-      <CardContent className='pt-6 space-y-6'>
+    <Card className='rounded-xl relative w-full'>
+      <CardContent className='pt-6 space-y-8 w-full'>
         <div className='flex items-center justify-between'>
           {goal.category && (
             <div className='flex items-center gap-2'>
               <Badge
-                className={`${badgeBaseStyles} ${statusConfig.className} pointer-events-none`}
+                className={`bg-electricPurple/90  ${statusConfig.className} py-1 px-4 text-primary/80 font-semibold pointer-events-none`}
                 style={{
                   backgroundColor: `${colors.electricViolet}40`,
                   borderColor: `${colors.electricViolet}33`,
                   boxShadow: `0 0 12px ${colors.electricViolet}40`,
-                  color: 'white',
                 }}
               >
                 {goal.category.name}
@@ -32,26 +39,42 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           )}
           <EditSummary goal={goal} />
         </div>
-        <div>
-          <h3 className='sm:text-2xl font-semibold mb-2'>Aims</h3>
-          <p className='text-muted-foreground text-sm'>{goal.aims}</p>
-        </div>
-        <div>
-          <h3 className='sm:text-2xl font-semibold mb-2'>
-            Steps to Completion
-          </h3>
-          <div
-            className='prose-content'
-            dangerouslySetInnerHTML={{ __html: goal.steps_to_completion }}
-          />
-        </div>
-        <div>
-          <h3 className='sm:text-2xl font-semibold mb-2'>Measurement Method</h3>
-          <div
-            className='prose-content'
-            dangerouslySetInnerHTML={{ __html: goal.measurement_method }}
-          />
-        </div>
+
+        <Accordion type="single" value={openItem} onValueChange={setOpenItem} collapsible className="flex flex-col gap-4">
+          {[
+            { id: 'aims', title: 'Aims', content: goal.aims },
+            { id: 'steps', title: 'Steps to Completion', content: goal.steps_to_completion, isHtml: true },
+            { id: 'measurement', title: 'Measurement Method', content: goal.measurement_method, isHtml: true }
+          ].map((item) => (
+            <AccordionItem 
+              key={item.id}
+              value={item.id} 
+              className="rounded-lg border border-border/50 overflow-hidden shadow-md hover:shadow-lg transition-all bg-muted/15"
+            >
+              <AccordionTrigger 
+                className={cn(
+                  "hover:no-underline h-[70px] p-4 transition-colors text-white",
+                  openItem === item.id ? "bg-electricPurple" : "bg-electricPurple/80 hover:bg-electricPurple/90"
+                )}
+              >
+                <h3 className="text-base font-semibold">{item.title}</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                {item.isHtml ? (
+                  <div
+                    className="prose-content text-sm text-muted-foreground p-6 bg-muted/5"
+                    dangerouslySetInnerHTML={{ __html: item.content }}
+                  />
+                ) : (
+                  <div className="text-sm text-muted-foreground p-6 bg-muted/5">
+                    {item.content}
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+
         <div className='w-full flex justify-end'>
           <GoalStatusEditor goal={goal} />
         </div>
