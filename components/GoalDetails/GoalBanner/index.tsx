@@ -34,15 +34,10 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
         <div className='absolute bottom-6 space-y-4 left-6 right-6 text-white'>
           <h1 className='text-3xl font-bold mt-2 line-clamp-2'>{goal.title}</h1>
           <div className='flex items-center gap-2'>
-            <StatusBadge
-              variant={
-                goal.status === 'completed' ? 'success' : 'primaryActive'
-              }
-              className='text-[10px] rounded-full'
-            >
+            <StatusBadge className='text-[10px] rounded-full'>
               {statusConfig.label}
             </StatusBadge>
-            <StatusBadge variant='primary' className='text-[10px] rounded-full'>
+            <StatusBadge className='text-[10px] rounded-full'>
               {priorityConfig.label}
             </StatusBadge>
             {goal.target_date && (

@@ -40,25 +40,14 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
               {goal.title}
             </h3>
             <div className='flex flex-wrap gap-2 justify-start'>
-              <StatusBadge
-                variant={
-                  goal.status === 'completed' ? 'success' : 'primaryActive'
-                }
-                className='text-[10px] rounded-full'
-              >
+              <StatusBadge className='text-[10px] rounded-full'>
                 {statusConfig.label}
               </StatusBadge>
-              <StatusBadge
-                variant='primary'
-                className='text-[10px] rounded-full'
-              >
+              <StatusBadge className='text-[10px] rounded-full'>
                 {priorityConfig.label}
               </StatusBadge>
               {goal.target_date && (
-                <StatusBadge
-                  variant='muted'
-                  className='text-[10px] rounded-full'
-                >
+                <StatusBadge className='text-[10px] rounded-full'>
                   🎯 {formatDate(goal.target_date, settings?.date_format)}
                 </StatusBadge>
               )}
