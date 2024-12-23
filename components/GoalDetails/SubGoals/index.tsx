@@ -298,7 +298,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                     variant='ghost'
                     className={cn(
                       'h-12 w-12 bg-accent justify-start bg-input',
-                      newSubgoal.target_date && 'border-2 border-electricPurple'
+                      newSubgoal.target_date && 'border-2 border-primaryActive'
                     )}
                   >
                     <CalendarIcon className='h-12 w-12 mr-2 bg-input' />
@@ -383,7 +383,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   className={cn(
                     'h-12 w-12 bg-input',
                     newSubgoal.target_date &&
-                      'border-2 bg-input border-electricPurple'
+                      'border-2 bg-input border-primaryActive'
                   )}
                 >
                   <CalendarIcon className='h-4 w-4' />
@@ -522,7 +522,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                         className={cn(
                           'h-12 w-12 p-0 bg-input',
                           subgoal.target_date &&
-                            'border-2 border-electricPurple'
+                            'border-2 border-primaryActive'
                         )}
                       >
                         <CalendarIcon className='h-4 w-4' />

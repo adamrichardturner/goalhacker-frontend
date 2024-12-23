@@ -52,7 +52,7 @@ export function AnimatedTabs({
               {isSelected && (
                 <motion.div
                   className={cn(
-                    'absolute h-[1.5px] w-full bg-electricPurple',
+                    'absolute h-[1.5px] w-full bg-primaryActive',
                     variant === 'underline' && 'bottom-0'
                   )}
                   layoutId={layoutId}

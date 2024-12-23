@@ -40,7 +40,7 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
               <Progress
                 value={progress}
                 className='h-2'
-                indicatorClassName='bg-electricPurple rounded-lg'
+                indicatorClassName='bg-primaryActive rounded-lg'
               />
             </div>
             <div className='sm:hidden text-xs'>

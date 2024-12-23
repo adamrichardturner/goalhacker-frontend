@@ -105,7 +105,7 @@ export default function ProgressNoteEditor({
             }}
             placeholder='Enter a title for your progress note'
             className={cn(
-              'border-0 bg-input focus-visible:ring-1 focus-visible:ring-electricPurple placeholder:text-muted-foreground/60',
+              'border-0 bg-input focus-visible:ring-1 focus-visible:ring-primaryActive placeholder:text-muted-foreground/60',
               errors.title && 'border-destructive'
             )}
           />
@@ -221,7 +221,7 @@ export default function ProgressNoteEditor({
         </Button>
         <Button
           onClick={handleSubmit}
-          className='bg-electricPurple hover:bg-electricPurple/90'
+          className='bg-primaryActive hover:bg-primaryActive/90'
         >
           Save Progress Note
         </Button>

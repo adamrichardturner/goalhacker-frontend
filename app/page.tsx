@@ -76,7 +76,7 @@ function LandingPageClient() {
             >
               Transform Your Goals into{' '}
               <motion.span
-                className='text-electricPurple inline-block'
+                className='text-primaryActive inline-block'
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 transition={{
@@ -104,7 +104,7 @@ function LandingPageClient() {
               {isLoading ? (
                 <Button
                   size='lg'
-                  className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                  className='bg-gradient-to-r from-primaryActive to-[#FF6B6B]'
                   disabled
                 >
                   Loading...
@@ -118,7 +118,7 @@ function LandingPageClient() {
                     <Link href='/signup'>
                       <Button
                         size='lg'
-                        className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                        className='bg-gradient-to-r from-primaryActive to-[#FF6B6B]'
                       >
                         Register for Beta Access
                       </Button>
@@ -136,7 +136,7 @@ function LandingPageClient() {
                   <Link href='/goals'>
                     <Button
                       size='lg'
-                      className='bg-gradient-to-r from-electricPurple to-[#FF6B6B]'
+                      className='bg-gradient-to-r from-primaryActive to-[#FF6B6B]'
                     >
                       Go to Your Goals
                     </Button>
@@ -229,10 +229,10 @@ function LandingPageClient() {
                 variants={scaleIn}
               >
                 <motion.div
-                  className='w-12 h-12 bg-electricPurple/10 rounded-full flex items-center justify-center mx-auto mb-4'
+                  className='w-12 h-12 bg-primaryActive/10 rounded-full flex items-center justify-center mx-auto mb-4'
                   whileHover={{ scale: 1.1, rotate: 5 }}
                 >
-                  <span className='text-xl font-semibold text-electricPurple'>
+                  <span className='text-xl font-semibold text-primaryActive'>
                     {item.step}
                   </span>
                 </motion.div>

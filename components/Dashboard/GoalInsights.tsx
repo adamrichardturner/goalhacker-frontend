@@ -357,7 +357,7 @@ export default function GoalInsights() {
                                 <Progress
                                   value={goalData.completion}
                                   className='h-1'
-                                  indicatorClassName='bg-electricPurple'
+                                  indicatorClassName='bg-primaryActive'
                                 />
                               </div>
                             </div>
@@ -433,7 +433,7 @@ export default function GoalInsights() {
                                 <Progress
                                   value={goalData.completion}
                                   className='h-1'
-                                  indicatorClassName='bg-electricPurple'
+                                  indicatorClassName='bg-primaryActive'
                                 />
                               </div>
                             </div>
@@ -510,7 +510,7 @@ export default function GoalInsights() {
                                 <Progress
                                   value={goalData.completion}
                                   className='h-1'
-                                  indicatorClassName='bg-electricPurple'
+                                  indicatorClassName='bg-primaryActive'
                                 />
                               </div>
                             </div>

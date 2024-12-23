@@ -107,7 +107,7 @@ export default function ProgressNotes({
           <DialogTrigger asChild>
             <Button
               size='md'
-              className='bg-electricPurple hover:bg-electricPurple/90'
+              className='bg-primaryActive hover:bg-primaryActive/90'
             >
               Add Note
             </Button>

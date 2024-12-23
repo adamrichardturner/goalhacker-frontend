@@ -43,7 +43,7 @@ export const getSubgoalStatus = (
     case 'in_progress':
       return {
         label: 'In Progress',
-        className: 'text-electricPurple',
+        className: 'text-primaryActive',
       }
     case 'archived':
       return {

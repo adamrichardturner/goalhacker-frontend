@@ -27,7 +27,7 @@ export default function SupportPage() {
               Need help with Goal Hacker? You can reach us directly at{' '}
               <Link
                 href='mailto:support@goalhacker.app'
-                className='text-electricPurple hover:underline'
+                className='text-primaryActive hover:underline'
               >
                 support@goalhacker.app
               </Link>{' '}

@@ -8,7 +8,7 @@ export const Loading = ({ className = '' }: LoadingProps) => {
   return (
     <div className={`flex justify-center items-center ${className}`}>
       <Image
-        src='/electricPurpleLoading.svg'
+        src='/primaryActiveLoading.svg'
         alt='Loading...'
         width={50}
         height={50}

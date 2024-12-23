@@ -44,7 +44,7 @@ const GoalCreationTimeline = ({
               clickable ? 'cursor-pointer' : ''
             } ${
               index < stages.indexOf(currentStage)
-                ? 'text-electricPurple'
+                ? 'text-primaryActive'
                 : index === stages.indexOf(currentStage)
                   ? 'text-foreground'
                   : 'text-muted-foreground'
@@ -54,7 +54,7 @@ const GoalCreationTimeline = ({
               className={`w-4 h-4 text-xs p-2 rounded-full flex items-center justify-center border 
                 ${
                   index <= stages.indexOf(currentStage)
-                    ? 'border-electricPurple'
+                    ? 'border-primaryActive'
                     : 'border-muted'
                 }
                 ${clickable ? 'hover:bg-accent/50 transition-colors' : ''}
@@ -66,7 +66,7 @@ const GoalCreationTimeline = ({
               <div
                 className={`w-full h-[1px] px-2 ${
                   index < stages.indexOf(currentStage)
-                    ? 'bg-electricPurple'
+                    ? 'bg-primaryActive'
                     : 'bg-muted'
                 }`}
               />

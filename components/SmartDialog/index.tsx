@@ -22,7 +22,7 @@ export const SmartDialog = () => {
         <DialogClose asChild>
           <Button
             variant='default'
-            className='mt-4 bg-electricPurple'
+            className='mt-4 bg-primaryActive'
             size='lg'
           >
             Close

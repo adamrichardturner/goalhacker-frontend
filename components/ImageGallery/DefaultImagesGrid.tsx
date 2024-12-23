@@ -43,9 +43,9 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             key={image.id}
             className={cn(
               'relative cursor-pointer rounded-lg overflow-hidden border-2 p-[0.5px] aspect-[16/9]',
-              'hover:border-electricPurple',
+              'hover:border-primaryActive',
               selectedImage?.id === image.id
-                ? 'border-electricPurple'
+                ? 'border-primaryActive'
                 : 'border-transparent'
             )}
             onClick={() => onImageSelect(image)}

@@ -72,7 +72,7 @@ export const ImageGallery = memo(function ImageGallery({
                 className={cn(
                   'flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer',
                   'hover:bg-gray-50 dark:hover:bg-gray-800 relative overflow-hidden',
-                  uploadPreview ? 'border-electricPurple' : 'border-gray-300'
+                  uploadPreview ? 'border-primaryActive' : 'border-gray-300'
                 )}
               >
                 {uploadPreview ? (

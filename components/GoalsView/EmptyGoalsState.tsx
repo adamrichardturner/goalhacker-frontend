@@ -13,7 +13,7 @@ export default function EmptyGoalsState() {
           also{' '}
           <Link
             href='/settings'
-            className='text-electricPurple hover:text-electricPurple/90 underline'
+            className='text-primaryActive hover:text-primaryActive/90 underline'
           >
             customise your profile and settings
           </Link>{' '}
@@ -24,7 +24,7 @@ export default function EmptyGoalsState() {
       <Link href='/goals/new'>
         <Button
           size='lg'
-          className='bg-electricPurple h-12 hover:bg-electricPurple/95 hover:drop-shadow-lg text-white'
+          className='bg-primaryActive h-12 hover:bg-primaryActive/95 hover:drop-shadow-lg text-white'
         >
           New Goal
         </Button>

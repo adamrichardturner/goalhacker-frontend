@@ -36,9 +36,9 @@ export function Logo({ className, showIcon = true, size = 'md' }: LogoProps) {
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <h1 className={cn('font-[800]', text)}>
-        <span className='text-electricPurple'>Goal</span> Hacker
+        <span className='text-primaryActive'>Goal</span> Hacker
       </h1>
-      {showIcon && <Mountain className={cn('text-electricPurple', icon)} />}
+      {showIcon && <Mountain className={cn('text-primaryActive', icon)} />}
     </div>
   )
 }

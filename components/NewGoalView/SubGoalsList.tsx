@@ -90,7 +90,7 @@ export function SubGoalsList({
                   size='icon'
                   className={cn(
                     'h-12 w-12',
-                    subgoal.target_date && 'ring-2 ring-electricPurple'
+                    subgoal.target_date && 'ring-2 ring-primaryActive'
                   )}
                 >
                   <CalendarIcon className='h-4 w-4' />
@@ -143,7 +143,7 @@ export function SubGoalsList({
                 variant='ghost'
                 className={cn(
                   'h-12 w-12 p-0',
-                  newSubgoal.target_date && 'ring-2 ring-electricPurple'
+                  newSubgoal.target_date && 'ring-2 ring-primaryActive'
                 )}
               >
                 {!isCreating && newSubgoal.target_date ? (

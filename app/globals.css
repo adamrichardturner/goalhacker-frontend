@@ -29,8 +29,8 @@ body {
     --input: 0 0% 95%;
     --success: 135 50% 47%;
     --success-hover: 135 50% 57%;
-    --electricPurple: 254 97% 64%;
-    --ring: 254 97% 64%;
+    --primaryActive: 222 47% 11%;
+    --ring: 222 47% 11%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -38,10 +38,10 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
     --shadow-sm: 0px 2px 7px 0px rgba(0, 0, 0, 0.02);
-    --accordion-bg: 254 97% 64%;
-    --accordion-body: 0 0% 98%;
-    --accordion-body-hover: 254 97% 68%;
-    --accordion-hover: 254 97% 68%;
+    --accordion-bg: 222 47% 97%;
+    --accordion-body: 222 47% 97%;
+    --accordion-body-hover: 222 47% 97%;
+    --accordion-hover: 222 47% 97%;
     --accordion-border: 254 97% 60%;
   }
   .dark {
@@ -61,7 +61,7 @@ body {
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --electricPurple: 254 97% 68%;
+    --primaryActive: 222 47% 11%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 4.9% 20%;
     --input: 217 33% 25%;
@@ -71,11 +71,11 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --accordion-bg: 217 33% 24%;
-    --accordion-body: 217 33% 17%;
-    --accordion-body-hover: 217 33% 17%;
-    --accordion-hover: 217 33% 17%;
-    --accordion-border: 217 33% 14%;
+    --accordion-bg: 222 47% 97%;
+    --accordion-body: 222 47% 97%;
+    --accordion-body-hover: 222 47% 97%;
+    --accordion-hover: 222 47% 97%;
+    --accordion-border: 222 47% 11%;
   }
 }
 

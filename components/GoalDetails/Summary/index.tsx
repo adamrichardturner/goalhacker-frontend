@@ -64,7 +64,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
           {goal.category && (
             <div className='flex items-center gap-2'>
               <Badge
-                className='bg-electricPurple py-1 px-4 text-white font-semibold pointer-events-none'
+                className='bg-primaryActive py-1 px-4 text-white font-semibold pointer-events-none'
                 style={{
                   backgroundColor: `${colors.electricViolet}`,
                   borderColor: `${colors.electricViolet}33`,

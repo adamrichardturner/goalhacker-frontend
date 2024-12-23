@@ -43,7 +43,7 @@ export default {
         },
         success: 'hsl(var(--success))',
         'success-hover': 'hsl(var(--success-hover))',
-        electricPurple: 'hsl(var(--electricPurple))',
+        primaryActive: 'hsl(var(--primaryActive))',
         paper: 'hsl(var(--paper))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

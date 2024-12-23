@@ -21,7 +21,7 @@ export function BackToInsights() {
     >
       <Button
         onClick={handleClick}
-        className='rounded-full bg-electricPurple hover:bg-electricPurple/90 transition-all flex items-center gap-2 px-4'
+        className='rounded-full bg-primaryActive hover:bg-primaryActive/90 transition-all flex items-center gap-2 px-4'
         aria-label='Back to AI Insights'
       >
         <ArrowLeft className='h-4 w-4 text-white' />
