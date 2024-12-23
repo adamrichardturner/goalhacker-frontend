@@ -14,7 +14,7 @@ export default function NewGoalPage() {
   }
 
   return (
-    <div className='container min-h-screen pb-10 max-w-3xl flex flex-col gap-2 sm:px-4 w-full'>
+    <div className='container min-h-screen pb-10  flex flex-col gap-2 sm:px-4 w-full'>
       <Header user={user} />
       <div className='mb-0 px-4'>
         <Link href='/goals'>

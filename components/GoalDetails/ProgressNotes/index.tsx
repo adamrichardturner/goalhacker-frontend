@@ -106,7 +106,7 @@ export default function ProgressNotes({
         <Dialog open={showProgressNote} onOpenChange={setShowProgressNote}>
           <DialogTrigger asChild>
             <Button
-              size='md'
+              size='sm'
               className='bg-primaryActive hover:bg-primaryActive/90'
             >
               Add Note

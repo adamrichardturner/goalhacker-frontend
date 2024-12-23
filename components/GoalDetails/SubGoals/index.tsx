@@ -521,8 +521,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                         variant='ghost'
                         className={cn(
                           'h-12 w-12 p-0 bg-input',
-                          subgoal.target_date &&
-                            'border-2 border-primaryActive'
+                          subgoal.target_date && 'border-2 border-primaryActive'
                         )}
                       >
                         <CalendarIcon className='h-4 w-4' />

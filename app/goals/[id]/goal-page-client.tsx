@@ -29,7 +29,7 @@ export default function GoalPageClient({ params }: GoalPageClientProps) {
   }
 
   return (
-    <div className='container min-h-screen max-w-3xl flex flex-col gap-2 sm:px-4 w-full'>
+    <div className='container min-h-screen  flex flex-col gap-2 sm:px-4 w-full'>
       <Header user={user} />
       <div className='mb-0 px-4'>
         <Link href='/goals'>

@@ -55,7 +55,7 @@ function LandingPageClient() {
       {/* Hero Section */}
       <div className='container mx-auto px-4'>
         <div className='flex flex-col min-h-screen items-center justify-center w-full mb-16'>
-          <div className='text-center max-w-3xl flex flex-col gap-4 mx-auto mb-16 py-10'>
+          <div className='text-center  flex flex-col gap-4 mx-auto mb-16 py-10'>
             <motion.div
               className='flex justify-center'
               initial={{ scale: 0.5, opacity: 0 }}

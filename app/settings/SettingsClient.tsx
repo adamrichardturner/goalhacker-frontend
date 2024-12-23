@@ -13,7 +13,7 @@ export default function SettingsClient() {
   }
 
   return (
-    <div className='container max-w-3xl flex pb-10 flex-col gap-6 sm:px-4 w-full'>
+    <div className='container  flex pb-10 flex-col gap-6 sm:px-4 w-full'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (

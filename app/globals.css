@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --background: 0 0% 92%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -38,7 +38,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
     --shadow-sm: 0px 2px 7px 0px rgba(0, 0, 0, 0.02);
-    --accordion-bg: 222 47% 97%;
+    --accordion-bg: 222 47% 45%;
     --accordion-body: 222 47% 97%;
     --accordion-body-hover: 222 47% 97%;
     --accordion-hover: 222 47% 97%;

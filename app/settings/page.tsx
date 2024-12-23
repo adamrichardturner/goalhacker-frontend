@@ -6,7 +6,7 @@ export default function SettingsPage() {
   return (
     <Suspense
       fallback={
-        <div className='container max-w-3xl flex flex-col gap-6 sm:px-4 w-full'>
+        <div className='container  flex flex-col gap-6 sm:px-4 w-full'>
           {/* Header skeleton */}
           <div className='flex items-center justify-between'>
             <Skeleton className='h-12 w-48' />
