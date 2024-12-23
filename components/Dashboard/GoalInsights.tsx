@@ -134,7 +134,7 @@ export default function GoalInsights() {
 
   if (!hasEnoughData) {
     return (
-      <Card className='bg-paper'>
+      <Card className='bg-white'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Sparkles className='h-5 w-5 text-primary' />

@@ -105,7 +105,7 @@ function LandingPageClient() {
         <div className='flex flex-col min-h-screen items-center justify-center w-full mb-16'>
           <div className='text-center flex flex-col gap-4 mx-auto mb-16 py-10'>
             <motion.div
-              className='text-md sm:text-2xl font-bold mb-6'
+              className='text-md text-white sm:text-2xl font-bold mb-6'
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
