@@ -112,7 +112,7 @@ function LandingPageClient() {
             >
               Empower Your Team &{' '}
               <motion.span
-                className='text-primaryActive inline-block'
+                className='text-white inline-block'
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 transition={{
@@ -134,11 +134,11 @@ function LandingPageClient() {
                 damping: 20,
               }}
             >
-              <Logo size='4xl' />
+              <Logo size='4xl' mode='dark' />
             </motion.div>
 
             <motion.p
-              className='text-xl sm:text-2xl text-primaryActive/90 mb-4'
+              className='text-xl sm:text-2xl text-white/90 mb-4'
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -346,10 +346,10 @@ function LandingPageClient() {
                   variants={scaleIn}
                 >
                   <motion.div
-                    className='w-12 h-12 bg-primaryActive/10 rounded-full flex items-center justify-center mx-auto mb-4'
+                    className='w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4'
                     whileHover={{ scale: 1.1, rotate: 5 }}
                   >
-                    <span className='text-xl font-semibold text-primaryActive'>
+                    <span className='text-xl font-semibold text-white'>
                       {item.step}
                     </span>
                   </motion.div>
@@ -411,11 +411,11 @@ function LandingPageClient() {
                 © {year} Goal Hacker. All rights reserved.
               </p>
               <div className='flex items-center gap-2 text-xs'>
-                <Link href='/terms-conditions' className='hover:text-primary'>
+                <Link href='/terms-conditions' className='hover:text-white'>
                   Terms & Conditions
                 </Link>
                 {' | '}
-                <Link href='/privacy-policy' className='hover:text-primary'>
+                <Link href='/privacy-policy' className='hover:text-white'>
                   Privacy Policy
                 </Link>
               </div>

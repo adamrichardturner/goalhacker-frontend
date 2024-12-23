@@ -21,7 +21,7 @@ import {
 import { useState } from 'react'
 import { formatDate } from '@/utils/dateFormat'
 import { formatTime } from '@/utils/formatTime'
-import ProgressNoteEditor from '../ProgressNote'
+import ProgressNoteEditor from '../ProgressNoteEditor'
 import { Trash2, Pen, ScrollText } from 'lucide-react'
 import { useSettings } from '@/hooks/useSettings'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
@@ -54,7 +54,7 @@ export default function ProgressNotes({
           <h3 className='text-base font-semibold' title={note.title}>
             {truncateText(note.title, 30)}
           </h3>
-          <span className='text-xs text-white/80 shrink-0'>
+          <span className='text-xs text-primary pr-2'>
             {note.created_at &&
               `${formatDate(note.created_at, settings?.date_format)} at ${formatTime(note.created_at)}`}
           </span>
@@ -129,7 +129,7 @@ export default function ProgressNotes({
             items={accordionItems}
             openItem={openItem}
             onOpenChange={setOpenItem}
-            variant='purple'
+            className='text-primary'
           />
         ) : (
           <div className='flex flex-col items-center justify-center py-8 text-center space-y-2'>
@@ -142,7 +142,7 @@ export default function ProgressNotes({
         )}
 
         <Dialog open={!!editingNote} onOpenChange={() => setEditingNote(null)}>
-          <DialogContent className='sm:max-w-[600px]'>
+          <DialogContent className='sm:max-w-[600px] bg-white'>
             <DialogHeader>
               <DialogTitle>Edit Progress Note</DialogTitle>
             </DialogHeader>

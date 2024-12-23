@@ -11,7 +11,7 @@ interface PublicLogoProps {
 export const PublicLogo = ({ className, size = 'md' }: PublicLogoProps) => {
   return (
     <Link href='/' className='w-full pb-6 flex justify-center'>
-      <ClientLogo className={className} size={size} />
+      <ClientLogo className={className} size={size} mode='dark' />
     </Link>
   )
 }

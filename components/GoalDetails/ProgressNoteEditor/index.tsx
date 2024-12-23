@@ -115,20 +115,20 @@ export default function ProgressNoteEditor({
         <Label className='text-sm font-medium'>Content</Label>
         <div
           className={cn(
-            'rounded-lg overflow-hidden bg-muted/50',
+            'rounded-lg overflow-hidden bg-input',
             errors.content && 'ring-2 ring-destructive'
           )}
         >
-          <div className='border-b border-border/50 p-2 flex gap-1 bg-background/50 backdrop-blur-sm'>
+          <div className='border-b border-border/50 p-2 flex gap-1 bg-white backdrop-blur-sm'>
             <Button
               type='button'
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleBold().run()}
-              className={cn(
-                'h-8 px-2 hover:bg-muted',
-                editor?.isActive('bold') && 'bg-muted text-primary'
-              )}
+              className={cn('h-8 px-2 bg-input hover:bg-input/80', {
+                'ring-1 ring-primaryActive text-primary bg-input/70':
+                  editor?.isActive('bold'),
+              })}
             >
               <Bold className='h-4 w-4' />
             </Button>
@@ -137,10 +137,10 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleItalic().run()}
-              className={cn(
-                'h-8 px-2 hover:bg-muted',
-                editor?.isActive('italic') && 'bg-muted text-primary'
-              )}
+              className={cn('h-8 px-2 bg-input hover:bg-input/80', {
+                'ring-1 ring-primaryActive text-primary bg-input/70':
+                  editor?.isActive('italic'),
+              })}
             >
               <Italic className='h-4 w-4' />
             </Button>
@@ -149,10 +149,10 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleUnderline().run()}
-              className={cn(
-                'h-8 px-2 hover:bg-muted',
-                editor?.isActive('underline') && 'bg-muted text-primary'
-              )}
+              className={cn('h-8 px-2 bg-input hover:bg-input/80', {
+                'ring-1 ring-primaryActive text-primary bg-input/70':
+                  editor?.isActive('underline'),
+              })}
             >
               <Underline className='h-4 w-4' />
             </Button>
@@ -161,10 +161,10 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleStrike().run()}
-              className={cn(
-                'h-8 px-2 hover:bg-muted',
-                editor?.isActive('strike') && 'bg-muted text-primary'
-              )}
+              className={cn('h-8 px-2 bg-input hover:bg-input/80', {
+                'ring-1 ring-primaryActive text-primary bg-input/70':
+                  editor?.isActive('strike'),
+              })}
             >
               <Strikethrough className='h-4 w-4' />
             </Button>
@@ -174,10 +174,10 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleBulletList().run()}
-              className={cn(
-                'h-8 px-2 hover:bg-muted',
-                editor?.isActive('bulletList') && 'bg-muted text-primary'
-              )}
+              className={cn('h-8 px-2 bg-input hover:bg-input/80', {
+                'ring-1 ring-primaryActive text-primary bg-input/70':
+                  editor?.isActive('bulletList'),
+              })}
             >
               <List className='h-4 w-4' />
             </Button>
@@ -186,22 +186,22 @@ export default function ProgressNoteEditor({
               variant='ghost'
               size='sm'
               onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-              className={cn(
-                'h-8 px-2 hover:bg-muted',
-                editor?.isActive('orderedList') && 'bg-muted text-primary'
-              )}
+              className={cn('h-8 px-2 bg-input hover:bg-input/80', {
+                'ring-1 ring-primaryActive text-primary bg-input/70':
+                  editor?.isActive('orderedList'),
+              })}
             >
               <ListOrdered className='h-4 w-4' />
             </Button>
           </div>
           <div
             ref={editorContainerRef}
-            className='p-4 min-h-[200px] cursor-text bg-transparent'
+            className='p-4 min-h-[200px] cursor-text bg-input'
             onClick={handleContainerClick}
           >
             <EditorContent
               editor={editor}
-              className='prose prose-sm max-w-none prose-p:leading-relaxed prose-p:my-1'
+              className='prose prose-sm max-w-none bg-input prose-p:leading-relaxed prose-p:my-1'
               onFocus={() => {
                 if (editor?.getHTML().trim()) {
                   setErrors((prev) => ({ ...prev, content: false }))
@@ -215,7 +215,7 @@ export default function ProgressNoteEditor({
         <Button
           variant='outline'
           onClick={onCancel}
-          className='hover:bg-muted/50'
+          className='hover:bg-input/90 bg-input'
         >
           Cancel
         </Button>

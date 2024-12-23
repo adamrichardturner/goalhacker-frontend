@@ -64,6 +64,7 @@ export default function GoalInsights() {
     isGenerating,
     generateNewInsights,
     insightHistory,
+    remainingGenerations,
   } = useInsights()
   const [selectedInsight, setSelectedInsight] = useState(currentInsight)
   const [topPerformingOpenItem, setTopPerformingOpenItem] = useState<
@@ -205,9 +206,15 @@ export default function GoalInsights() {
             variant='default'
             size='sm'
             onClick={handleGenerateInsights}
-            disabled={isGenerating || isLoading}
+            disabled={isGenerating || isLoading || remainingGenerations === 0}
+            className='relative'
           >
             Generate Insights
+            {remainingGenerations > 0 && (
+              <span className='ml-2 text-xs text-muted-foreground'>
+                ({remainingGenerations} left)
+              </span>
+            )}
           </Button>
         </div>
       </CardHeader>
@@ -289,7 +296,6 @@ export default function GoalInsights() {
                               <div className='flex items-center justify-end'>
                                 <Progress
                                   value={goalData.completion}
-                                  className='h-1'
                                   indicatorClassName='bg-primaryActive'
                                 />
                               </div>
@@ -364,7 +370,6 @@ export default function GoalInsights() {
                               <div className='flex items-center justify-end'>
                                 <Progress
                                   value={goalData.completion}
-                                  className='h-1'
                                   indicatorClassName='bg-primaryActive'
                                 />
                               </div>
@@ -440,7 +445,6 @@ export default function GoalInsights() {
                               <div className='flex items-center justify-end'>
                                 <Progress
                                   value={goalData.completion}
-                                  className='h-1'
                                   indicatorClassName='bg-primaryActive'
                                 />
                               </div>

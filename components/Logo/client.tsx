@@ -6,6 +6,7 @@ interface LogoProps {
   className?: string
   showIcon?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  mode?: 'light' | 'dark'
 }
 
 export function Logo(props: LogoProps) {

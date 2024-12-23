@@ -90,7 +90,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
             <Pen className='h-4 w-4 text-primary' />
           </Button>
         </DialogTrigger>
-        <DialogContent className='sm: bg-card max-w-[90vw] overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg'>
+        <DialogContent className='sm: bg-card max-w-5xl overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg'>
           <DialogHeader>
             <DialogTitle className='text-xl font-semibold text-primary'>
               Edit Goal Image
@@ -104,7 +104,11 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
             />
           </div>
           <div className='flex justify-end gap-2 pt-4'>
-            <Button variant='outline' onClick={() => setIsEditing(false)}>
+            <Button
+              variant='outline'
+              className='bg-input hover:bg-input/98'
+              onClick={() => setIsEditing(false)}
+            >
               Cancel
             </Button>
             <Button onClick={handleSave}>Save Changes</Button>

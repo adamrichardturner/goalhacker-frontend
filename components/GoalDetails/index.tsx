@@ -75,7 +75,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
         <div className='space-y-4'>
           <GoalBanner goal={goal} />
 
-          <div className='sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+          <div className='top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
             <div className='max-w-7xl mx-auto'>
               <AnimatedTabs
                 items={[

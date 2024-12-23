@@ -5,7 +5,10 @@ interface LogoProps {
   className?: string
   showIcon?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
+  mode?: LogoMode
 }
+
+type LogoMode = 'light' | 'dark'
 
 const sizeClasses = {
   xs: {
@@ -46,15 +49,33 @@ const sizeClasses = {
   },
 }
 
-export function Logo({ className, showIcon = true, size = 'md' }: LogoProps) {
+export function Logo({
+  className,
+  showIcon = true,
+  size = 'md',
+  mode = 'light',
+}: LogoProps) {
   const { text, icon } = sizeClasses[size]
 
   return (
-    <div className={cn('flex items-center gap-2', className)}>
-      <h1 className={cn('font-[800]', text)}>
-        <span className='text-primaryActive'>Goal</span> Hacker
+    <div className={cn('flex items-center gap-1', className)}>
+      <h1
+        className={cn(
+          text,
+          'font-bold',
+          mode === 'dark' ? 'text-white' : 'text-primaryActive'
+        )}
+      >
+        Goal Hacker
       </h1>
-      {showIcon && <Mountain className={cn('text-primaryActive', icon)} />}
+      {showIcon && (
+        <Mountain
+          className={cn(
+            icon,
+            mode === 'dark' ? 'text-white' : 'text-primaryActive'
+          )}
+        />
+      )}
     </div>
   )
 }
