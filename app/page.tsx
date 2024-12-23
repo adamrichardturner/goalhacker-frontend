@@ -152,7 +152,7 @@ function LandingPageClient() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              Whether you're managing team performance or pursuing personal
+              Whether you&apos;re managing team performance or pursuing personal
               goals, Goal Hacker provides the tools you need to succeed.
             </motion.p>
 
@@ -368,7 +368,7 @@ function LandingPageClient() {
             viewport={{ once: true }}
             variants={slideIn}
           >
-            <h2 className='text-2xl sm:text-3xl font-bold mb-4'>
+            <h2 className='text-2xl sm:text-3xl text-primary font-bold mb-4'>
               Ready to Start Achieving Your Goals?
             </h2>
             <p className='text-muted-foreground mb-8'>
