@@ -19,7 +19,6 @@ import {
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { useTheme } from 'next-themes'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -53,7 +52,6 @@ const DATE_FORMATS: { value: DateFormat; label: string }[] = [
 ]
 
 export default function Settings() {
-  const { theme, setTheme } = useTheme()
   const { user } = useUser()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const {
@@ -312,7 +310,7 @@ export default function Settings() {
       </Card>
 
       {/* Theme */}
-      <Card className='bg-paper'>
+      {/* <Card className='bg-paper'>
         <CardHeader>
           <CardTitle>Appearance</CardTitle>
           <CardDescription>
@@ -334,7 +332,7 @@ export default function Settings() {
             </Select>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Delete Account */}
       <Card className='bg-paper'>
