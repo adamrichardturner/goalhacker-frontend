@@ -105,7 +105,7 @@ function LandingPageClient() {
         <div className='flex flex-col min-h-screen items-center justify-center w-full mb-16'>
           <div className='text-center flex flex-col gap-4 mx-auto mb-16 py-10'>
             <motion.div
-              className='text-4xl sm:text-2xl font-bold mb-6'
+              className='text-md sm:text-2xl font-bold mb-6'
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -134,7 +134,7 @@ function LandingPageClient() {
                 damping: 20,
               }}
             >
-              <Logo size='4xl' mode='dark' />
+              <Logo size='5xl' mode='dark' />
             </motion.div>
 
             <motion.p

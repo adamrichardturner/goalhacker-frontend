@@ -28,11 +28,11 @@ const sizeClasses = {
     icon: 'w-6 h-6 sm:w-7 sm:h-7',
   },
   xl: {
-    text: 'text-3xl sm:text-4xl',
+    text: 'text-2xl sm:text-3xl',
     icon: 'w-7 h-7 sm:w-8 sm:h-8',
   },
   '2xl': {
-    text: 'text-4xl sm:text-5xl',
+    text: 'text-lg sm:text-4xl',
     icon: 'w-8 h-8 sm:w-9 sm:h-9',
   },
   '3xl': {
@@ -44,8 +44,8 @@ const sizeClasses = {
     icon: 'w-10 h-10 sm:w-11 sm:h-11',
   },
   '5xl': {
-    text: 'text-7xl sm:text-8xl',
-    icon: 'w-11 h-11 sm:w-12 sm:h-12',
+    text: 'text-xl sm:text-5xl',
+    icon: 'w-4 h-4 sm:w-12 sm:h-12',
   },
 }
 
