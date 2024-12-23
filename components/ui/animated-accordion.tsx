@@ -57,8 +57,8 @@ export function AnimatedAccordion({
             className={cn(
               'hover:no-underline px-6 py-6 transition-colors [&>svg]:text-white/70 [&>svg]:h-5 [&>svg]:w-5',
               variant === 'purple' && [
-                'text-white bg-accordion-bg',
-                'hover:bg-accordion-hover',
+                'text-primary bg-accordion-bg',
+                'hover:bg-accordion-bg/90',
                 'data-[state=open]:bg-accordion-bg',
                 'border border-accordion-border',
               ],
@@ -70,7 +70,7 @@ export function AnimatedAccordion({
           <AccordionContent>
             <div
               className={cn(
-                'prose-content text-sm text-muted-foreground p-6 bg-accordion-body hover:bg-accordion-body-hover',
+                'prose-content text-sm text-muted-foreground p-6 bg-accordion-body hover:bg-accordion-body/90',
                 item.contentClassName
               )}
             >
