@@ -42,10 +42,10 @@ export function FloatingInsights() {
     >
       <Button
         onClick={handleClick}
-        className='h-10 w-10 rounded-full bg-primaryActive hover:bg-primaryActive/90 transition-all'
+        className='h-12 w-12 rounded-full bg-[hsl(var(--primaryActive))] hover:bg-[hsl(var(--primaryActive))]/90 transition-all'
         aria-label='View AI Insights'
       >
-        <Sparkles className='h-4 w-4 text-white' />
+        <Sparkles className='h-6 w-6 text-white' />
       </Button>
     </motion.div>
   )

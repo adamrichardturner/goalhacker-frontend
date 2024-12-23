@@ -75,15 +75,6 @@ export default function GoalInsights() {
   const [recommendationsOpenItem, setRecommendationsOpenItem] = useState<
     string | null
   >(null)
-  const [hasMounted, setHasMounted] = useState(false)
-
-  useEffect(() => {
-    // Auto-generate insights on first mount only
-    if (!hasMounted && !isGenerating && !isLoading) {
-      setHasMounted(true)
-      generateNewInsights()
-    }
-  }, [hasMounted, isGenerating, isLoading, generateNewInsights])
 
   useEffect(() => {
     setSelectedInsight(currentInsight)
@@ -96,6 +87,11 @@ export default function GoalInsights() {
     if (historicalInsight) {
       setSelectedInsight(historicalInsight)
     }
+  }
+
+  const handleGenerateInsights = () => {
+    generateNewInsights()
+    // Selected insight will automatically update via the useEffect when currentInsight changes
   }
 
   if (isLoading || isGenerating) {
@@ -168,8 +164,8 @@ export default function GoalInsights() {
         <CardContent className='flex flex-col items-center justify-center py-8'>
           <Sparkles className='h-12 w-12 text-muted-foreground mb-4' />
           <p className='text-muted-foreground text-center mb-6'>
-            No insights available yet. We&apos;ll generate them automatically in a
-            moment.
+            No insights available yet. We&apos;ll generate them automatically in
+            a moment.
           </p>
         </CardContent>
       </Card>
@@ -183,6 +179,37 @@ export default function GoalInsights() {
           <Sparkles className='h-5 w-5 text-primary' />
           AI Insights
         </CardTitle>
+        <div className='flex items-center gap-2'>
+          {insightHistory && insightHistory.length > 0 && (
+            <Select
+              value={selectedInsight?.insight_id}
+              onValueChange={handleHistorySelect}
+            >
+              <SelectTrigger className='w-[180px]'>
+                <History className='h-4 w-4 mr-2' />
+                <SelectValue placeholder='View history' />
+              </SelectTrigger>
+              <SelectContent>
+                {insightHistory.map((insight) => (
+                  <SelectItem
+                    key={insight.insight_id}
+                    value={insight.insight_id}
+                  >
+                    {format(new Date(insight.created_at), 'MMM d, h:mm a')}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          <Button
+            variant='default'
+            size='sm'
+            onClick={handleGenerateInsights}
+            disabled={isGenerating || isLoading}
+          >
+            Generate Insights
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className='space-y-8 pt-6'>
         <div className='space-y-8'>
@@ -443,27 +470,6 @@ export default function GoalInsights() {
                   variant='purple'
                 />
               </div>
-            </div>
-          )}
-
-          {insightHistory && insightHistory.length > 0 && (
-            <div className='flex justify-end pt-4'>
-              <Select onValueChange={handleHistorySelect}>
-                <SelectTrigger className='w-[180px]'>
-                  <History className='h-3 w-3 mr-2' />
-                  <SelectValue placeholder='View History' />
-                </SelectTrigger>
-                <SelectContent>
-                  {insightHistory.map((insight) => (
-                    <SelectItem
-                      key={insight.insight_id}
-                      value={insight.insight_id}
-                    >
-                      {format(new Date(insight.created_at), 'MMM d, h:mm a')}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           )}
         </div>
