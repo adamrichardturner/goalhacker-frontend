@@ -58,12 +58,12 @@ export function GoalStatusEditor({
   }
 
   return (
-    <div className='flex flex-col gap-2 sm:w-[192px] w-full rounded-lg'>
-      <div className='flex flex-col items-end gap-1'>
-        <Label className='text-xs'>Goal Status</Label>
-        <div className='flex items-center justify-start gap-2'>
+    <div className='flex flex-col gap-2 sm:w-[220px] w-full rounded-lg'>
+      <div className='flex flex-col items-start gap-1 w-full'>
+        <Label className='text-xs text-left'>Goal Status</Label>
+        <div className='flex items-center justify-start gap-2 w-full'>
           <Select value={selectedStatus} onValueChange={handleStatusChange}>
-            <SelectTrigger className='w-full sm:w-[118px]'>
+            <SelectTrigger className='flex-1'>
               <SelectValue placeholder='Select status' />
             </SelectTrigger>
             <SelectContent>
@@ -78,6 +78,7 @@ export function GoalStatusEditor({
           <Button
             onClick={handleSaveClick}
             disabled={selectedStatus === goal.status}
+            variant='primaryActive'
           >
             Save
           </Button>
@@ -94,7 +95,11 @@ export function GoalStatusEditor({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant='outline' onClick={() => setIsDialogOpen(false)}>
+            <Button
+              variant='outline'
+              onClick={() => setIsDialogOpen(false)}
+              className='bg-input hover:bg-input/95'
+            >
               Cancel
             </Button>
             <Button onClick={handleConfirmStatusChange}>Confirm Change</Button>

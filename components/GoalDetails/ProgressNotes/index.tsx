@@ -70,7 +70,7 @@ export default function ProgressNotes({
             {onDeleteNote && (
               <Button
                 variant='ghost'
-                size='sm'
+                size='icon'
                 onClick={(e) => {
                   e.stopPropagation()
                   setDeletingNote(note.note_id || '')
@@ -82,12 +82,12 @@ export default function ProgressNotes({
             )}
             <Button
               variant='ghost'
-              size='sm'
+              size='icon'
               onClick={(e) => {
                 e.stopPropagation()
                 setEditingNote(note.note_id || '')
               }}
-              className='bg-input hover:bg-input/98 h-8 w-8'
+              className='bg-input hover:bg-input/95'
             >
               <Pen className='h-4 w-4 text-primary' />
             </Button>

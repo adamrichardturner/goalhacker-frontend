@@ -14,7 +14,7 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={cn('border-b', className)}
+    className={cn('rounded-2xl [&[data-state=open]]:rounded-none', className)}
     {...props}
   />
 ))
@@ -29,12 +29,13 @@ const AccordionTrigger = React.forwardRef<
       ref={ref}
       className={cn(
         'flex flex-1 items-center bg-accordion-bg justify-between py-4 text-sm font-medium transition-all hover:bg-accordion-bg/90 text-left [&[data-state=open]>svg]:rotate-180',
+        'rounded-2xl data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none',
         className
       )}
       {...props}
     >
       {children}
-      <ChevronDown className='h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200' />
+      <ChevronDown className='h-5 w-5 shrink-0 text-primary transition-transform duration-200' />
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ))
@@ -46,7 +47,10 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className='overflow-hidden bg-accordion-body text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
+    className={cn(
+      'overflow-hidden bg-accordion-body text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down rounded-b-md',
+      className
+    )}
     {...props}
   >
     <div className={cn('pb-0 pt-0', className)}>{children}</div>

@@ -115,10 +115,10 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
         <AlertDialogTrigger asChild>
           <Button
             variant='destructive'
-            size='sm'
+            size='icon'
             className='flex items-center gap-2 shrink-0 h-8 w-8'
           >
-            <Trash2 className='h-4 w-4' />
+            <Trash2 className='text-xl font-semibold h-4 w-4' />
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>

@@ -29,7 +29,7 @@ body {
     --input: 0 0% 95%;
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
-    --primaryActive: 254 97% 64%;
+    --primaryActive: 222 47% 11%;
     --primaryActive-foreground: 0 0% 100%;
     --ring: 222 47% 11%;
     --chart-1: 12 76% 61%;
@@ -39,7 +39,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
     --shadow-sm: 0px 2px 7px 0px rgba(0, 0, 0, 0.02);
-    --accordion-bg: 222 47% 98%;
+    --accordion-bg: 0 0% 95%;
     --accordion-body: 222 47% 99%;
     --accordion-body-hover: 222 47% 97%;
     --accordion-hover: 222 47% 97%;

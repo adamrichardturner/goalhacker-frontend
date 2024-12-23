@@ -49,13 +49,14 @@ export function AnimatedAccordion({
           key={item.id}
           value={item.id}
           className={cn(
-            'rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-200',
+            'overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 rounded-2xl [&[data-state=open]]:rounded-2xl',
             variant === 'purple' ? 'border-0' : 'border border-border/50'
           )}
         >
           <AccordionTrigger
             className={cn(
-              'hover:no-underline px-6 py-6 transition-colors [&>svg]:text-white/70 [&>svg]:h-5 [&>svg]:w-5',
+              'hover:no-underline px-6 py-6 transition-colors [&>svg]:text-primary [&>svg]:h-5 [&>svg]:w-5',
+              'rounded-2xl data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none',
               variant === 'purple' && [
                 'text-primary bg-accordion-bg',
                 'hover:bg-accordion-bg/90',
@@ -70,7 +71,7 @@ export function AnimatedAccordion({
           <AccordionContent>
             <div
               className={cn(
-                'prose-content text-sm text-muted-foreground p-6 bg-accordion-body hover:bg-accordion-body/90',
+                'prose-content text-sm text-muted-foreground p-6 bg-accordion-body hover:bg-accordion-body/90 rounded-b-2xl',
                 item.contentClassName
               )}
             >

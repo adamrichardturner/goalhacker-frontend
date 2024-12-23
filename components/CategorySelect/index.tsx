@@ -92,11 +92,11 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button variant='outline' size='icon' className='h-12 w-12'>
+          <Button variant='outline' size='icon' className='h-12 w-12 bg-input'>
             <PlusCircle className='h-5 w-5' />
           </Button>
         </DialogTrigger>
-        <DialogContent className='max-w-[90vw] sm:max-w-md rounded-lg'>
+        <DialogContent className='max-w-[90vw] sm:max-w-md rounded-lg bg-white'>
           <DialogHeader>
             <DialogTitle>Create New Category</DialogTitle>
             <DialogDescription>
@@ -119,6 +119,7 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
               variant='outline'
               onClick={() => setIsOpen(false)}
               disabled={isCreating}
+              className='bg-input hover:bg-input/95'
             >
               Cancel
             </Button>

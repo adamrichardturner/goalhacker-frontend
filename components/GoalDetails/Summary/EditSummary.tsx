@@ -85,12 +85,12 @@ export function EditSummary({ goal }: EditSummaryProps) {
       <DialogTrigger asChild>
         <Button
           size='icon'
-          className='absolute top-4 right-4 bg-input m-2 hover:bg-input/98 h-8 w-8'
+          className='absolute top-4 right-4 bg-input m-2 hover:bg-input/95'
         >
           <Pen className='h-4 w-4 text-primary' />
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] p-4 h-[70vh] rounded-2xl overflow-y-auto sm:p-10'>
+      <DialogContent className='max-w-[90vw] sm:max-w-[40vw] p-4 h-[70vh] rounded-2xl bg-white overflow-y-auto sm:p-10'>
         <DialogHeader>
           <DialogTitle>Edit Goal Summary</DialogTitle>
         </DialogHeader>
@@ -226,7 +226,11 @@ export function EditSummary({ goal }: EditSummaryProps) {
           </div>
         </div>
         <div className='flex justify-end gap-2'>
-          <Button variant='outline' onClick={() => setIsEditing(false)}>
+          <Button
+            variant='outline'
+            onClick={() => setIsEditing(false)}
+            className='bg-input hover:bg-input/95'
+          >
             Cancel
           </Button>
           <Button onClick={handleSave}>Save Changes</Button>
