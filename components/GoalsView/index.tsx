@@ -86,7 +86,7 @@ const GoalsView = ({
   const displayGoals = isArchived ? archivedGoals : filteredGoals
 
   return (
-    <div className='space-y-6 pb-12'>
+    <div className='space-y-6'>
       <div className='flex justify-between items-center'>
         <div className='flex justify-between items-center w-full'>
           <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
