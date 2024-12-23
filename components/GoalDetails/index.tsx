@@ -86,7 +86,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
                 selected={activeTab}
                 onChange={setActiveTab}
                 layoutId='activeTabUnderline'
-                className='h-4 w-full justify-start gap-2 bg-transparent'
+                className='h-3 w-[300px] flex py-[24px] justify-evenly rounded-lg gap-2 bg-white'
                 variant='underline'
               />
             </div>

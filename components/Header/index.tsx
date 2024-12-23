@@ -134,7 +134,7 @@ const Header = ({ user }: HeaderProps) => {
                   </Link>
                   {isActive && (
                     <motion.div
-                      className='absolute h-[1.5px] w-full bg-primaryActive'
+                      className='absolute h-[1.5px] w-full bg-primary'
                       layoutId='activeSection'
                     />
                   )}

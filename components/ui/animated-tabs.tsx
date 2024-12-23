@@ -27,8 +27,8 @@ export function AnimatedTabs({
   variant = 'default',
 }: AnimatedTabsProps) {
   return (
-    <nav className={cn('flex gap-8 items-center', className)}>
-      <div className='flex gap-8 items-center'>
+    <nav className={cn('flex gap-6 items-center', className)}>
+      <div className='flex gap-6 items-center'>
         {items.map((item) => {
           const isSelected = selected === item.id
           return (
@@ -44,7 +44,7 @@ export function AnimatedTabs({
                   isLoading || item.disabled
                     ? 'opacity-50 cursor-not-allowed'
                     : '',
-                  variant === 'underline' && 'pb-2'
+                  variant === 'underline' && 'pb-1'
                 )}
               >
                 {item.label}
@@ -52,7 +52,7 @@ export function AnimatedTabs({
               {isSelected && (
                 <motion.div
                   className={cn(
-                    'absolute h-[1.5px] w-full bg-primaryActive',
+                    'absolute h-[1.5px] w-full bg-primary',
                     variant === 'underline' && 'bottom-0'
                   )}
                   layoutId={layoutId}
