@@ -27,10 +27,10 @@ export default function GoalPageClient({ params }: GoalPageClientProps) {
   }
 
   return (
-    <div className='container min-h-screen  flex flex-col gap-4 sm:px-4 w-full'>
+    <div className='container min-h-screen flex flex-col gap-4 px-0 sm:px-4 w-full'>
       <Header user={user} />
       <main className='flex-1'>
-        <div className='max-w-5xl mx-auto'>
+        <div className='max-w-5xl mx-auto px-0'>
           {isLoading ? (
             <div className='space-y-4'>
               <Skeleton className='h-[300px] w-full' />

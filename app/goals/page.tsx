@@ -23,8 +23,8 @@ function GoalsContent() {
   return (
     <div className='container flex flex-col gap-6 px-0 sm:px-4 w-full'>
       <Header user={user} />
-      <div className='flex flex-col gap-4 w-full rounded-lg mb-6'>
-        <main className='flex flex-col gap-4 w-full bg-card px-4 py-6 mb-6 sm:px-12 sm:py-12 sm:rounded-2xl shadow-sm'>
+      <div className='pt-[20px] sm:pt-0 flex flex-col gap-4 w-full rounded-lg mb-6'>
+        <main className='flex flex-col gap-4 w-full bg-card px-4 py-6 mb-6 sm:px-12 sm:py-12 rounded-2xl sm:rounded-2xl shadow-sm'>
           <GoalsView goals={goals} user={user} isLoading={goalsLoading} />
         </main>
       </div>

@@ -123,7 +123,7 @@ const GoalsView = ({
               variant='underline'
             />
           </div>
-          <div className='sm:hidden w-full'>
+          <div className='sm:hidden w-1/2'>
             <Label className='text-xs font-light'>Filter goals</Label>
             <Select
               value={selectedFilter}

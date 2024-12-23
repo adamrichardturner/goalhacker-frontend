@@ -81,7 +81,10 @@ export function Timeline({
           />
         </div>
         <div className='flex gap-2 mt-2'>
-          <Button onClick={onBack} variant='outline' className='flex-1 h-12'>
+          <Button
+            onClick={onBack}
+            className='flex-1 h-12 bg-input/70 hover:bg-input/80 text-primary'
+          >
             Go Back
           </Button>
           <Button

@@ -30,14 +30,14 @@ function ArchivedGoalsContent() {
   }
 
   return (
-    <div className='container min-h-screen  flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='container min-h-screen flex flex-col gap-6 px-0 sm:px-4 w-full'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
         <Header user={user} />
       )}
-      <div className='flex flex-col gap-4 w-full px-4 sm:px-0 rounded-lg'>
-        <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
+      <div className='flex flex-col gap-4 w-full px-0 sm:px-0 rounded-lg'>
+        <main className='flex flex-col gap-4 w-full bg-card px-4 sm:px-4 py-12 sm:py-12 rounded-lg shadow-sm'>
           <Suspense fallback={<Loading className='h-screen' />}>
             {goalsLoading ? (
               <Loading className='h-screen' />
