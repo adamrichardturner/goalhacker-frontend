@@ -184,7 +184,10 @@ export function Review({
                   >
                     <span className='font-medium'>{subgoal.title}</span>
                     {subgoal.target_date && (
-                      <Badge className='text-xs text-muted-foreground bg-background p-2 self-end sm:self-auto'>
+                      <Badge
+                        variant='default'
+                        className='text-xs text-primary-foreground bg-primaryActive p-2 self-end sm:self-auto'
+                      >
                         🎯 {format(new Date(subgoal.target_date), 'PPP')}
                       </Badge>
                     )}

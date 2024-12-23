@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 interface LogoProps {
   className?: string
   showIcon?: boolean
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
 }
 
 const sizeClasses = {
@@ -27,6 +27,22 @@ const sizeClasses = {
   xl: {
     text: 'text-3xl sm:text-4xl',
     icon: 'w-7 h-7 sm:w-8 sm:h-8',
+  },
+  '2xl': {
+    text: 'text-4xl sm:text-5xl',
+    icon: 'w-8 h-8 sm:w-9 sm:h-9',
+  },
+  '3xl': {
+    text: 'text-5xl sm:text-6xl',
+    icon: 'w-9 h-9 sm:w-10 sm:h-10',
+  },
+  '4xl': {
+    text: 'text-6xl sm:text-7xl',
+    icon: 'w-10 h-10 sm:w-11 sm:h-11',
+  },
+  '5xl': {
+    text: 'text-7xl sm:text-8xl',
+    icon: 'w-11 h-11 sm:w-12 sm:h-12',
   },
 }
 

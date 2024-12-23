@@ -109,11 +109,13 @@ const GoalsView = ({
         <nav className='border-border sm:border-b sm:pb-4'>
           <div className='hidden sm:block'>
             <AnimatedTabs
-              items={filters.map((filter) => ({
-                id: filter,
-                label: filter,
-                disabled: statusCounts[filter] === 0,
-              }))}
+              items={filters
+                .filter((filter) => statusCounts[filter] > 0)
+                .map((filter) => ({
+                  id: filter,
+                  label: filter,
+                  disabled: false,
+                }))}
               selected={selectedFilter}
               onChange={(value) => setSelectedFilter(value as FilterType)}
               isLoading={delayedLoading}
@@ -133,11 +135,9 @@ const GoalsView = ({
                 <SelectValue placeholder='Filter goals' />
               </SelectTrigger>
               <SelectContent>
-                {filters.map((filter) => {
-                  if (statusCounts[filter] === 0) {
-                    return false
-                  }
-                  return (
+                {filters
+                  .filter((filter) => statusCounts[filter] > 0)
+                  .map((filter) => (
                     <SelectItem
                       key={filter}
                       value={filter}
@@ -145,8 +145,7 @@ const GoalsView = ({
                     >
                       {filter}
                     </SelectItem>
-                  )
-                })}
+                  ))}
               </SelectContent>
             </Select>
           </div>

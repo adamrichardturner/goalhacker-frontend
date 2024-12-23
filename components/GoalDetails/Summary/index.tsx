@@ -1,9 +1,8 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Goal } from '@/types/goal'
 import { EditSummary } from './EditSummary'
-import { Badge } from '@/components/ui/badge'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { GoalStatusEditor } from '../GoalStatusEditor'
-import { colors } from '@/theme/colors'
 import { useState } from 'react'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
 import { Target, ListChecks, LineChart } from 'lucide-react'
@@ -63,16 +62,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
         <div className='flex items-center p-1 justify-between'>
           {goal.category && (
             <div className='flex items-center gap-2'>
-              <Badge
-                className='bg-primaryActive py-1 px-4 text-white font-semibold pointer-events-none'
-                style={{
-                  backgroundColor: `${colors.electricViolet}`,
-                  borderColor: `${colors.electricViolet}33`,
-                  boxShadow: `0 0 12px ${colors.electricViolet}40`,
-                }}
-              >
-                {goal.category.name}
-              </Badge>
+              <StatusBadge className='px-4'>{goal.category.name}</StatusBadge>
             </div>
           )}
           <EditSummary goal={goal} />

@@ -3,7 +3,7 @@ import { Skeleton } from '../ui/skeleton'
 import { AspectRatio } from '../ui/aspect-ratio'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { getPriorityConfig } from '@/utils/goalPriority'
-import { Badge } from '../ui/badge'
+import { StatusBadge } from '../ui/status-badge'
 import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
 import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
@@ -12,11 +12,6 @@ interface GoalImageProps {
   goal: Goal
   className?: string
 }
-
-const badgeBaseStyles =
-  'px-2 py-1 font-[500] text-white rounded-full text-[10px] backdrop-blur'
-const targetBadgeStyles =
-  'px-2 py-1 rounded-full font-[500] text-[10px] bg-muted/40 text-white leading-[18px]'
 
 export default function GoalImage({ goal, className = '' }: GoalImageProps) {
   const { imageUrl, isLoading } = useGoalImageDisplay(goal)
@@ -45,30 +40,27 @@ export default function GoalImage({ goal, className = '' }: GoalImageProps) {
               {goal.title}
             </h3>
             <div className='flex flex-wrap gap-2 justify-start'>
-              <Badge
-                className={`${badgeBaseStyles} ${statusConfig.className} pointer-events-none`}
-                style={{
-                  backgroundColor: `${statusConfig.className}40`,
-                  borderColor: `${statusConfig.className}33`,
-                  boxShadow: `0 0 12px ${statusConfig.className}40`,
-                }}
+              <StatusBadge
+                variant={
+                  goal.status === 'completed' ? 'success' : 'primaryActive'
+                }
+                className='text-[10px] rounded-full'
               >
                 {statusConfig.label}
-              </Badge>
-              <Badge
-                className={`${badgeBaseStyles} ${priorityConfig.className} pointer-events-none`}
-                style={{
-                  backgroundColor: `${priorityConfig.color}40`,
-                  borderColor: `${priorityConfig.color}33`,
-                  boxShadow: `0 0 12px ${priorityConfig.color}40`,
-                }}
+              </StatusBadge>
+              <StatusBadge
+                variant='primary'
+                className='text-[10px] rounded-full'
               >
                 {priorityConfig.label}
-              </Badge>
+              </StatusBadge>
               {goal.target_date && (
-                <Badge className={`${targetBadgeStyles} pointer-events-none`}>
+                <StatusBadge
+                  variant='muted'
+                  className='text-[10px] rounded-full'
+                >
                   🎯 {formatDate(goal.target_date, settings?.date_format)}
-                </Badge>
+                </StatusBadge>
               )}
             </div>
           </div>

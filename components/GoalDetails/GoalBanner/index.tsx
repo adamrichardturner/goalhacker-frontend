@@ -1,11 +1,10 @@
 import { Goal } from '@/types/goal'
 import { getPriorityConfig } from '@/utils/goalPriority'
-import { Badge } from '../../ui/badge'
+import { StatusBadge } from '../../ui/status-badge'
 import { formatDate } from '@/utils/dateFormat'
 import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { useSettings } from '@/hooks/useSettings'
-import { badgeBaseStyles, targetBadgeStyles } from '../index'
 import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
 
 interface GoalBannerProps {
@@ -35,30 +34,21 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
         <div className='absolute bottom-6 space-y-4 left-6 right-6 text-white'>
           <h1 className='text-3xl font-bold mt-2 line-clamp-2'>{goal.title}</h1>
           <div className='flex items-center gap-2'>
-            <Badge
-              className={`${badgeBaseStyles} ${statusConfig.className} pointer-events-none`}
-              style={{
-                backgroundColor: `${statusConfig.className}40`,
-                borderColor: `${statusConfig.className}33`,
-                boxShadow: `0 0 12px ${statusConfig.className}40`,
-              }}
+            <StatusBadge
+              variant={
+                goal.status === 'completed' ? 'success' : 'primaryActive'
+              }
+              className='text-[10px] rounded-full'
             >
               {statusConfig.label}
-            </Badge>
-            <Badge
-              className={`${badgeBaseStyles} ${priorityConfig.className} pointer-events-none`}
-              style={{
-                backgroundColor: `${priorityConfig.color}40`,
-                borderColor: `${priorityConfig.color}33`,
-                boxShadow: `0 0 12px ${priorityConfig.color}40`,
-              }}
-            >
+            </StatusBadge>
+            <StatusBadge variant='primary' className='text-[10px] rounded-full'>
               {priorityConfig.label}
-            </Badge>
+            </StatusBadge>
             {goal.target_date && (
-              <Badge className={targetBadgeStyles}>
+              <StatusBadge className='text-[10px] rounded-full'>
                 🎯 {formatDate(goal.target_date, settings?.date_format)}
-              </Badge>
+              </StatusBadge>
             )}
           </div>
         </div>

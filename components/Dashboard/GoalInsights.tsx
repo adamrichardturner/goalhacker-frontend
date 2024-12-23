@@ -26,6 +26,7 @@ import Link from 'next/link'
 import { Insight } from '@/services/insightsService'
 import { motion } from 'framer-motion'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
+import { StatusBadge } from '@/components/ui/status-badge'
 
 const MAX_TITLE_LENGTH = 60
 
@@ -278,9 +279,7 @@ export default function GoalInsights() {
         <div className='space-y-8'>
           <div className='space-y-4'>
             <div className='flex items-center gap-2'>
-              <Badge variant='outline' className='text-primary'>
-                Summary
-              </Badge>
+              <StatusBadge>Summary</StatusBadge>
             </div>
             <div className='bg-accordion-body rounded-lg p-6'>
               <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
@@ -291,10 +290,9 @@ export default function GoalInsights() {
 
           <div className='space-y-4'>
             <div className='flex items-center gap-2'>
-              <Badge variant='outline' className='text-primary'>
-                <TrendingUp className='h-3 w-3 mr-1' />
+              <StatusBadge icon={<TrendingUp className='h-3 w-3' />}>
                 Trends
-              </Badge>
+              </StatusBadge>
             </div>
             <div className='grid gap-4'>
               {selectedInsight.trends.map((trend, index) => (
@@ -316,10 +314,9 @@ export default function GoalInsights() {
           {(selectedInsight.topPerforming ?? []).length > 0 && (
             <div className='space-y-4'>
               <div className='flex items-center gap-2'>
-                <Badge variant='outline' className='text-green-500'>
-                  <TrendingUp className='h-3 w-3 mr-1' />
+                <StatusBadge icon={<TrendingUp className='h-3 w-3' />}>
                   Top Performing Goals
-                </Badge>
+                </StatusBadge>
               </div>
               <div className='grid gap-3'>
                 <AnimatedAccordion
@@ -392,10 +389,9 @@ export default function GoalInsights() {
           {(selectedInsight.needsWork ?? []).length > 0 && (
             <div className='space-y-4'>
               <div className='flex items-center gap-2'>
-                <Badge variant='outline' className='text-amber-500'>
-                  <LightbulbIcon className='h-3 w-3 mr-1' />
+                <StatusBadge icon={<LightbulbIcon className='h-3 w-3' />}>
                   Goals Needing Focus
-                </Badge>
+                </StatusBadge>
               </div>
               <div className='grid gap-3'>
                 <AnimatedAccordion
@@ -468,10 +464,9 @@ export default function GoalInsights() {
           {selectedInsight.recommendations.length > 0 && (
             <div className='space-y-4'>
               <div className='flex items-center gap-2'>
-                <Badge variant='outline' className='text-primary'>
-                  <LightbulbIcon className='h-3 w-3 mr-1' />
+                <StatusBadge icon={<LightbulbIcon className='h-3 w-3' />}>
                   Recommendations
-                </Badge>
+                </StatusBadge>
               </div>
               <div className='grid gap-3'>
                 <AnimatedAccordion
