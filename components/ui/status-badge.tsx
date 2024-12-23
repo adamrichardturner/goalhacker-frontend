@@ -1,6 +1,5 @@
 import { Badge } from './badge'
 import { cn } from '@/lib/utils'
-import { BadgeVariant, getBadgeVariantColors } from '@/lib/colors'
 
 interface StatusBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: React.ReactNode
