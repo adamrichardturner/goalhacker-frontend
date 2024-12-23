@@ -1,16 +1,9 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
-import {
-  Sparkles,
-  TrendingUp,
-  LightbulbIcon,
-  RefreshCw,
-  History,
-} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Sparkles, TrendingUp, LightbulbIcon, History } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
 import { useInsights } from '@/hooks/useInsights'
 import {
@@ -67,7 +60,6 @@ const renderGoalText = (text: string, insight: Insight) => {
 export default function GoalInsights() {
   const {
     insight: currentInsight,
-    remainingGenerations,
     isLoading,
     isGenerating,
     generateNewInsights,
@@ -83,6 +75,15 @@ export default function GoalInsights() {
   const [recommendationsOpenItem, setRecommendationsOpenItem] = useState<
     string | null
   >(null)
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    // Auto-generate insights on first mount only
+    if (!hasMounted && !isGenerating && !isLoading) {
+      setHasMounted(true)
+      generateNewInsights()
+    }
+  }, [hasMounted, isGenerating, isLoading, generateNewInsights])
 
   useEffect(() => {
     setSelectedInsight(currentInsight)
@@ -97,15 +98,7 @@ export default function GoalInsights() {
     }
   }
 
-  const handleGenerateNew = async () => {
-    await generateNewInsights()
-    // Reset to latest insight after successful generation
-    if (currentInsight) {
-      setSelectedInsight(currentInsight)
-    }
-  }
-
-  if (isLoading) {
+  if (isLoading || isGenerating) {
     return (
       <Card className='bg-paper'>
         <CardHeader>
@@ -115,19 +108,26 @@ export default function GoalInsights() {
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-6'>
-          <div className='space-y-4'>
-            <Skeleton className='h-4 w-full' />
-            <Skeleton className='h-4 w-[90%]' />
-            <Skeleton className='h-4 w-[95%]' />
-          </div>
-          <div className='space-y-3'>
-            <Skeleton className='h-4 w-[80%]' />
-            <Skeleton className='h-4 w-[85%]' />
-          </div>
-          <div className='space-y-3'>
-            <Skeleton className='h-4 w-[75%]' />
-            <Skeleton className='h-4 w-[70%]' />
-          </div>
+          <motion.div
+            className='flex flex-col items-center justify-center py-8 text-center'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <Sparkles className='h-12 w-12 text-primaryActive mb-4 animate-pulse' />
+            <p className='text-primary font-medium mb-2'>
+              {isGenerating ? 'Generating Fresh Insights' : 'Loading Insights'}
+            </p>
+            <p className='text-muted-foreground text-sm max-w-[400px] mb-6'>
+              Our AI is analyzing your goals, progress, and patterns to provide
+              personalized insights and recommendations.
+            </p>
+            <div className='w-48'>
+              <Progress
+                value={isGenerating ? undefined : 100}
+                className='h-1'
+              />
+            </div>
+          </motion.div>
         </CardContent>
       </Card>
     )
@@ -151,35 +151,6 @@ export default function GoalInsights() {
             goals, track progress, or mark tasks as complete to see personalized
             recommendations and analysis.
           </p>
-          <Button
-            onClick={handleGenerateNew}
-            disabled={isGenerating || remainingGenerations === 0}
-            className='gap-2'
-          >
-            {isGenerating ? (
-              <>
-                <RefreshCw className='h-4 w-4 animate-spin' />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Sparkles className='h-4 w-4' />
-                Generate Insights
-              </>
-            )}
-          </Button>
-          <div className='mt-6 text-center'>
-            <p className='text-sm text-muted-foreground mb-2'>
-              Daily Generations
-            </p>
-            <Progress
-              value={remainingGenerations * (100 / 3)}
-              className='w-32 h-2'
-            />
-            <p className='text-xs text-muted-foreground mt-2'>
-              {remainingGenerations} remaining
-            </p>
-          </div>
         </CardContent>
       </Card>
     )
@@ -197,38 +168,9 @@ export default function GoalInsights() {
         <CardContent className='flex flex-col items-center justify-center py-8'>
           <Sparkles className='h-12 w-12 text-muted-foreground mb-4' />
           <p className='text-muted-foreground text-center mb-6'>
-            No insights available. Generate your first insight to get
-            personalized recommendations!
+            No insights available yet. We&apos;ll generate them automatically in a
+            moment.
           </p>
-          <Button
-            onClick={handleGenerateNew}
-            disabled={isGenerating || remainingGenerations === 0}
-            className='gap-2'
-          >
-            {isGenerating ? (
-              <>
-                <RefreshCw className='h-4 w-4 animate-spin' />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Sparkles className='h-4 w-4' />
-                Generate Insights
-              </>
-            )}
-          </Button>
-          <div className='mt-6 text-center'>
-            <p className='text-sm text-muted-foreground mb-2'>
-              Daily Generations
-            </p>
-            <Progress
-              value={remainingGenerations * (100 / 3)}
-              className='w-32 h-2'
-            />
-            <p className='text-xs text-muted-foreground mt-2'>
-              {remainingGenerations} remaining
-            </p>
-          </div>
         </CardContent>
       </Card>
     )
@@ -241,38 +183,6 @@ export default function GoalInsights() {
           <Sparkles className='h-5 w-5 text-primary' />
           AI Insights
         </CardTitle>
-        <div className='flex flex-col items-end gap-1'>
-          <div className='flex items-center gap-2'>
-            <Button
-              onClick={handleGenerateNew}
-              disabled={isGenerating || remainingGenerations === 0}
-              size='sm'
-              variant='outline'
-              className='gap-2'
-            >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className='h-3 w-3 animate-spin' />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className='h-3 w-3' />
-                  Generate New
-                </>
-              )}
-            </Button>
-          </div>
-          <div className='flex items-center gap-2'>
-            <Progress
-              value={remainingGenerations * (100 / 3)}
-              className='w-16 h-1.5'
-            />
-            <span className='text-xs text-muted-foreground'>
-              {remainingGenerations}/3
-            </span>
-          </div>
-        </div>
       </CardHeader>
       <CardContent className='space-y-8 pt-6'>
         <div className='space-y-8'>

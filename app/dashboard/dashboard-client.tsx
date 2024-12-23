@@ -34,7 +34,7 @@ export default function DashboardClient() {
       )}
       <div className='flex flex-col gap-6 w-full px-4 sm:px-0 flex-1'>
         <div className='grid grid-cols-1 gap-6'>
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col bg-paper rounded-lg gap-4'>
             <Suspense fallback={<TabNavigationSkeleton />}>
               <TabNavigation goals={goals} goalsLoading={goalsLoading} />
             </Suspense>
