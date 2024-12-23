@@ -74,7 +74,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <Providers>
-        <main className='container mx-auto min-h-screen px-4 sm:px-0 w-full flex items-center justify-center'>
+        <main className='container mx-auto min-h-screen px-0 sm:px-4 w-full flex items-center justify-center'>
           {children}
         </main>
         <Suspense fallback={null}>

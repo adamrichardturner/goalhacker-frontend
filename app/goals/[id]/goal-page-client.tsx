@@ -5,8 +5,6 @@ import { useGoal } from '@/hooks/useGoal'
 import { Skeleton } from '@/components/ui/skeleton'
 import GoalDetails from '@/components/GoalDetails'
 import Header from '@/components/Header'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { useUser } from '@/hooks/auth/useUser'
 import { Suspense } from 'react'
 
@@ -29,13 +27,8 @@ export default function GoalPageClient({ params }: GoalPageClientProps) {
   }
 
   return (
-    <div className='container min-h-screen  flex flex-col gap-2 sm:px-4 w-full'>
+    <div className='container min-h-screen  flex flex-col gap-4 sm:px-4 w-full'>
       <Header user={user} />
-      <div className='mb-0 px-4'>
-        <Link href='/goals'>
-          <Button variant='ghost'>← Back to Goals</Button>
-        </Link>
-      </div>
       <main className='flex-1'>
         <div className='max-w-5xl mx-auto'>
           {isLoading ? (

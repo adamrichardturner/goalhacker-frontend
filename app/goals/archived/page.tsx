@@ -4,8 +4,6 @@ import Header from '@/components/Header'
 import GoalsView from '@/components/GoalsView'
 import Loading from '@/components/ui/loading'
 import { useGoal } from '@/hooks/useGoal'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { useUser } from '@/hooks/auth/useUser'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -38,11 +36,6 @@ function ArchivedGoalsContent() {
       ) : (
         <Header user={user} />
       )}
-      <div className='mb-0 px-4'>
-        <Link href='/goals'>
-          <Button variant='ghost'>← Back to Goals</Button>
-        </Link>
-      </div>
       <div className='flex flex-col gap-4 w-full px-4 sm:px-0 rounded-lg'>
         <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
           <Suspense fallback={<Loading className='h-screen' />}>

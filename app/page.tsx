@@ -51,9 +51,9 @@ function LandingPageClient() {
   const year = new Date().getFullYear()
 
   return (
-    <div className='min-h-screen container flex flex-col gap-6 sm:px-4 w-full'>
+    <div className='min-h-screen container flex flex-col gap-6 px-0 sm:px-4 w-full'>
       {/* Hero Section */}
-      <div className='container mx-auto px-4'>
+      <div className='container mx-auto sm:px-4'>
         <div className='flex flex-col min-h-screen items-center justify-center w-full mb-16'>
           <div className='text-center  flex flex-col gap-4 mx-auto mb-16 py-10'>
             <motion.div

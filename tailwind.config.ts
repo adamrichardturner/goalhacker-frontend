@@ -57,6 +57,10 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        accordion: {
+          bg: 'hsl(var(--accordion-bg))',
+          body: 'hsl(var(--accordion-body))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
