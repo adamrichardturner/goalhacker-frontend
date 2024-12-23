@@ -26,13 +26,13 @@ export default function DashboardClient() {
   }
 
   return (
-    <div className='container pb-6 min-h-screen  flex gap-6 flex-col sm:px-4 w-full'>
+    <div className='container pb-6 min-h-screen flex gap-6 flex-col px-0 sm:px-4 w-full'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
         <Header user={user} />
       )}
-      <div className='flex flex-col gap-6 w-full px-4 sm:px-0 flex-1'>
+      <div className='flex flex-col gap-6 w-full px-0 sm:px-0 flex-1'>
         <div className='grid grid-cols-1 gap-6'>
           <div className='flex flex-col bg-paper rounded-lg gap-4'>
             <Suspense fallback={<TabNavigationSkeleton />}>

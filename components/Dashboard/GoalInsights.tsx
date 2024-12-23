@@ -19,6 +19,7 @@ import { Insight } from '@/services/insightsService'
 import { motion } from 'framer-motion'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
 import { StatusBadge } from '@/components/ui/status-badge'
+import { Label } from '../ui/label'
 
 const MAX_TITLE_LENGTH = 60
 
@@ -180,42 +181,23 @@ export default function GoalInsights() {
           <Sparkles className='h-5 w-5 text-primary' />
           AI Insights
         </CardTitle>
-        <div className='flex items-center gap-2'>
-          {insightHistory && insightHistory.length > 0 && (
-            <Select
-              value={selectedInsight?.insight_id}
-              onValueChange={handleHistorySelect}
+        <div className='flex flex-col-reverse items-end justify-end gap-2'>
+          <div>
+            <Button
+              variant='default'
+              size='sm'
+              onClick={handleGenerateInsights}
+              disabled={isGenerating || isLoading || remainingGenerations === 0}
+              className='relative'
             >
-              <SelectTrigger className='w-[180px]'>
-                <History className='h-4 w-4 mr-2' />
-                <SelectValue placeholder='View history' />
-              </SelectTrigger>
-              <SelectContent>
-                {insightHistory.map((insight) => (
-                  <SelectItem
-                    key={insight.insight_id}
-                    value={insight.insight_id}
-                  >
-                    {format(new Date(insight.created_at), 'MMM d, h:mm a')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-          <Button
-            variant='default'
-            size='sm'
-            onClick={handleGenerateInsights}
-            disabled={isGenerating || isLoading || remainingGenerations === 0}
-            className='relative'
-          >
-            Generate Insights
-            {remainingGenerations > 0 && (
-              <span className='ml-2 text-xs text-muted-foreground'>
-                ({remainingGenerations} left)
-              </span>
-            )}
-          </Button>
+              Generate Insights
+              {remainingGenerations > 0 && (
+                <span className='ml-2 text-xs text-muted-foreground'>
+                  ({remainingGenerations} left)
+                </span>
+              )}
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className='space-y-8 pt-6'>
@@ -474,6 +456,32 @@ export default function GoalInsights() {
                   variant='purple'
                 />
               </div>
+            </div>
+          )}
+          {insightHistory && insightHistory.length > 0 && (
+            <div className='flex flex-col gap-2 w-full items-end justify-end'>
+              <Label className='text-xs text-muted-foreground'>
+                View History
+              </Label>
+              <Select
+                value={selectedInsight?.insight_id}
+                onValueChange={handleHistorySelect}
+              >
+                <SelectTrigger className='w-[180px]'>
+                  <History className='h-4 w-4 mr-2' />
+                  <SelectValue placeholder='View history' />
+                </SelectTrigger>
+                <SelectContent>
+                  {insightHistory.map((insight) => (
+                    <SelectItem
+                      key={insight.insight_id}
+                      value={insight.insight_id}
+                    >
+                      {format(new Date(insight.created_at), 'MMM d, h:mm a')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>
