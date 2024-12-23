@@ -24,7 +24,7 @@ export default function EmptyGoalsState() {
       <Link href='/goals/new'>
         <Button
           size='lg'
-          className='bg-primaryActive text-primary h-12 hover:bg-primaryActive/95 hover:drop-shadow-lg'
+          className='bg-primaryActive text-white h-12 hover:bg-primaryActive/95 hover:drop-shadow-lg'
         >
           New Goal
         </Button>

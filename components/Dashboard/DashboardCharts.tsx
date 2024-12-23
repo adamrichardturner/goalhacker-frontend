@@ -125,8 +125,8 @@ export default function DashboardCharts({
           <h3 className='text-lg font-medium mb-2'>Welcome to Analytics!</h3>
           <p className='text-sm text-muted-foreground max-w-[500px]'>
             Create your first goal to unlock insightful analytics about your
-            progress. You&apos;ll be able to track status, priorities, categories,
-            and more.
+            progress. You&apos;ll be able to track status, priorities,
+            categories, and more.
           </p>
         </CardContent>
       </Card>
@@ -192,7 +192,7 @@ export default function DashboardCharts({
           ) : (
             <ChartPlaceholder
               title='Status Data Coming Soon'
-              description="Update your goals&apos; status to see a breakdown of how many goals are planned, in progress, completed, or archived."
+              description="Update your goals' status to see a breakdown of how many goals are planned, in progress, completed, or archived."
             />
           )}
         </CardContent>
