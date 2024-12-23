@@ -7,8 +7,8 @@ const nextConfig = {
   distDir: 'out',
   trailingSlash: false,
   reactStrictMode: false,
-  experimental: {
-    reactCompiler: true,
+  typescript: {
+    ignoreBuildErrors: false,
   },
 }
 

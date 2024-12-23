@@ -5,16 +5,29 @@ import { Capacitor } from '@capacitor/core'
 
 // Get the API URL based on platform and environment
 const getApiUrl = () => {
-  const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'development'
-
-  if (Capacitor.isNativePlatform()) {
-    if (isDev) {
-      return Capacitor.getPlatform() === 'ios' ? 'http://127.0.0.1:5000' : 'http://10.0.2.2:5000'
-    }
-    return 'https://api.goalhacker.app'
+  // Force development mode for simulator
+  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios') {
+    console.log('🔧 iOS Simulator detected, using development URL')
+    return 'http://127.0.0.1:5000'
   }
 
-  return isDev ? 'http://localhost:5000' : 'https://api.goalhacker.app'
+  // For all other cases, check environment
+  const isDev =
+    process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV === 'development'
+  console.log('Environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+    isDev,
+  })
+
+  if (isDev) {
+    if (Capacitor.isNativePlatform()) {
+      return Capacitor.getPlatform() === 'ios' ? 'http://127.0.0.1:5000' : 'http://10.0.2.2:5000'
+    }
+    return 'http://localhost:5000'
+  }
+
+  return 'https://api.goalhacker.app'
 }
 
 // Store session ID
@@ -69,7 +82,7 @@ api.interceptors.request.use(async config => {
   const sessionId = await getStoredSessionId()
   if (sessionId) {
     console.log('🔑 Using stored session:', sessionId)
-    config.headers['Cookie'] = `goalhacker.sid=${sessionId}`
+    config.headers['X-Session-Id'] = sessionId
   }
 
   return config
@@ -83,18 +96,13 @@ api.interceptors.response.use(
       headers: response.headers,
     })
 
-    // Extract and store session ID from Set-Cookie header
-    const setCookie = response.headers['set-cookie']
-    if (setCookie && Array.isArray(setCookie)) {
-      const sessionCookie = setCookie.find(cookie => cookie.includes('goalhacker.sid='))
-      if (sessionCookie) {
-        const match = sessionCookie.match(/goalhacker\.sid=([^;]+)/)
-        if (match && match[1]) {
-          const sessionId = match[1]
-          console.log('🔒 Storing new session:', sessionId)
-          await storeSessionId(sessionId)
-        }
-      }
+    // Check for session ID in header
+    const headerSessionId = response.headers['x-session-id']
+    if (headerSessionId) {
+      console.log('🔒 Storing session from header:', headerSessionId)
+      await storeSessionId(headerSessionId)
+      // Update current request headers
+      response.config.headers['X-Session-Id'] = headerSessionId
     }
 
     return response

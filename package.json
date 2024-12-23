@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "clean": "rm -rf .next out ios/App/App/public android/app/src/main/assets/public node_modules/.cache",
-    "dev:ios": "NEXT_PUBLIC_APP_ENV=development npm run clean && next build && npx cap sync ios && npx cap open ios && npx cap run ios",
-    "dev:android": "NEXT_PUBLIC_APP_ENV=development npm run clean && next build && npx cap sync android && npx cap open android && npx cap run android",
+    "dev:ios": "NODE_ENV=development NEXT_PUBLIC_APP_ENV=development NEXT_PUBLIC_API_URL=http://127.0.0.1:5000 npm run clean && NODE_ENV=development NEXT_PUBLIC_APP_ENV=development NEXT_PUBLIC_API_URL=http://127.0.0.1:5000 next build && npx cap sync ios && npx cap open ios && npx cap run ios",
+    "dev:android": "NODE_ENV=development NEXT_PUBLIC_APP_ENV=development NEXT_PUBLIC_API_URL=http://10.0.2.2:5000 npm run clean && NODE_ENV=development NEXT_PUBLIC_APP_ENV=development NEXT_PUBLIC_API_URL=http://10.0.2.2:5000 next build && npx cap sync android && npx cap open android && npx cap run android",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
