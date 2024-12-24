@@ -86,13 +86,13 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
                 selected={activeTab}
                 onChange={setActiveTab}
                 layoutId='activeTabUnderline'
-                className='h-3 w-full sm:w-[272px] flex py-[24px] px-6 justify-start sm:justify-evenly sm:rounded-lg gap-2 bg-white'
+                className='h-3 w-full sm:w-[272px] flex py-[24px] px-4 justify-start sm:justify-evenly sm:rounded-lg gap-2 bg-white'
                 variant='underline'
               />
             </div>
           </div>
 
-          <div className='mt-3'>
+          <div className='pt-[20px]'>
             {activeTab === 'summary' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

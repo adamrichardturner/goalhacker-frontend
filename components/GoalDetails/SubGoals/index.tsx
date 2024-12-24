@@ -297,11 +297,11 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                   <Button
                     variant='ghost'
                     className={cn(
-                      'h-12 w-12 bg-accent justify-start bg-input',
+                      'h-12 w-full bg-accent justify-start bg-input',
                       newSubgoal.target_date && 'border-2 border-primaryActive'
                     )}
                   >
-                    <CalendarIcon className='h-12 w-12 mr-2 bg-input' />
+                    <CalendarIcon className='h-4 w-4 mr-2 bg-input' />
                     {newSubgoal.target_date
                       ? format(new Date(newSubgoal.target_date), 'MMM d, yyyy')
                       : 'Set target date'}

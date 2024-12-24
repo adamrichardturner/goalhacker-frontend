@@ -5,7 +5,6 @@ import { Providers } from './providers'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Toaster as Sonner } from 'sonner'
 import { BackToTop } from '@/components/ui/back-to-top'
-import { Suspense } from 'react'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import CookieConsent from '@/components/CookieConsent'
 

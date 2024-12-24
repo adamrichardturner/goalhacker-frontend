@@ -57,7 +57,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
   }))
 
   return (
-    <Card className='rounded-xl relative w-full'>
+    <Card className='rounded-xl px-0 relative w-full'>
       <CardContent className='mt-6 space-y-8 w-full'>
         <div className='flex items-center p-1 justify-between'>
           {goal.category && (
