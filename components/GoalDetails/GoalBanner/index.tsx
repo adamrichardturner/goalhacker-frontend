@@ -6,6 +6,7 @@ import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { useSettings } from '@/hooks/useSettings'
 import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
+import { Layers, Target, AlertTriangle, Flag } from 'lucide-react'
 
 interface GoalBannerProps {
   goal: Goal
@@ -16,6 +17,17 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
   const priorityConfig = getPriorityConfig(goal.priority)
   const { settings } = useSettings()
   const { imageUrl } = useGoalImageDisplay(goal)
+
+  const getPriorityIcon = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return <AlertTriangle className='h-3 w-3' />
+      case 'medium':
+        return <Flag className='h-3 w-3' />
+      default:
+        return <Flag className='h-3 w-3' />
+    }
+  }
 
   return (
     <>
@@ -34,15 +46,24 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
         <div className='absolute bottom-6 space-y-4 left-6 right-6 text-white'>
           <h1 className='text-3xl font-bold mt-2 line-clamp-2'>{goal.title}</h1>
           <div className='flex items-center gap-2'>
-            <StatusBadge className='text-[10px] rounded-full'>
+            <StatusBadge
+              className='text-[10px] rounded-full'
+              icon={<Layers className='h-3 w-3' />}
+            >
               {statusConfig.label}
             </StatusBadge>
-            <StatusBadge className='text-[10px] rounded-full'>
+            <StatusBadge
+              className='text-[10px] rounded-full'
+              icon={getPriorityIcon(goal.priority)}
+            >
               {priorityConfig.label}
             </StatusBadge>
             {goal.target_date && (
-              <StatusBadge className='text-[10px] rounded-full'>
-                🎯 {formatDate(goal.target_date, settings?.date_format)}
+              <StatusBadge
+                className='text-[10px] rounded-full'
+                icon={<Target className='h-3 w-3' />}
+              >
+                {formatDate(goal.target_date, settings?.date_format)}
               </StatusBadge>
             )}
           </div>

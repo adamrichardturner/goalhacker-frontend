@@ -5,7 +5,7 @@ import { StatusBadge } from '@/components/ui/status-badge'
 import { GoalStatusEditor } from '../GoalStatusEditor'
 import { useState } from 'react'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
-import { Target, ListChecks, LineChart } from 'lucide-react'
+import { Target, ListChecks, LineChart, FolderOpen } from 'lucide-react'
 
 export const Summary = ({ goal }: { goal: Goal }) => {
   const [openItem, setOpenItem] = useState<string | null>(null)
@@ -62,7 +62,12 @@ export const Summary = ({ goal }: { goal: Goal }) => {
         <div className='flex items-center p-1 justify-between'>
           {goal.category && (
             <div className='flex items-center gap-2'>
-              <StatusBadge className='px-4'>{goal.category.name}</StatusBadge>
+              <StatusBadge
+                className='px-4'
+                icon={<FolderOpen className='h-3 w-3' />}
+              >
+                {goal.category.name}
+              </StatusBadge>
             </div>
           )}
           <EditSummary goal={goal} />
