@@ -98,7 +98,7 @@ export default function GoalInsights() {
 
   if (isLoading || isGenerating) {
     return (
-      <Card className='bg-paper'>
+      <Card className='bg-white'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Sparkles className='h-5 w-5 text-primary' />
@@ -182,7 +182,7 @@ export default function GoalInsights() {
           AI Insights
         </CardTitle>
         <div className='flex flex-col-reverse items-end justify-end gap-2'>
-          <div>
+          <div className='flex flex-col items-end gap-2'>
             <Button
               variant='default'
               size='sm'
@@ -191,12 +191,12 @@ export default function GoalInsights() {
               className='relative'
             >
               Generate Insights
-              {remainingGenerations > 0 && (
-                <span className='ml-2 text-xs text-muted-foreground'>
-                  ({remainingGenerations} left)
-                </span>
-              )}
             </Button>
+            {remainingGenerations > 0 && (
+              <span className='ml-2 text-xs text-muted-foreground'>
+                ({remainingGenerations} left)
+              </span>
+            )}
           </div>
         </div>
       </CardHeader>
