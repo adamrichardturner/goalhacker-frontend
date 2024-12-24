@@ -30,7 +30,7 @@ function ArchivedGoalsContent() {
   }
 
   return (
-    <div className='container min-h-screen flex flex-col gap-6 px-0 sm:px-4 w-full'>
+    <div className='container min-h-screen flex flex-col gap-6 px-0 sm:px-4 w-full pb-12'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (

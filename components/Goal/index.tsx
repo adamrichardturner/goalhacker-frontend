@@ -7,6 +7,8 @@ import GoalProgress from './GoalProgress'
 import { useCategory } from '@/hooks/useCategory'
 import { Card } from '../ui/card'
 import { motion } from 'framer-motion'
+import { StatusBadge } from '../ui/status-badge'
+import { FolderOpen } from 'lucide-react'
 
 interface GoalProps {
   goal: GoalType
@@ -47,10 +49,13 @@ export default function Goal({ goal, className = '', index = 0 }: GoalProps) {
             </div>
             <div className='mt-auto'>
               {category && (
-                <div className='px-4 mb-2'>
-                  <p className='text-sm italic text-muted-foreground'>
-                    {category.name}
-                  </p>
+                <div className='px-4'>
+                  <StatusBadge
+                    className='px-4'
+                    icon={<FolderOpen className='h-3 w-3' />}
+                  >
+                    {goal?.category?.name}
+                  </StatusBadge>
                 </div>
               )}
               <div className='min-h-12 p-4'>

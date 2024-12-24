@@ -32,7 +32,7 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
   return (
     <>
       <div
-        className='h-[270px] relative sm:rounded-lg overflow-hidden shadow-sm -mx-4 sm:mx-auto'
+        className='h-[270px] relative sm:rounded-2xl overflow-hidden shadow-sm -px-4 sm:mx-auto'
         style={{
           backgroundImage: `url(${imageUrl})`,
           backgroundSize: 'cover',

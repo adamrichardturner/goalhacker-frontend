@@ -26,7 +26,7 @@ export default function DashboardClient() {
   }
 
   return (
-    <div className='container pb-6 min-h-screen flex gap-6 flex-col px-0 sm:px-4 w-full'>
+    <div className='container pb-10 min-h-screen flex gap-6 flex-col px-0 sm:px-4 w-full'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (

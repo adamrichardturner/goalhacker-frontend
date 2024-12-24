@@ -90,7 +90,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
             <Pen className='h-4 w-4 text-primary' />
           </Button>
         </DialogTrigger>
-        <DialogContent className='sm:px-0 bg-card max-w-5xl overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg'>
+        <DialogContent className='sm:px-4 bg-card max-w-3xl overflow-scroll sm:overflow-auto max-h-[70vh] sm:max-h-[100vh] rounded-lg'>
           <DialogHeader>
             <DialogTitle className='text-xl font-semibold text-primary'>
               Edit Goal Image
