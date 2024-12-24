@@ -137,9 +137,9 @@ export default function ProgressNoteEditor({
         break
     }
 
-    setEditorButtonState(prev => ({
+    setEditorButtonState((prev) => ({
       ...prev,
-      [type]: !prev[type]
+      [type]: !prev[type],
     }))
   }
 

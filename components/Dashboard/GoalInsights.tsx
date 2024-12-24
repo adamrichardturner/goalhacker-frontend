@@ -147,7 +147,7 @@ export default function GoalInsights() {
         </CardHeader>
         <CardContent className='flex flex-col items-center justify-center py-8'>
           <Sparkles className='h-12 w-12 text-muted-foreground mb-4' />
-          <p className='text-muted-foreground text-center mb-6 max-w-[500px] text-xs'>
+          <p className='text-muted-foreground text-center mb-6 max-w-[500px] text-[14px]'>
             Start working on your goals to unlock AI-powered insights! Add
             goals, track progress, or mark tasks as complete to see personalized
             recommendations and analysis.
