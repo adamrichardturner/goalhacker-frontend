@@ -49,9 +49,9 @@ const CookieConsent = () => {
   if (!showBanner) return null
 
   return (
-    <div className='fixed bottom-0 left-0 right-0 bg-background p-4 shadow-lg z-50'>
+    <div className='fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm p-4 shadow-lg z-50'>
       <div className='max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4'>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-sm text-white/90'>
           We use essential cookies for our service to work and analytics cookies
           to understand how you use our site. Would you like to accept analytics
           cookies?
@@ -59,7 +59,7 @@ const CookieConsent = () => {
         <div className='flex gap-2'>
           <Button
             onClick={handleDeny}
-            className='px-4 py-2 text-sm text-gray-600 bg-card border border-gray-300 rounded hover:bg-gray-100'
+            className='px-4 py-2 text-sm text-gray-600 bg-input/90 border border-gray-300 rounded hover:bg-gray-100'
           >
             Decline
           </Button>

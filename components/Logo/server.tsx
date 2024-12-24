@@ -44,8 +44,8 @@ const sizeClasses = {
     icon: 'w-10 h-10 sm:w-11 sm:h-11',
   },
   '5xl': {
-    text: 'text-xl sm:text-5xl',
-    icon: 'w-4 h-4 sm:w-12 sm:h-12',
+    text: 'text-3xl sm:text-5xl',
+    icon: 'w-6 h-6 sm:w-12 sm:h-12',
   },
 }
 

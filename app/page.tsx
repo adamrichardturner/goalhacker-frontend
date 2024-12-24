@@ -99,11 +99,27 @@ function LandingPageClient() {
   const year = new Date().getFullYear()
 
   return (
-    <div className='min-h-screen container pt-20 bg-primary-background text-primary-foreground flex flex-col gap-6 px-0 sm:px-4 w-full'>
+    <div className='min-h-screen container sm:pt-20 bg-primary-background text-primary-foreground flex flex-col gap-6 px-0 sm:px-4 w-full'>
       {/* Hero Section - Updated messaging */}
       <div className='container mx-auto sm:px-4'>
-        <div className='flex flex-col min-h-screen items-center justify-center w-full mb-16'>
-          <div className='text-center flex flex-col gap-4 mx-auto mb-16 py-10'>
+        <div className='flex flex-col min-h-screen sm:min-h-auto items-center sm:items-center justify-center w-full sm:mb-16'>
+          <div className='text-center min-h-screen sm:items-center justify-center sm:justify-start sm:min-h-auto flex flex-col gap-4 mx-auto sm:mb-16 py-10'>
+            <div className='relative w-full max-w-5xl mx-auto mb-12'>
+              <motion.div
+                className='relative w-full aspect-[16/9] overflow-hidden rounded-2xl'
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+              >
+                <img
+                  src='/mockups/man-with-laptop-viewing-goalhacker.jpg'
+                  alt='Goal Hacker Dashboard'
+                  className='w-full h-full object-cover object-top'
+                />
+                <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background' />
+              </motion.div>
+            </div>
+
             <motion.div
               className='text-md text-white sm:text-2xl font-bold mb-6'
               initial={{ y: 20, opacity: 0 }}
@@ -138,7 +154,7 @@ function LandingPageClient() {
             </motion.div>
 
             <motion.p
-              className='text-xl sm:text-2xl text-white/90 mb-4'
+              className='text-md sm:text-2xl text-white/90 mb-4'
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -147,7 +163,7 @@ function LandingPageClient() {
             </motion.p>
 
             <motion.p
-              className='text-lg text-primary-foreground/90 mb-8 max-w-2xl mx-auto'
+              className='text-sm text-primary-foreground/90 mb-8 max-w-2xl mx-auto'
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -160,6 +176,7 @@ function LandingPageClient() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.6 }}
+              className='flex gap-4 justify-center'
             >
               {isLoading ? (
                 <Button
@@ -180,13 +197,10 @@ function LandingPageClient() {
                         size='lg'
                         className='bg-primary-foreground text-primary hover:bg-primary-foreground/90'
                       >
-                        Register for Beta Access
+                        Sign Up
                       </Button>
                     </Link>
                   </motion.div>
-                  <p className='text-sm text-muted-foreground mt-2'>
-                    (...Beta access is free!)
-                  </p>
                 </>
               ) : (
                 <Link href='/goals'>
@@ -204,10 +218,9 @@ function LandingPageClient() {
           {/* Updated Features Section with Lucide Icons */}
           <motion.div
             className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-16'
-            variants={staggerContainer}
-            initial='hidden'
-            whileInView='visible'
-            viewport={{ once: true, margin: '-100px' }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6 }}
           >
             {[
               {
@@ -401,16 +414,16 @@ function LandingPageClient() {
 
           {/* Footer */}
           <motion.footer
-            className='text-center text-xs text-muted-foreground py-8'
+            className='text-center text-sm text-muted-foreground'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
           >
             <div className='flex flex-col items-center justify-center gap-1'>
-              <p className='text-xs'>
+              <p className='text-sm'>
                 © {year} Goal Hacker. All rights reserved.
               </p>
-              <div className='flex items-center gap-2 text-xs'>
+              <div className='flex items-center gap-2 text-sm'>
                 <Link href='/terms-conditions' className='hover:text-white'>
                   Terms & Conditions
                 </Link>
