@@ -5,7 +5,6 @@ import { Providers } from './providers'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Toaster as Sonner } from 'sonner'
 import { BackToTop } from '@/components/ui/back-to-top'
-import { FloatingInsights } from '@/components/ui/floating-insights'
 import { Suspense } from 'react'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import CookieConsent from '@/components/CookieConsent'
@@ -77,9 +76,6 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
         <main className='container mx-auto min-h-screen px-0 sm:px-4 w-full flex items-center justify-center'>
           {children}
         </main>
-        <Suspense fallback={null}>
-          <FloatingInsights />
-        </Suspense>
         <BackToTop />
         <CookieConsent />
       </Providers>

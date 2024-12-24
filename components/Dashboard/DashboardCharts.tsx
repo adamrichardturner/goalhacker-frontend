@@ -282,7 +282,7 @@ export default function DashboardCharts({
         </Card>
       </div>
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Subgoal Status</CardTitle>
         </CardHeader>
@@ -311,7 +311,7 @@ export default function DashboardCharts({
             />
           )}
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   )
 }

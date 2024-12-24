@@ -10,11 +10,7 @@ const GoalProgress = ({ goal }: { goal: Goal }) => {
 
   return (
     <div className='space-y-2'>
-      <Progress
-        value={progressPercentage}
-        className='h-2'
-        indicatorClassName='bg-primaryActive'
-      />
+      <Progress value={progressPercentage} className='h-2' />
       <div className='flex gap-3 text-xs text-muted-foreground'>
         <span>{completedCount} completed</span>
         <span>•</span>

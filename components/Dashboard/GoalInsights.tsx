@@ -79,7 +79,9 @@ export default function GoalInsights() {
   >(null)
 
   useEffect(() => {
-    setSelectedInsight(currentInsight)
+    if (currentInsight) {
+      setSelectedInsight(currentInsight)
+    }
   }, [currentInsight])
 
   const handleHistorySelect = (insightId: string) => {
@@ -91,9 +93,10 @@ export default function GoalInsights() {
     }
   }
 
-  const handleGenerateInsights = () => {
-    generateNewInsights()
-    // Selected insight will automatically update via the useEffect when currentInsight changes
+  const handleGenerateInsights = async () => {
+    await generateNewInsights()
+    // Update selected insight to the latest one
+    setSelectedInsight(currentInsight)
   }
 
   if (isLoading || isGenerating) {
@@ -276,10 +279,7 @@ export default function GoalInsights() {
                                 </span>
                               </div>
                               <div className='flex items-center justify-end'>
-                                <Progress
-                                  value={goalData.completion}
-                                  indicatorClassName='bg-primaryActive'
-                                />
+                                <Progress value={goalData.completion} />
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
@@ -350,10 +350,7 @@ export default function GoalInsights() {
                                 </span>
                               </div>
                               <div className='flex items-center justify-end'>
-                                <Progress
-                                  value={goalData.completion}
-                                  indicatorClassName='bg-primaryActive'
-                                />
+                                <Progress value={goalData.completion} />
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>
@@ -425,10 +422,7 @@ export default function GoalInsights() {
                                 </span>
                               </div>
                               <div className='flex items-center justify-end'>
-                                <Progress
-                                  value={goalData.completion}
-                                  indicatorClassName='bg-primaryActive'
-                                />
+                                <Progress value={goalData.completion} />
                               </div>
                             </div>
                             <div className='flex justify-end mt-4'>

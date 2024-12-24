@@ -37,11 +37,7 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
               </div>
             </div>
             <div className='flex items-center justify-start sm:justify-end w-full gap-2'>
-              <Progress
-                value={progress}
-                className='h-2'
-                indicatorClassName='bg-primaryActive rounded-lg'
-              />
+              <Progress value={progress} className='h-2' />
             </div>
             <div className='sm:hidden text-xs'>
               <Stats />
