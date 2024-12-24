@@ -67,7 +67,7 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className='space-y-6'>
-      <div className='space-y-4'>
+      <div className='space-y-4 text-base'>
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           <div className='space-y-2'>
             <Input
@@ -79,7 +79,7 @@ export function ContactForm() {
               minLength={2}
               value={formData.name}
               onChange={handleChange}
-              className='h-12 bg-muted/5'
+              className='h-12 bg-input text-primary'
               disabled={isSubmitting}
             />
           </div>
@@ -92,7 +92,7 @@ export function ContactForm() {
               required
               value={formData.email}
               onChange={handleChange}
-              className='h-12 bg-muted/5'
+              className='h-12 bg-input text-primary'
               disabled={isSubmitting}
             />
           </div>
@@ -106,7 +106,7 @@ export function ContactForm() {
             minLength={10}
             value={formData.message}
             onChange={handleChange}
-            className='min-h-[150px] bg-paper resize-none'
+            className='min-h-[150px] bg-input text-sm py-4 resize-none'
             disabled={isSubmitting}
           />
         </div>

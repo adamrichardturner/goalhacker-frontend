@@ -11,7 +11,7 @@ function TermsAndConditionsContent() {
   const router = useRouter()
 
   return (
-    <div className='max-w-4xl min-h-screen mx-auto px-4 py-8'>
+    <div className='max-w-4xl text-white min-h-screen mx-auto px-4 py-8'>
       <Button variant='ghost' className='mb-8' onClick={() => router.back()}>
         <ArrowLeft className='w-4 h-4 mr-2' />
         Back

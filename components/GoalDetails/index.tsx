@@ -79,8 +79,8 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
             <div className='max-w-7xl mx-auto'>
               <AnimatedTabs
                 items={[
-                  { id: 'summary', label: 'Summary' },
                   { id: 'progress', label: 'Progress' },
+                  { id: 'summary', label: 'Summary' },
                   { id: 'notes', label: 'Notes' },
                 ]}
                 selected={activeTab}
@@ -92,7 +92,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
             </div>
           </div>
 
-          <div className='pt-[20px]'>
+          <div className='pt-[20px] sm:pt-0'>
             {activeTab === 'summary' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

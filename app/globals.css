@@ -91,7 +91,7 @@ body {
 }
 
 .prose {
-  @apply text-muted-foreground text-base sm:text-sm;
+  @apply text-primary text-base sm:text-sm;
 }
 
 .prose p {
@@ -109,13 +109,13 @@ body {
 @layer utilities {
   .prose-content {
     @apply prose max-w-none;
-    color: hsl(var(--muted-foreground));
+    color: hsl(var(--primary));
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
 
   .prose-content > * {
-    color: hsl(var(--muted-foreground));
+    color: hsl(var(--primary));
     font-size: 0.875rem;
     line-height: 1.25rem;
   }

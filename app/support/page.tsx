@@ -11,7 +11,7 @@ export default function SupportPage() {
   const router = useRouter()
 
   return (
-    <div className='min-h-screen flex flex-col'>
+    <div className='min-h-screen flex flex-col text-white'>
       <div className='max-w-2xl mx-auto px-4 py-8 flex-1 w-full'>
         <Button variant='ghost' className='mb-8' onClick={() => router.back()}>
           <ArrowLeft className='w-4 h-4 mr-2' />
@@ -23,11 +23,11 @@ export default function SupportPage() {
         <div className='space-y-8'>
           <section>
             <h2 className='text-2xl font-semibold mb-4'>Contact Us</h2>
-            <p className='mb-4 text-muted-foreground'>
+            <p className='mb-4 text-white/90'>
               Need help with Goal Hacker? You can reach us directly at{' '}
               <Link
                 href='mailto:support@goalhacker.app'
-                className='text-primaryActive hover:underline'
+                className='text-primaryActive hover:underline text-white'
               >
                 support@goalhacker.app
               </Link>{' '}
@@ -42,7 +42,7 @@ export default function SupportPage() {
 
           <section>
             <h2 className='text-2xl font-semibold mb-4'>Response Time</h2>
-            <p className='text-muted-foreground'>
+            <p className='text-white/90'>
               We aim to respond to all support inquiries within 24-48 hours
               during business days. For urgent matters, please email us
               directly.

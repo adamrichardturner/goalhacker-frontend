@@ -113,9 +113,9 @@ export default function DashboardCharts({
   const hasStatusData = goals.some((goal) => goal.status)
   const hasPriorityData = goals.some((goal) => goal.priority)
   const hasCategoryData = goals.some((goal) => goal.category)
-  const hasSubgoalData = goals.some(
-    (goal) => goal.subgoals && goal.subgoals.length > 0
-  )
+  // const hasSubgoalData = goals.some(
+  //   (goal) => goal.subgoals && goal.subgoals.length > 0
+  // )
 
   if (!hasGoals) {
     return (

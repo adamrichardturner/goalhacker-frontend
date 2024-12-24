@@ -6,7 +6,7 @@ export default function SettingsPage() {
   return (
     <Suspense
       fallback={
-        <div className='container  flex flex-col gap-6 sm:px-4 w-full'>
+        <div className='container flex flex-col gap-6 sm:px-4 w-full'>
           {/* Header skeleton */}
           <div className='flex items-center justify-between'>
             <Skeleton className='h-12 w-48' />
@@ -14,7 +14,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Main content skeleton */}
-          <div className='flex flex-col gap-4 w-full sm:px-0 rounded-lg'>
+          <div className='flex flex-col gap-4 w-full sm:px-0 rounded-2xl'>
             <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
               <Skeleton className='h-8 w-32 mb-4' /> {/* Settings title */}
               <div className='space-y-6'>
