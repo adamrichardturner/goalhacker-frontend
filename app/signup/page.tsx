@@ -257,7 +257,7 @@ function SignupForm() {
 
 export default function SignupPage() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center'>
+    <div className='min-h-screen flex flex-col items-center justify-center px-4 sm:px-0'>
       <PublicLogo />
       <Suspense fallback={<div>Loading signup form...</div>}>
         <SignupForm />

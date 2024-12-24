@@ -23,7 +23,7 @@ function ResetPasswordSkeleton() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center'>
+    <div className='min-h-screen flex flex-col items-center justify-center px-4 sm:px-0'>
       <PublicLogo />
       <Suspense fallback={<ResetPasswordSkeleton />}>
         <ResetPasswordClient />

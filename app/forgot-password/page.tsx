@@ -22,7 +22,7 @@ function ForgotPasswordSkeleton() {
 
 export default function ForgotPasswordPage() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center'>
+    <div className='min-h-screen flex flex-col items-center justify-center px-4 sm:px-0'>
       <PublicLogo />
       <Suspense fallback={<ForgotPasswordSkeleton />}>
         <ForgotPasswordClient />

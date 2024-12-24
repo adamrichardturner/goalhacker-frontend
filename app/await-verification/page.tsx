@@ -27,7 +27,7 @@ function VerificationSkeleton() {
 
 export default function AwaitVerificationPage() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center'>
+    <div className='min-h-screen flex flex-col items-center justify-center px-4 sm:px-0'>
       <PublicLogo />
       <Suspense fallback={<VerificationSkeleton />}>
         <VerificationClient />

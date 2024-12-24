@@ -42,7 +42,7 @@ export default function LoginPage() {
   const isDisabled = isLoading || isRouting || !isValidForm
 
   return (
-    <div className='flex h-full flex-col items-center justify-center'>
+    <div className='flex h-full px-4 sm:px-0 flex-col items-center justify-center'>
       <PublicLogo />
       <AuthCard
         title='Login'

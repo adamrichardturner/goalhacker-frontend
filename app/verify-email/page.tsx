@@ -12,7 +12,7 @@ export default function VerifyEmailPage() {
       <div className='flex-1 flex items-center justify-center'>
         <Suspense
           fallback={
-            <div className='flex flex-col items-center space-y-6'>
+            <div className='flex flex-col items-center space-y-6 px-4 sm:px-0'>
               <AuthCard
                 title='Verifying your email...'
                 description='Please wait while we verify your email address.'

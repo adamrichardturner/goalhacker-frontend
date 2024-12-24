@@ -16,7 +16,7 @@ export const AuthCard = ({
   description: string
 }) => {
   return (
-    <Card className='max-w-[400px]'>
+    <Card className='w-full sm:w-[400px]'>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

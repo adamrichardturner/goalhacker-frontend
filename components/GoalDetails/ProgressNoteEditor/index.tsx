@@ -91,7 +91,7 @@ export default function ProgressNoteEditor({
         <div
           className={cn(
             'rounded-lg overflow-hidden',
-            errors.title && 'ring-2 ring-destructive'
+            errors.title && 'ring-1 ring-destructive'
           )}
         >
           <Input
@@ -116,7 +116,7 @@ export default function ProgressNoteEditor({
         <div
           className={cn(
             'rounded-lg overflow-hidden bg-input',
-            errors.content && 'ring-2 ring-destructive'
+            errors.content && 'ring-1 ring-destructive'
           )}
         >
           <div className='border-b border-border/50 p-2 flex gap-1 bg-white backdrop-blur-sm'>

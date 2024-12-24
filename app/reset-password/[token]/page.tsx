@@ -42,7 +42,7 @@ export default function ResetPasswordPage({ params }: Props) {
   }
 
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center p-4'>
+    <div className='min-h-screen flex flex-col items-center justify-center px-4 sm:px-0'>
       <PublicLogo size='lg' />
       <div className='w-full max-w-md space-y-8 bg-card p-8 rounded-lg shadow-sm'>
         <div className='space-y-2 text-center'>

@@ -104,24 +104,8 @@ function LandingPageClient() {
       <div className='container mx-auto sm:px-4'>
         <div className='flex flex-col min-h-screen sm:min-h-auto items-center sm:items-center justify-center w-full sm:mb-16'>
           <div className='text-center min-h-screen sm:items-center justify-center sm:justify-start sm:min-h-auto flex flex-col gap-4 mx-auto sm:mb-16 py-10'>
-            <div className='relative w-full max-w-5xl mx-auto mb-12'>
-              <motion.div
-                className='relative w-full aspect-[16/9] overflow-hidden rounded-2xl'
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-              >
-                <img
-                  src='/mockups/man-with-laptop-viewing-goalhacker.jpg'
-                  alt='Goal Hacker Dashboard'
-                  className='w-full h-full object-cover object-top'
-                />
-                <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background' />
-              </motion.div>
-            </div>
-
             <motion.div
-              className='text-md text-white sm:text-2xl font-bold mb-6'
+              className='text-md text-white sm:text-2xl font-bold mb-0'
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -152,6 +136,22 @@ function LandingPageClient() {
             >
               <Logo size='5xl' mode='dark' />
             </motion.div>
+
+            <div className='relative w-full max-w-5xl mx-auto mb-12'>
+              <motion.div
+                className='relative w-full aspect-[16/9] overflow-hidden rounded-2xl'
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+              >
+                <img
+                  src='/mockups/man-with-laptop-viewing-goalhacker.jpg'
+                  alt='Goal Hacker Dashboard'
+                  className='w-full h-full object-cover object-top'
+                />
+                <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background' />
+              </motion.div>
+            </div>
 
             <motion.p
               className='text-md sm:text-2xl text-white/90 mb-4'
@@ -195,7 +195,7 @@ function LandingPageClient() {
                     <Link href='/signup'>
                       <Button
                         size='lg'
-                        className='bg-primary-foreground text-primary hover:bg-primary-foreground/90'
+                        className='bg-[#FF6347] text-white hover:bg-[#FF6347]/90'
                       >
                         Sign Up
                       </Button>
