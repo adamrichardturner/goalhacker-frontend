@@ -73,9 +73,7 @@ const Header = ({ user }: HeaderProps) => {
     { name: 'Settings', href: '/settings', icon: Settings },
   ]
 
-  const avatarSrc = user.avatar_url
-    ? `${API_URL}${user.avatar_url}`
-    : '/avatar.png'
+  const avatarSrc = user.avatar_url ? `${user.avatar_url}` : '/avatar.png'
 
   const burgerSrc = !mounted
     ? '/burger-menu.svg'
