@@ -32,7 +32,7 @@ export default function GoalPageClient({ params }: GoalPageClientProps) {
       <main className='flex-1'>
         <div className='max-w-5xl mx-auto px-0'>
           {isLoading ? (
-            <div className='space-y-4'>
+            <div className='sm:space-y-4'>
               <Skeleton className='h-[300px] w-full' />
               <div className='px-6 space-y-4'>
                 <Skeleton className='h-8 w-64' />

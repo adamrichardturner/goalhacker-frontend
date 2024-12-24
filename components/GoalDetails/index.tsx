@@ -72,7 +72,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
       className='min-h-screen bg-background'
     >
       <div className='max-w-7xl mx-auto'>
-        <div className='space-y-4'>
+        <div className='sm:space-y-4'>
           <GoalBanner goal={goal} />
 
           <div className='top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
