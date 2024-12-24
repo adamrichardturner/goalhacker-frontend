@@ -1,6 +1,7 @@
 import { User } from '@/types/auth'
 import { api } from './api'
 import { AxiosError } from 'axios'
+import { clearSessionCookie } from '@/utils/cookies'
 
 interface LoginResponse {
   success: boolean
@@ -43,6 +44,7 @@ export const authService = {
       )
 
       if (!response.data.success) {
+        clearSessionCookie()
         throw new Error(response.data.error || 'Login failed')
       }
 
@@ -51,6 +53,7 @@ export const authService = {
 
       return response.data
     } catch (error) {
+      clearSessionCookie()
       if (error instanceof AxiosError) {
         throw new Error(
           error.response?.data?.error || 'Invalid email or password'
@@ -71,11 +74,13 @@ export const authService = {
       )
 
       if (!response.data.success) {
+        clearSessionCookie()
         throw new Error(response.data.error || 'Registration failed')
       }
 
       return response.data
     } catch (error) {
+      clearSessionCookie()
       if (error instanceof AxiosError) {
         throw new Error(
           error.response?.data?.error || 'Failed to register user'
@@ -92,11 +97,13 @@ export const authService = {
       })
 
       if (!response.data.success) {
+        clearSessionCookie()
         throw new Error('Failed to get user profile')
       }
 
       return response.data
     } catch (error) {
+      clearSessionCookie()
       if (error instanceof AxiosError) {
         throw new Error(
           error.response?.data?.error || 'Failed to get user profile'
@@ -121,11 +128,15 @@ export const authService = {
         throw new Error('Failed to logout')
       }
 
+      // Clear session cookie
+      clearSessionCookie()
+
       // Clear local storage if you're storing anything there
       localStorage.clear()
 
       return response.data
     } catch (error) {
+      clearSessionCookie()
       console.error('Logout error:', error)
       throw error
     }
