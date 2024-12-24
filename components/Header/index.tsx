@@ -20,7 +20,6 @@ import {
   SheetTrigger,
 } from '../ui/sheet'
 import { User } from '@/types/auth'
-import { API_URL } from '@/config'
 import { useTheme } from 'next-themes'
 import { ClientLogo } from '../Logo'
 import { Search } from '../Search'
