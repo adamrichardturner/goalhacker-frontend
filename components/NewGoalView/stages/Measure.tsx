@@ -101,7 +101,7 @@ export function Measure({
                 <li>Monthly savings amount tracked in a spreadsheet</li>
               </ul>
             </div>
-            <div>
+            <div className='space-y-1'>
               <Label>How will you measure your progress?</Label>
               <RichTextEditor
                 placeholder='I will track...'
@@ -115,7 +115,7 @@ export function Measure({
           </div>
 
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-            <div className='space-y-0'>
+            <div className='space-y-1'>
               <label className='text-sm font-medium'>
                 Will you set a deadline? (Optional)
               </label>
@@ -161,7 +161,7 @@ export function Measure({
               </Popover>
             </div>
 
-            <div className='space-y-0'>
+            <div className='space-y-1'>
               <label className='text-sm font-medium'>
                 How important is this goal?
               </label>

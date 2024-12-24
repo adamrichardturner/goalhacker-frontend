@@ -12,9 +12,9 @@ export default function NewGoalPage() {
   }
 
   return (
-    <div className='container min-h-screen pb-10  flex flex-col gap-2 sm:px-4 w-full'>
+    <div className='container min-h-screen pb-10 flex flex-col gap-6 px-0 sm:px-4 w-full'>
       <Header user={user} />
-      <main className='flex flex-col px-4 sm:px-0 gap-4 w-full bg-background rounded-lg shadow-sm'>
+      <main className='flex flex-col px-0 gap-6 pt-[20px] sm:pt-[0px] w-full bg-background rounded-lg shadow-sm'>
         <NewGoalView />
       </main>
     </div>

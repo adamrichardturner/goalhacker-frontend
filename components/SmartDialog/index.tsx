@@ -20,7 +20,11 @@ export const SmartDialog = () => {
       <DialogContent className='max-w-[90vw] 2xl:max-w-[60vw] h-[70vh] overflow-y-auto rounded-lg'>
         <SmartFramework />
         <DialogClose asChild>
-          <Button variant='default' className='mt-4 bg-primaryActive' size='lg'>
+          <Button
+            variant='default'
+            className='mt-4 bg-primaryActive w-full sm:w-[120px]'
+            size='lg'
+          >
             Close
           </Button>
         </DialogClose>
