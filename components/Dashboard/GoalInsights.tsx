@@ -178,7 +178,7 @@ export default function GoalInsights() {
   }
 
   return (
-    <Card className='bg-card'>
+    <Card className='bg-card p-auto sm:p-6'>
       <CardHeader className='flex flex-row items-center justify-between pb-2'>
         <CardTitle className='flex items-center gap-2'>
           <Sparkles className='h-5 w-5 text-primary' />
