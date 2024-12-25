@@ -92,7 +92,7 @@ const Header = ({ user }: HeaderProps) => {
 
   return (
     <motion.header
-      className='w-full bg-card h-[70px] sm:mt-8 sm:rounded-2xl p-6 flex justify-between items-center shadow-sm sm:relative fixed left-0 right-0 top-0'
+      className='w-full bg-card h-[70px] sm:mt-8 sm:rounded-2xl py-6 px-4 sm:px-12 flex justify-between items-center shadow-sm sm:relative fixed left-0 right-0 top-0'
       initial={{ y: 0 }}
       animate={{
         y: isVisible ? 0 : -100,
