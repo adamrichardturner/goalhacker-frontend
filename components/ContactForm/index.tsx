@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { API_URL } from '@/config'
 import { useRouter } from 'next/navigation'
 
 interface ContactFormData {
@@ -22,6 +21,7 @@ export function ContactForm() {
     email: '',
     message: '',
   })
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

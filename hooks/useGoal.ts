@@ -3,7 +3,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { goalsService } from '@/services/goalsService'
 import { Goal, Subgoal, SubgoalStatus } from '@/types/goal'
-import { API_URL } from '@/config'
 import { toast } from 'sonner'
 import { useUser } from './auth/useUser'
 
@@ -45,6 +44,8 @@ export function useGoal(id?: string) {
     },
     enabled: !!id && hasSessionCookie,
   })
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 
   const isLoading = userLoading || isGoalsLoading || isIndividualGoalLoading
 

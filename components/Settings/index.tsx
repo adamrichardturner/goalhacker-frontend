@@ -32,7 +32,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useSettings, DateFormat } from '@/hooks/useSettings'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { API_URL } from '@/config'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
 import { settingsService } from '@/services/settingsService'
@@ -73,6 +72,8 @@ export default function Settings() {
   const [isEditingName, setIsEditingName] = useState(false)
   const [isInCooldown, setIsInCooldown] = useState(false)
   const queryClient = useQueryClient()
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 
   // Fetch profile on mount and when user changes
   useEffect(() => {

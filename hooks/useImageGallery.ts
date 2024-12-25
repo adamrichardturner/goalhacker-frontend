@@ -3,7 +3,7 @@ import axios from 'axios'
 import { UploadImageResponse } from '@/types/image'
 import { useState, useCallback } from 'react'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 const IMAGES_PER_PAGE = 6
 const IMAGES_PER_CATEGORY = 12
 

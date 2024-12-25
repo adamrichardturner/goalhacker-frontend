@@ -1,7 +1,7 @@
 import { Goal } from '@/types/goal'
 import { useMemo } from 'react'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 export default function useGoalImageDisplay(goal: Goal) {
