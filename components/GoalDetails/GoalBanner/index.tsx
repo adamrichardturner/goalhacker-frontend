@@ -40,10 +40,10 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
         }}
       >
         <div className='absolute inset-0 bg-black/40' />
-        <div className='absolute top-6 right-6 flex items-start gap-2'>
+        <div className='absolute top-6 right-4 flex items-start gap-2'>
           <EditGoalImage goal={goal} />
         </div>
-        <div className='absolute bottom-6 space-y-4 left-4 sm:left-6 right-4 sm:right-6 text-white'>
+        <div className='absolute bottom-6 space-y-4 left-4 right-4 text-white'>
           <h1 className='text-3xl font-bold mt-2 line-clamp-2'>{goal.title}</h1>
           <div className='flex items-center gap-2'>
             <StatusBadge
