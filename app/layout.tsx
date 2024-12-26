@@ -7,6 +7,7 @@ import { Toaster as Sonner } from 'sonner'
 import { BackToTop } from '@/components/ui/back-to-top'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import CookieConsent from '@/components/CookieConsent'
+import { ServiceWorkerRegistration } from '@/components/PWA/ServiceWorkerRegistration'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +23,12 @@ export const metadata: Metadata = {
   description:
     "Goal Hacker - Your intelligent goal tracking and achievement platform. Set meaningful goals, break them down into actionable subgoals, track your progress, and get AI-powered insights to stay motivated. Features smart goal organization, visual progress tracking, collaborative sharing, and personalized achievement strategies. Transform your aspirations into accomplishments with our Goal Hacker's intuitive goal management system.",
   metadataBase: new URL('https://goalhacker.app'),
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Goal Hacker',
+  },
   openGraph: {
     title: 'Goal Hacker | Track and achieve your goals',
     description:
@@ -52,19 +59,23 @@ export const metadata: Metadata = {
     ],
     creator: '@devadam88',
   },
-  manifest: '/manifest.json',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
       { url: '/icons/favicon.svg', type: 'image/svg+xml' },
+      {
+        url: '/icons/favicon-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        url: '/icons/favicon-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
     ],
     shortcut: [{ url: '/favicon.ico' }],
-    apple: [{ url: '/icons/favicon.svg' }],
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'Goal Hacker',
+    apple: [{ url: '/icons/favicon-192x192.png' }],
   },
 }
 
@@ -90,9 +101,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
+      <head>
+        <link rel='manifest' href='/manifest.json' />
+        <meta name='apple-mobile-web-app-capable' content='yes' />
+        <meta name='apple-mobile-web-app-status-bar-style' content='default' />
+        <meta name='apple-mobile-web-app-title' content='Goal Hacker' />
+        <link rel='apple-touch-icon' href='/icons/favicon-192x192.png' />
+      </head>
       <body className={`${inter.className} overflow-y-scroll`}>
         <ClientLayout>{children}</ClientLayout>
         <GoogleAnalytics />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   )
