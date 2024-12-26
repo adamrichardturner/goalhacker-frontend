@@ -1,16 +1,33 @@
 {
   "name": "Goal Hacker | Track and achieve your goals",
   "short_name": "Goal Hacker",
-  "description": "Track and achieve your goals",
+  "description": "Goal Hacker - Your intelligent goal tracking and achievement platform. Set meaningful goals, break them down into actionable subgoals, track your progress, and get AI-powered insights to stay motivated.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#744afc",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/icons/favicon.svg",
       "type": "image/svg+xml",
       "sizes": "any"
+    },
+    {
+      "src": "/icons/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/favicon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
-} 
+}

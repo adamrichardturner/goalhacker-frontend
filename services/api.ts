@@ -1,12 +1,10 @@
 import axios from 'axios'
+import { config } from '@/config/api'
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
+  baseURL: config.API_URL,
+  withCredentials: config.withCredentials,
+  headers: config.headers,
 })
 
 // Remove all interceptors
