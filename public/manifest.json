@@ -4,8 +4,8 @@
   "description": "Goal Hacker - Your intelligent goal tracking and achievement platform. Set meaningful goals, break them down into actionable subgoals, track your progress, and get AI-powered insights to stay motivated.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#744afc",
+  "background_color": "#0c121d",
+  "theme_color": "#0c121d",
   "orientation": "portrait-primary",
   "icons": [
     {
