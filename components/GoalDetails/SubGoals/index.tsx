@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Goal, SubgoalStatus } from '@/types/goal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -37,9 +37,10 @@ import {
 import { cn } from '@/lib/utils'
 import { useGoal } from '@/hooks/useGoal'
 import { format } from 'date-fns'
-import { Reorder } from 'framer-motion'
+import { Reorder, AnimatePresence, motion } from 'framer-motion'
 import { goalsService } from '@/services/goalsService'
 import { startOfDay } from 'date-fns'
+import debounce from 'lodash/debounce'
 
 interface SubGoalsProps {
   goal: Goal
@@ -57,8 +58,40 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     updateSubgoalTitle,
     updateSubgoalTargetDate,
     deleteSubgoal,
-    isCreatingSubgoal,
+    // Note: Provide a bool or check for isLoading in createSubgoal
+    // if you want to show loading state for newly created subgoals:
+    // isCreatingSubgoal,
+    updateSubgoalsOrder,
   } = useGoal(goal.goal_id)
+
+  // Local state for subgoals to handle immediate reordering
+  const [localSubgoals, setLocalSubgoals] = useState(goal.subgoals || [])
+
+  // Debounced server update
+  const debouncedUpdateOrder = useCallback(
+    debounce((reorderedSubgoals: typeof localSubgoals) => {
+      const updates = reorderedSubgoals.map((subgoal, index) => ({
+        subgoal_id: subgoal.subgoal_id!,
+        order: index,
+      }))
+      updateSubgoalsOrder(updates)
+    }, 750),
+    [updateSubgoalsOrder]
+  )
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedUpdateOrder.cancel()
+    }
+  }, [debouncedUpdateOrder])
+
+  // Update local subgoals when goal.subgoals changes
+  useEffect(() => {
+    if (goal.subgoals) {
+      setLocalSubgoals(goal.subgoals)
+    }
+  }, [goal.subgoals])
 
   const [newSubgoal, setNewSubgoal] = useState<{
     title: string
@@ -147,29 +180,18 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     })
   }
 
-  const handleReorder = async (reorderedSubgoals: typeof goal.subgoals) => {
-    if (!goal.goal_id || !reorderedSubgoals) return
+  const handleReorder = (reorderedSubgoals: typeof localSubgoals) => {
+    if (isEditing()) return
 
-    const updates = reorderedSubgoals.map((subgoal, index) => ({
-      subgoal_id: subgoal.subgoal_id!,
-      order: index,
-    }))
+    // Update local state immediately
+    setLocalSubgoals(reorderedSubgoals)
 
-    try {
-      await goalsService.updateSubgoalsOrder(goal.goal_id, updates)
-    } catch (error) {
-      console.error('Failed to update subgoal order:', error)
-    }
+    // Trigger debounced server update
+    debouncedUpdateOrder(reorderedSubgoals)
   }
 
   const isEditing = () => {
     return editing.subgoalId !== null
-  }
-
-  const reorderHandler = (reorderedSubgoals: typeof goal.subgoals) => {
-    if (!isEditing()) {
-      handleReorder(reorderedSubgoals)
-    }
   }
 
   const handleSubgoalCreateFromDialog = () => {
@@ -177,10 +199,8 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     setIsDialogOpen(false)
   }
 
-  const subgoals = goal.subgoals || []
-
   return (
-    <div className='space-y-4'>
+    <motion.div layout className='space-y-4'>
       {/* Mobile Add Button + Dialog */}
       <div className='sm:hidden'>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -344,178 +364,207 @@ export default function SubGoals({ goal }: SubGoalsProps) {
         </div>
       </div>
 
-      {/* Existing Subgoals - responsive layout */}
-      <Reorder.Group
-        axis='y'
-        values={subgoals}
-        onReorder={reorderHandler}
-        className={cn(
-          'space-y-3',
-          isDraggable && !isEditing() && 'cursor-grab'
-        )}
+      {/* Existing Subgoals - with animated transitions */}
+      <motion.div
+        layout
+        className='pt-[20px] sm:pt-0 overflow-hidden'
+        transition={{
+          height: { duration: 0.5, ease: [0.32, 0.72, 0, 1] },
+          layout: { duration: 0.5, ease: [0.32, 0.72, 0, 1] },
+        }}
       >
-        {isCreatingSubgoal && (
-          <div className='flex flex-col sm:flex-row gap-3 p-4 border rounded-lg animate-pulse'>
-            <div className='w-[140px] h-12 bg-muted rounded' />
-            <div className='flex-1 h-12 bg-muted rounded' />
-            <div className='flex gap-2'>
-              <div className='w-12 h-12 bg-muted rounded' />
-              <div className='w-12 h-12 bg-muted rounded' />
-              <div className='w-12 h-12 bg-muted rounded' />
-            </div>
-          </div>
-        )}
-        {subgoals.map((subgoal) => (
-          <Reorder.Item
-            key={subgoal.subgoal_id}
-            value={subgoal}
+        <motion.div layout>
+          <Reorder.Group
+            axis='y'
+            values={localSubgoals}
+            onReorder={handleReorder}
             className={cn(
-              'flex flex-col sm:flex-row gap-3 p-4 border rounded-lg',
+              'space-y-3',
               isDraggable && !isEditing() && 'cursor-grab'
             )}
-            dragListener={isDraggable && !isEditing()}
-            style={{ position: 'relative' }}
           >
-            <div className='flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1'>
-              <Select
-                value={subgoal.status}
-                onValueChange={(value: SubgoalStatus) =>
-                  subgoal.subgoal_id &&
-                  handleSubgoalStatusChange(subgoal.subgoal_id, value)
-                }
-              >
-                <SelectTrigger className='w-full sm:w-[140px] h-12'>
-                  <SelectValue
-                    placeholder='Status'
-                    className='text-muted-foreground'
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='planned'>Planned</SelectItem>
-                  <SelectItem value='in_progress'>In Progress</SelectItem>
-                  <SelectItem value='completed'>Completed</SelectItem>
-                </SelectContent>
-              </Select>
-              {editing.subgoalId === subgoal.subgoal_id ? (
-                <form
-                  className='flex-1 flex flex-col sm:flex-row gap-3 w-full'
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    handleEditSave()
+            <AnimatePresence mode='sync' initial={false}>
+              {localSubgoals.map((subgoal) => (
+                <Reorder.Item
+                  key={subgoal.subgoal_id}
+                  value={subgoal}
+                  layout='position'
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      ease: 'easeOut',
+                    },
                   }}
-                >
-                  <Input
-                    value={editing.title}
-                    onChange={(e) =>
-                      setEditing({ ...editing, title: e.target.value })
-                    }
-                    className='flex-1 h-12'
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === 'Escape') {
-                        setEditing({ subgoalId: null, title: '' })
-                      }
-                    }}
-                  />
-                  <div className='flex gap-2 justify-end sm:justify-start'>
-                    <Button type='submit' size='sm' className='h-12'>
-                      Save
-                    </Button>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
-                      className='h-12'
-                      onClick={() => setEditing({ subgoalId: null, title: '' })}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                <span
+                  exit={{
+                    opacity: 0,
+                    transition: {
+                      duration: 0.3,
+                      ease: 'easeOut',
+                    },
+                  }}
                   className={cn(
-                    'flex-1 text-sm',
-                    subgoal.status === 'completed' &&
-                      'line-through text-muted-foreground'
+                    'flex flex-col sm:flex-row gap-3 p-4 border rounded-lg',
+                    isDraggable && !isEditing() && 'cursor-grab'
                   )}
+                  dragListener={isDraggable && !isEditing()}
+                  style={{ position: 'relative' }}
                 >
-                  {subgoal.title}
-                </span>
-              )}
-            </div>
-            <div className='flex items-center gap-2 justify-end sm:justify-start'>
-              {editing.subgoalId !== subgoal.subgoal_id && (
-                <>
-                  {subgoal.target_date && (
-                    <span className='text-sm text-muted-foreground whitespace-nowrap'>
-                      {format(new Date(subgoal.target_date), 'MMM d, yyyy')}
-                    </span>
-                  )}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant='ghost'
+                  <div className='flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1'>
+                    <Select
+                      value={subgoal.status}
+                      onValueChange={(value: SubgoalStatus) =>
+                        subgoal.subgoal_id &&
+                        handleSubgoalStatusChange(subgoal.subgoal_id, value)
+                      }
+                    >
+                      <SelectTrigger className='w-full sm:w-[140px] h-12'>
+                        <SelectValue
+                          placeholder='Status'
+                          className='text-muted-foreground'
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='planned'>Planned</SelectItem>
+                        <SelectItem value='in_progress'>In Progress</SelectItem>
+                        <SelectItem value='completed'>Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* Editing Title */}
+                    {editing.subgoalId === subgoal.subgoal_id ? (
+                      <form
+                        className='flex-1 flex flex-col sm:flex-row gap-3 w-full'
+                        onSubmit={(e) => {
+                          e.preventDefault()
+                          handleEditSave()
+                        }}
+                      >
+                        <Input
+                          value={editing.title}
+                          onChange={(e) =>
+                            setEditing({ ...editing, title: e.target.value })
+                          }
+                          className='flex-1 h-12'
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === 'Escape') {
+                              setEditing({ subgoalId: null, title: '' })
+                            }
+                          }}
+                        />
+                        <div className='flex gap-2 justify-end sm:justify-start'>
+                          <Button type='submit' size='sm' className='h-12'>
+                            Save
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='sm'
+                            className='h-12'
+                            onClick={() =>
+                              setEditing({ subgoalId: null, title: '' })
+                            }
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </form>
+                    ) : (
+                      <span
                         className={cn(
-                          'h-12 w-12 p-0 bg-input',
-                          subgoal.target_date && 'border-2 border-primaryActive'
+                          'flex-1 text-sm',
+                          subgoal.status === 'completed' &&
+                            'line-through text-muted-foreground'
                         )}
                       >
-                        <CalendarIcon className='h-4 w-4' />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className='w-auto p-0' align='start'>
-                      <Calendar
-                        mode='single'
-                        selected={
-                          subgoal.target_date
-                            ? new Date(subgoal.target_date)
-                            : undefined
-                        }
-                        onSelect={(date) =>
-                          subgoal.subgoal_id &&
-                          handleTargetDateChange(
-                            subgoal.subgoal_id,
-                            date || null
-                          )
-                        }
-                        disabled={(date) =>
-                          startOfDay(date) < startOfDay(new Date())
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setEditing({
-                        subgoalId: subgoal.subgoal_id || null,
-                        title: subgoal.title,
-                      })
-                    }}
-                    className='bg-input h-12 w-12'
-                  >
-                    <Pen className='h-4 w-4 text-primary' />
-                  </Button>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='h-12 w-12 bg-input'
-                    onClick={() =>
-                      subgoal.subgoal_id &&
-                      handleDeleteClick(subgoal.subgoal_id)
-                    }
-                  >
-                    <Trash2 className='h-4 w-4' />
-                  </Button>
-                </>
-              )}
-            </div>
-          </Reorder.Item>
-        ))}
-      </Reorder.Group>
+                        {subgoal.title}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Right-side controls */}
+                  <div className='flex items-center gap-2 justify-end sm:justify-start'>
+                    {editing.subgoalId !== subgoal.subgoal_id && (
+                      <>
+                        {subgoal.target_date && (
+                          <span className='text-sm text-muted-foreground whitespace-nowrap'>
+                            {format(
+                              new Date(subgoal.target_date),
+                              'MMM d, yyyy'
+                            )}
+                          </span>
+                        )}
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant='ghost'
+                              className={cn(
+                                'h-12 w-12 p-0 bg-input',
+                                subgoal.target_date &&
+                                  'border-2 border-primaryActive'
+                              )}
+                            >
+                              <CalendarIcon className='h-4 w-4' />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className='w-auto p-0' align='start'>
+                            <Calendar
+                              mode='single'
+                              selected={
+                                subgoal.target_date
+                                  ? new Date(subgoal.target_date)
+                                  : undefined
+                              }
+                              onSelect={(date) =>
+                                subgoal.subgoal_id &&
+                                handleTargetDateChange(
+                                  subgoal.subgoal_id,
+                                  date || null
+                                )
+                              }
+                              disabled={(date) =>
+                                startOfDay(date) < startOfDay(new Date())
+                              }
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setEditing({
+                              subgoalId: subgoal.subgoal_id || null,
+                              title: subgoal.title,
+                            })
+                          }}
+                          className='bg-input h-12 w-12'
+                        >
+                          <Pen className='h-4 w-4 text-primary' />
+                        </Button>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='h-12 w-12 bg-input'
+                          onClick={() =>
+                            subgoal.subgoal_id &&
+                            handleDeleteClick(subgoal.subgoal_id)
+                          }
+                        >
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </Reorder.Item>
+              ))}
+            </AnimatePresence>
+          </Reorder.Group>
+        </motion.div>
+      </motion.div>
 
       <AlertDialog
         open={!!deletingSubgoalId}
@@ -542,6 +591,6 @@ export default function SubGoals({ goal }: SubGoalsProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </motion.div>
   )
 }
