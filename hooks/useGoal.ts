@@ -49,17 +49,19 @@ export function useGoal(id?: string) {
 
   const isLoading = userLoading || isGoalsLoading || isIndividualGoalLoading
 
-  const { mutate: createSubgoal } = useMutation({
-    mutationFn: async ({
-      title,
-      target_date,
-      status = 'planned',
-    }: {
+  const { mutate: createSubgoal, isPending: isCreatingSubgoal } = useMutation<
+    { subgoal: Subgoal },
+    Error,
+    {
       title: string
       target_date?: string | null
       status?: SubgoalStatus
-    }) => {
-      if (!goal?.goal_id) throw new Error('Goal not found')
+    }
+  >({
+    mutationFn: async ({ title, target_date, status = 'planned' }) => {
+      if (!goal?.goal_id) {
+        throw new Error('Goal not found')
+      }
 
       const response = await fetch(
         `${API_URL}/api/goals/${goal.goal_id}/subgoals`,
@@ -84,39 +86,12 @@ export function useGoal(id?: string) {
 
       return response.json()
     },
-    onMutate: async (newSubgoal) => {
-      await queryClient.cancelQueries({ queryKey: ['goal', id] })
-      const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
-
-      if (previousGoal) {
-        const optimisticSubgoal = {
-          subgoal_id: crypto.randomUUID(),
-          goal_id: id!,
-          title: newSubgoal.title,
-          target_date: newSubgoal.target_date || undefined,
-          status: newSubgoal.status || 'planned',
-          order: previousGoal.subgoals?.length || 0,
-        } satisfies Subgoal
-
-        queryClient.setQueryData<Goal>(['goal', id], {
-          ...previousGoal,
-          subgoals: [...(previousGoal.subgoals || []), optimisticSubgoal],
-        })
-      }
-
-      return { previousGoal }
-    },
-    onError: (err, newSubgoal, context) => {
-      if (context?.previousGoal) {
-        queryClient.setQueryData(['goal', id], context.previousGoal)
-      }
-      toast.error('Failed to create subgoal')
-    },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal', id] })
       toast.success('Subgoal created successfully')
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['goal', id] })
+    onError: (error) => {
+      toast.error('Failed to create subgoal')
     },
   })
 
@@ -595,5 +570,6 @@ export function useGoal(id?: string) {
     updateSubgoalsOrder,
     createGoal: createGoalMutation.mutate,
     isCreatingGoal: createGoalMutation.isPending,
+    isCreatingSubgoal,
   }
 }

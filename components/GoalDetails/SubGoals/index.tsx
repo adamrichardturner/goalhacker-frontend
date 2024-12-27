@@ -57,6 +57,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     updateSubgoalTitle,
     updateSubgoalTargetDate,
     deleteSubgoal,
+    isCreatingSubgoal,
   } = useGoal(goal.goal_id)
 
   const [newSubgoal, setNewSubgoal] = useState<{
@@ -76,12 +77,8 @@ export default function SubGoals({ goal }: SubGoalsProps) {
   const [deletingSubgoalId, setDeletingSubgoalId] = useState<string | null>(
     null
   )
-
-  const [localSubgoals, setLocalSubgoals] = useState(goal.subgoals || [])
-
   const [isLargeScreen, setIsLargeScreen] = useState(false)
   const [isDraggable, setIsDraggable] = useState(false)
-
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   // Handle screen size changes
@@ -89,103 +86,48 @@ export default function SubGoals({ goal }: SubGoalsProps) {
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth >= 640)
     }
-
-    // Initial check
     handleResize()
-
-    // Add event listener
     window.addEventListener('resize', handleResize)
-
-    // Cleanup
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   // Update draggable state based on screen size and subgoal count
   useEffect(() => {
-    setIsDraggable(isLargeScreen && localSubgoals.length > 1)
-  }, [isLargeScreen, localSubgoals.length])
+    setIsDraggable(isLargeScreen && (goal.subgoals?.length || 0) > 1)
+  }, [isLargeScreen, goal.subgoals?.length])
 
-  const handleSubgoalCreate = async () => {
+  const handleSubgoalCreate = () => {
     if (!newSubgoal.title) return
 
-    // Create optimistic subgoal
-    const optimisticSubgoal = {
-      subgoal_id: crypto.randomUUID(),
-      goal_id: goal.goal_id!,
+    createSubgoal({
       title: newSubgoal.title,
-      target_date: newSubgoal.target_date || undefined,
+      target_date: newSubgoal.target_date,
       status: newSubgoal.status,
-      order: localSubgoals.length,
-    }
+    })
 
-    // Update UI immediately
-    setLocalSubgoals([...localSubgoals, optimisticSubgoal])
-
-    // Reset form
+    // Reset form immediately for better UX
     setNewSubgoal({
       title: '',
       target_date: null,
       status: 'planned',
     })
-
-    try {
-      await createSubgoal({
-        title: newSubgoal.title,
-        target_date: newSubgoal.target_date,
-        status: newSubgoal.status,
-      })
-    } catch (error) {
-      // Revert on error
-      setLocalSubgoals(localSubgoals)
-      console.error('Error creating subgoal:', error)
-    }
   }
 
   const handleSubgoalStatusChange = (
     subgoalId: string,
     status: SubgoalStatus
   ) => {
-    // Optimistically update local state
-    const previousSubgoals = [...localSubgoals]
-    setLocalSubgoals(
-      localSubgoals.map((sg) =>
-        sg.subgoal_id === subgoalId ? { ...sg, status } : sg
-      )
-    )
-
-    try {
-      updateSubgoalStatus({ subgoalId, status })
-    } catch (error) {
-      // Revert on error
-      setLocalSubgoals(previousSubgoals)
-      console.error('Error updating subgoal status:', error)
-    }
+    updateSubgoalStatus({ subgoalId, status })
   }
 
   const handleEditSave = () => {
     if (!editing.subgoalId || !editing.title) return
 
-    // Optimistically update local state
-    const previousSubgoals = [...localSubgoals]
-    setLocalSubgoals(
-      localSubgoals.map((sg) =>
-        sg.subgoal_id === editing.subgoalId
-          ? { ...sg, title: editing.title }
-          : sg
-      )
-    )
+    updateSubgoalTitle({
+      subgoalId: editing.subgoalId,
+      title: editing.title,
+    })
     setEditing({ subgoalId: null, title: '' })
-
-    try {
-      updateSubgoalTitle({
-        subgoalId: editing.subgoalId,
-        title: editing.title,
-      })
-    } catch (error) {
-      // Revert on error
-      setLocalSubgoals(previousSubgoals)
-      console.error('Error updating subgoal title:', error)
-    }
   }
 
   const handleDeleteClick = (subgoalId: string) => {
@@ -194,64 +136,48 @@ export default function SubGoals({ goal }: SubGoalsProps) {
 
   const handleDeleteConfirm = () => {
     if (!deletingSubgoalId) return
-
-    // Optimistically remove from local state
-    const previousSubgoals = [...localSubgoals]
-    setLocalSubgoals(
-      localSubgoals.filter((sg) => sg.subgoal_id !== deletingSubgoalId)
-    )
+    deleteSubgoal(deletingSubgoalId)
     setDeletingSubgoalId(null)
-
-    try {
-      deleteSubgoal(deletingSubgoalId)
-    } catch (error) {
-      // Revert on error
-      setLocalSubgoals(previousSubgoals)
-      console.error('Error deleting subgoal:', error)
-    }
   }
 
   const handleTargetDateChange = (subgoalId: string, date: Date | null) => {
-    try {
-      updateSubgoalTargetDate({
-        subgoalId,
-        target_date: date?.toISOString() || undefined,
-      })
-    } catch (error) {
-      console.error('Error updating target date:', error)
-    }
+    updateSubgoalTargetDate({
+      subgoalId,
+      target_date: date?.toISOString(),
+    })
   }
 
-  const handleReorder = async (reorderedSubgoals: typeof localSubgoals) => {
-    if (!goal.goal_id) return
-    setLocalSubgoals(reorderedSubgoals)
+  const handleReorder = async (reorderedSubgoals: typeof goal.subgoals) => {
+    if (!goal.goal_id || !reorderedSubgoals) return
+
     const updates = reorderedSubgoals.map((subgoal, index) => ({
       subgoal_id: subgoal.subgoal_id!,
       order: index,
     }))
+
     try {
       await goalsService.updateSubgoalsOrder(goal.goal_id, updates)
     } catch (error) {
-      setLocalSubgoals(goal.subgoals || [])
       console.error('Failed to update subgoal order:', error)
     }
   }
 
-  // Add this function to check if we're in an editing state
   const isEditing = () => {
-    return editing.subgoalId !== null || !!newSubgoal.target_date
+    return editing.subgoalId !== null
   }
 
-  const reorderHandler = (reorderedSubgoals: typeof localSubgoals) => {
+  const reorderHandler = (reorderedSubgoals: typeof goal.subgoals) => {
     if (!isEditing()) {
       handleReorder(reorderedSubgoals)
     }
   }
 
-  const handleSubgoalCreateFromDialog = async () => {
-    await handleSubgoalCreate()
+  const handleSubgoalCreateFromDialog = () => {
+    handleSubgoalCreate()
     setIsDialogOpen(false)
   }
+
+  const subgoals = goal.subgoals || []
 
   return (
     <div className='space-y-4'>
@@ -421,14 +347,25 @@ export default function SubGoals({ goal }: SubGoalsProps) {
       {/* Existing Subgoals - responsive layout */}
       <Reorder.Group
         axis='y'
-        values={localSubgoals}
+        values={subgoals}
         onReorder={reorderHandler}
         className={cn(
           'space-y-3',
           isDraggable && !isEditing() && 'cursor-grab'
         )}
       >
-        {localSubgoals.map((subgoal) => (
+        {isCreatingSubgoal && (
+          <div className='flex flex-col sm:flex-row gap-3 p-4 border rounded-lg animate-pulse'>
+            <div className='w-[140px] h-12 bg-muted rounded' />
+            <div className='flex-1 h-12 bg-muted rounded' />
+            <div className='flex gap-2'>
+              <div className='w-12 h-12 bg-muted rounded' />
+              <div className='w-12 h-12 bg-muted rounded' />
+              <div className='w-12 h-12 bg-muted rounded' />
+            </div>
+          </div>
+        )}
+        {subgoals.map((subgoal) => (
           <Reorder.Item
             key={subgoal.subgoal_id}
             value={subgoal}
