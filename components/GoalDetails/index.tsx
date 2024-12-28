@@ -72,7 +72,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
       className='min-h-screen bg-background pb-12'
     >
       <div className='max-w-7xl mx-auto'>
-        <div className='sm:space-y-4'>
+        <div className='space-y-4'>
           <GoalBanner goal={goal} />
 
           <div className='top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
@@ -92,7 +92,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
             </div>
           </div>
 
-          <div className='pt-[20px] sm:pt-0'>
+          <div className='sm:pt-0'>
             {activeTab === 'summary' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
