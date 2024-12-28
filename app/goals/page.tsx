@@ -31,7 +31,6 @@ function GoalsContent() {
     </div>
   )
 }
-
 export default function GoalsPage() {
   return (
     <Suspense>

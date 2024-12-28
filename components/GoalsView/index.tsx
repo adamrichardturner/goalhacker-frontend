@@ -1,13 +1,10 @@
 'use client'
 
 import { User } from '@/types/auth'
-import { Goal as GoalType, GoalStatus } from '@/types/goal'
+import { Goal as GoalType } from '@/types/goal'
 import { Button } from '../ui/button'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import Goal from '../Goal'
 import { Skeleton } from '../ui/skeleton'
-import EmptyGoalsState from './EmptyGoalsState'
 import {
   Select,
   SelectContent,
@@ -17,10 +14,9 @@ import {
 } from '../ui/select'
 import { Label } from '../ui/label'
 import { AnimatedTabs } from '../ui/animated-tabs'
-import GoalDetails from '../GoalDetails'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import RenderGoalDisplay from './RenderGoalDisplay'
 
 type FilterType = 'All' | 'Planned' | 'Active' | 'Completed' | 'Archived'
 
@@ -28,15 +24,9 @@ interface GoalsViewProps {
   goals?: GoalType[]
   user?: User
   isLoading?: boolean
-  isArchived?: boolean
 }
 
-const GoalsView = ({
-  goals = [],
-  user,
-  isLoading = false,
-  isArchived = false,
-}: GoalsViewProps) => {
+const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('Active')
@@ -45,6 +35,7 @@ const GoalsView = ({
     const goalId = searchParams.get('id')
     return goalId ? goals.find((g) => g.goal_id === goalId) || null : null
   })
+  const isNewGoal = searchParams.get('new') === 'true'
   const filters: FilterType[] = [
     'Active',
     'Planned',
@@ -81,9 +72,8 @@ const GoalsView = ({
     router.push(`?id=${goal.goal_id}`, { scroll: false })
   }
 
-  const handleBackToList = () => {
-    setSelectedGoal(null)
-    router.push('', { scroll: false })
+  const handleNewGoal = () => {
+    router.push('?new=true', { scroll: false })
   }
 
   const statusCounts: Record<FilterType, number> = {
@@ -116,14 +106,10 @@ const GoalsView = ({
     <div
       className={cn(
         'space-y-6',
-        selectedGoal ? '-mx-4 sm:-mx-6 -mt-12' : 'pb-8'
+        selectedGoal || isNewGoal ? '-mx-4 sm:-mx-6' : 'pb-8'
       )}
     >
-      {selectedGoal ? (
-        <div>
-          <GoalDetails goal={selectedGoal} />
-        </div>
-      ) : (
+      {!selectedGoal && !isNewGoal ? (
         <div className='space-y-6'>
           <div className='flex justify-between items-center'>
             <div className='flex justify-between items-center w-full'>
@@ -133,11 +119,13 @@ const GoalsView = ({
 
               <div className='flex items-center gap-4'>
                 {goals.length > 0 && selectedFilter !== 'Archived' && (
-                  <Link href='/goals/new' className='block'>
-                    <Button size='sm' className='min-w-[120px]'>
-                      New Goal
-                    </Button>
-                  </Link>
+                  <Button
+                    size='sm'
+                    className='min-w-[120px]'
+                    onClick={handleNewGoal}
+                  >
+                    New Goal
+                  </Button>
                 )}
               </div>
             </div>
@@ -186,47 +174,19 @@ const GoalsView = ({
               </Select>
             </div>
           </nav>
-
-          <div className='grid grid-cols-1 gap-4'>
-            {delayedLoading ? (
-              Array.from({ length: 3 }).map((_, index) => (
-                <div
-                  key={index}
-                  className='h-[200px] bg-paper border rounded-2xl'
-                >
-                  <div className='flex h-full'>
-                    <Skeleton className='w-1/2 h-full rounded-l-2xl' />
-                    <div className='w-1/2 p-4 flex flex-col justify-between'>
-                      <Skeleton className='h-20 w-full' />
-                      <Skeleton className='h-8 w-full' />
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : displayGoals.length === 0 ? (
-              <div className='text-center text-muted-foreground'>
-                {selectedFilter === 'Archived' ? (
-                  'No archived goals yet'
-                ) : (
-                  <EmptyGoalsState />
-                )}
-              </div>
-            ) : (
-              <>
-                {displayGoals.map((goal, index) => (
-                  <div
-                    key={goal.goal_id}
-                    onClick={() => handleGoalClick(goal)}
-                    className='cursor-pointer hover:opacity-90 transition-opacity'
-                  >
-                    <Goal goal={goal} index={index} />
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
         </div>
-      )}
+      ) : null}
+
+      <RenderGoalDisplay
+        goals={goals}
+        user={user || null}
+        isLoading={delayedLoading}
+        selectedGoal={selectedGoal}
+        isNewGoal={isNewGoal}
+        selectedFilter={selectedFilter}
+        onGoalClick={handleGoalClick}
+        displayGoals={displayGoals}
+      />
     </div>
   )
 }
