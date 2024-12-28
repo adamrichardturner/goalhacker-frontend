@@ -1,17 +1,18 @@
+'use client'
+
 import { Suspense } from 'react'
 import GoalPageClient from './goal-page-client'
 
 interface GoalPageProps {
-  params: Promise<{
+  params: {
     id: string
-  }>
+  }
 }
 
-export default async function GoalPage({ params }: GoalPageProps) {
-  const resolvedParams = await params
+export default function GoalPage({ params }: GoalPageProps) {
   return (
     <Suspense fallback={null}>
-      <GoalPageClient params={resolvedParams} />
+      <GoalPageClient params={params} />
     </Suspense>
   )
 }
