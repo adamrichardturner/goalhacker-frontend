@@ -26,7 +26,7 @@ export const targetBadgeStyles =
 export default function GoalDetails({ goal }: GoalDetailsProps) {
   const searchParams = useSearchParams()
   const fromInsights = searchParams.get('from') === 'insights'
-  const [activeTab, setActiveTab] = useState('progress')
+  const [activeTab, setActiveTab] = useState('summary')
   const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(
     goal.goal_id
   )
@@ -79,8 +79,8 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
             <div className='max-w-7xl mx-auto'>
               <AnimatedTabs
                 items={[
-                  { id: 'progress', label: 'Progress' },
                   { id: 'summary', label: 'Summary' },
+                  { id: 'progress', label: 'Progress' },
                   { id: 'notes', label: 'Notes' },
                 ]}
                 selected={activeTab}
