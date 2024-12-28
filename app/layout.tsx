@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <head>
         <link rel='manifest' href='/manifest.json' />
-        <meta name='theme-color' content='#744afc' />
+        <meta name='theme-color' content='#0c121d' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-status-bar-style' content='default' />
         <meta name='apple-mobile-web-app-title' content='Goal Hacker' />
@@ -31,7 +31,7 @@ export default function RootLayout({
         <link rel='apple-touch-startup-image' href='/icons/splash.png' />
         <meta name='mobile-web-app-capable' content='yes' />
         <meta name='application-name' content='Goal Hacker' />
-        <meta name='msapplication-TileColor' content='#744afc' />
+        <meta name='msapplication-TileColor' content='#0c121d' />
         <meta name='msapplication-tap-highlight' content='no' />
         <meta
           name='viewport'
