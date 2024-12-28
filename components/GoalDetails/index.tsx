@@ -27,9 +27,12 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
   const searchParams = useSearchParams()
   const fromInsights = searchParams.get('from') === 'insights'
   const [activeTab, setActiveTab] = useState('summary')
-  const { updateProgressNote, addProgressNote, deleteProgressNote } = useGoal(
-    goal.goal_id
-  )
+  const {
+    updateProgressNote,
+    addProgressNote,
+    deleteProgressNote,
+    progressNotes,
+  } = useGoal(goal.goal_id)
 
   const handleProgressNoteEdit = (
     noteId: string,
@@ -121,6 +124,7 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
               >
                 <ProgressNotes
                   goal={goal}
+                  progressNotes={progressNotes}
                   onEditNote={handleProgressNoteEdit}
                   onDeleteNote={handleProgressNoteDelete}
                   onAddNote={handleProgressNoteSave}

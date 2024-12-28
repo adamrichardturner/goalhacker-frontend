@@ -17,13 +17,17 @@ const urlsToCache = [
 const appShellFiles = [
     '/_next/static/css/',
     '/_next/static/chunks/',
-    '/_next/static/media/'
+    '/_next/static/media/',
+    '/_next/static/images/'
 ].map(url => `${BASE_URL}${url}`)
 
 // API endpoints to cache
 const apiEndpoints = [
     '/api/goals',
-    '/api/insights'
+    '/api/insights',
+    '/api/goals/*/notes',
+    '/api/goals/*/subgoals',
+    '/api/goals/*'
 ].map(url => `${BASE_URL}${url}`)
 
 self.addEventListener('install', (event) => {
@@ -32,6 +36,7 @@ self.addEventListener('install', (event) => {
             // Cache static routes and app shell
             return Promise.all([
                 cache.addAll(urlsToCache),
+                cache.addAll(appShellFiles),
                 // Pre-cache API endpoints
                 ...apiEndpoints.map(endpoint =>
                     fetch(endpoint, {
@@ -89,10 +94,11 @@ self.addEventListener('fetch', (event) => {
                     const cachedResponse = await cache.match(event.request.url)
                     if (cachedResponse) return cachedResponse
 
-                    // For goal detail pages, return the goals page
+                    // For goal detail pages, try to match the specific goal page
                     if (url.pathname.startsWith('/goals/')) {
-                        const goalsResponse = await cache.match(`${BASE_URL}/goals`)
-                        if (goalsResponse) return goalsResponse
+                        const goalId = url.pathname.split('/').pop()
+                        const goalResponse = await cache.match(`${BASE_URL}/api/goals/${goalId}`)
+                        if (goalResponse) return goalResponse
                     }
 
                     // Try matching just the pathname
@@ -105,45 +111,124 @@ self.addEventListener('fetch', (event) => {
 
                     // If all else fails, return a custom offline page
                     return new Response(
-                        `
-                        <!DOCTYPE html>
-                        <html>
+                        `<!DOCTYPE html>
+                        <html lang="en">
                             <head>
                                 <title>Offline - Goal Hacker</title>
+                                <meta charset="utf-8">
                                 <meta name="viewport" content="width=device-width, initial-scale=1">
+                                <meta name="theme-color" content="#0c121d">
+                                <link rel="manifest" href="/manifest.json">
+                                <link rel="icon" href="/icons/favicon-192x192.png">
                                 <style>
+                                    :root {
+                                        color-scheme: dark;
+                                    }
                                     body {
                                         font-family: system-ui, -apple-system, sans-serif;
-                                        padding: 2rem;
-                                        max-width: 600px;
-                                        margin: 0 auto;
-                                        text-align: center;
+                                        margin: 0;
+                                        padding: 0;
+                                        min-height: 100vh;
                                         background: #0c121d;
                                         color: #fff;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
                                     }
-                                    h1 { color: #744afc; }
-                                    .message { margin: 2rem 0; }
-                                    .action {
+                                    .container {
+                                        max-width: 28rem;
+                                        width: 100%;
+                                        padding: 1rem;
+                                        text-align: center;
+                                    }
+                                    .icon-container {
+                                        width: 6rem;
+                                        height: 6rem;
+                                        margin: 0 auto 2rem;
+                                        background: rgba(255,255,255,0.1);
+                                        border-radius: 50%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                    }
+                                    .icon {
+                                        width: 3rem;
+                                        height: 3rem;
+                                        color: rgba(255,255,255,0.5);
+                                    }
+                                    h1 {
+                                        color: #744afc;
+                                        font-size: 1.875rem;
+                                        line-height: 2.25rem;
+                                        font-weight: 700;
+                                        letter-spacing: -0.025em;
+                                        margin: 0 0 1.5rem;
+                                    }
+                                    .message {
+                                        color: rgba(255,255,255,0.5);
+                                        margin: 0 0 2rem;
+                                        font-size: 0.875rem;
+                                    }
+                                    .buttons {
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 1rem;
+                                        align-items: center;
+                                    }
+                                    .button {
                                         display: inline-block;
                                         padding: 0.75rem 1.5rem;
+                                        border-radius: 0.5rem;
+                                        font-weight: 500;
+                                        text-decoration: none;
+                                        transition: all 0.2s;
+                                        cursor: pointer;
+                                    }
+                                    .primary {
                                         background: #744afc;
                                         color: white;
-                                        text-decoration: none;
-                                        border-radius: 0.5rem;
-                                        margin-top: 1rem;
+                                    }
+                                    .primary:hover {
+                                        background: #6037e0;
+                                    }
+                                    .secondary {
+                                        background: transparent;
+                                        color: rgba(255,255,255,0.5);
+                                    }
+                                    .secondary:hover {
+                                        color: white;
                                     }
                                 </style>
                             </head>
                             <body>
-                                <h1>You're Offline</h1>
-                                <div class="message">
-                                    <p>Please check your internet connection and try again.</p>
-                                    <p>Your changes will sync when you're back online.</p>
+                                <div class="container">
+                                    <div class="icon-container">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                                            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+                                            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+                                            <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+                                            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+                                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                        </svg>
+                                    </div>
+                                    <h1>No Internet Connection</h1>
+                                    <div class="message">
+                                        <p>We couldn't load the content you requested.</p>
+                                        <p>Please check your internet connection and try again. Your changes will be saved and synced when you're back online.</p>
+                                    </div>
+                                    <div class="buttons">
+                                        <button onclick="window.location.reload()" class="button primary">Try Again</button>
+                                        <button onclick="window.history.back()" class="button secondary">Go Back</button>
+                                    </div>
                                 </div>
-                                <a href="/" class="action">Return Home</a>
+                                <script>
+                                    // Listen for online status changes
+                                    window.addEventListener('online', () => window.location.reload());
+                                </script>
                             </body>
-                        </html>
-                        `,
+                        </html>`,
                         {
                             headers: { 'Content-Type': 'text/html' }
                         }
@@ -158,22 +243,55 @@ self.addEventListener('fetch', (event) => {
     if (event.request.url.includes('/api/')) {
         event.respondWith(
             (async () => {
+                const cache = await caches.open(CACHE_NAME)
                 try {
+                    // Try network first
                     const networkResponse = await fetch(event.request)
-                    const cache = await caches.open(CACHE_NAME)
-                    await cache.put(event.request, networkResponse.clone())
+                    // Clone the response before caching
+                    const responseToCache = networkResponse.clone()
+
+                    // Cache the successful response
+                    if (networkResponse.ok) {
+                        await cache.put(event.request, responseToCache)
+                    }
+
                     return networkResponse
                 } catch (error) {
-                    const cache = await caches.open(CACHE_NAME)
-
-                    // Try exact match first
+                    // If network fails, try cache
                     const cachedResponse = await cache.match(event.request)
-                    if (cachedResponse) return cachedResponse
+                    if (cachedResponse) {
+                        return cachedResponse
+                    }
 
-                    // If it's a goals request, return cached goals
-                    if (event.request.url.includes('/api/goals')) {
-                        const cachedGoals = await cache.match(`${BASE_URL}/api/goals`)
-                        if (cachedGoals) return cachedGoals
+                    // For goal-specific requests, try to find related cached data
+                    const url = new URL(event.request.url)
+                    if (url.pathname.includes('/api/goals/')) {
+                        const pathParts = url.pathname.split('/')
+                        const goalId = pathParts[pathParts.length - 2] // Account for trailing slash
+
+                        // Try to find cached goal data
+                        const cachedGoal = await cache.match(`${BASE_URL}/api/goals/${goalId}`)
+                        if (cachedGoal) {
+                            const goalData = await cachedGoal.json()
+
+                            // Return appropriate subset of data based on the request
+                            if (url.pathname.endsWith('/notes')) {
+                                return new Response(
+                                    JSON.stringify(goalData.progress_notes || []),
+                                    { headers: { 'Content-Type': 'application/json' } }
+                                )
+                            } else if (url.pathname.endsWith('/subgoals')) {
+                                return new Response(
+                                    JSON.stringify(goalData.subgoals || []),
+                                    { headers: { 'Content-Type': 'application/json' } }
+                                )
+                            }
+
+                            return new Response(
+                                JSON.stringify(goalData),
+                                { headers: { 'Content-Type': 'application/json' } }
+                            )
+                        }
                     }
 
                     // Return empty data with offline flag
@@ -193,8 +311,8 @@ self.addEventListener('fetch', (event) => {
         return
     }
 
-    // For Next.js static files
-    if (event.request.url.includes('/_next/static/')) {
+    // For Next.js static files and other assets
+    if (event.request.url.includes('/_next/') || event.request.url.includes('/static/')) {
         event.respondWith(
             caches.match(event.request).then((response) => {
                 if (response) return response

@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { goalsService } from '@/services/goalsService'
-import { Goal, Subgoal, SubgoalStatus } from '@/types/goal'
+import { Goal, Subgoal, SubgoalStatus, ProgressNote } from '@/types/goal'
 import { toast } from 'sonner'
 import { useUser } from './auth/useUser'
 import { useGoalsWithOffline } from './useGoalsWithOffline'
@@ -54,7 +54,21 @@ export function useGoal(id?: string) {
     enabled: !!id && hasSessionCookie,
   })
 
-  const isLoading = userLoading || isGoalsLoading || isIndividualGoalLoading
+  const { data: progressNotes = [], isLoading: isProgressNotesLoading } =
+    useQuery({
+      queryKey: ['goal', id, 'progress-notes'],
+      queryFn: async () => {
+        if (!id) return []
+        return goalsService.getProgressNotes(id)
+      },
+      enabled: !!id && hasSessionCookie,
+    })
+
+  const isLoading =
+    userLoading ||
+    isGoalsLoading ||
+    isIndividualGoalLoading ||
+    isProgressNotesLoading
 
   const { mutate: createSubgoal, isPending: isCreatingSubgoal } = useMutation<
     { subgoal: Subgoal },
@@ -63,6 +77,10 @@ export function useGoal(id?: string) {
       title: string
       target_date?: string | null
       status?: SubgoalStatus
+    },
+    {
+      previousGoal: Goal | undefined
+      previousGoals: Goal[] | undefined
     }
   >({
     mutationFn: async ({ title, target_date, status = 'planned' }) => {
@@ -97,12 +115,101 @@ export function useGoal(id?: string) {
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['goal', id] })
-      toast.success('Subgoal created successfully')
+    onMutate: async (newSubgoal) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['goal', id] })
+      await queryClient.cancelQueries({ queryKey: ['goals'] })
+
+      // Snapshot the previous values
+      const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
+      const previousGoals = queryClient.getQueryData<Goal[]>(['goals'])
+
+      // Create an optimistic subgoal
+      const optimisticId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      const optimisticSubgoal: Subgoal = {
+        subgoal_id: optimisticId,
+        goal_id: id!,
+        title: newSubgoal.title,
+        target_date: newSubgoal.target_date || undefined,
+        status: newSubgoal.status || 'planned',
+        order: previousGoal?.subgoals?.length || 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
+
+      // Optimistically update the individual goal
+      if (previousGoal) {
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...previousGoal,
+          subgoals: [...(previousGoal.subgoals || []), optimisticSubgoal],
+        })
+      }
+
+      // Optimistically update the goals list
+      if (previousGoals) {
+        queryClient.setQueryData<Goal[]>(
+          ['goals'],
+          previousGoals.map((g) =>
+            g.goal_id === id
+              ? {
+                  ...g,
+                  subgoals: [...(g.subgoals || []), optimisticSubgoal],
+                }
+              : g
+          )
+        )
+      }
+
+      return { previousGoal, previousGoals }
     },
-    onError: (error) => {
+    onError: (err, newSubgoal, context) => {
+      // Rollback to the previous values if there's an error
+      if (context?.previousGoal) {
+        queryClient.setQueryData(['goal', id], context.previousGoal)
+      }
+      if (context?.previousGoals) {
+        queryClient.setQueryData(['goals'], context.previousGoals)
+      }
       toast.error('Failed to create subgoal')
+    },
+    onSuccess: (data) => {
+      // Get the current cache
+      const currentGoal = queryClient.getQueryData<Goal>(['goal', id])
+      const currentGoals = queryClient.getQueryData<Goal[]>(['goals'])
+
+      // Update the individual goal with the real subgoal ID
+      if (currentGoal) {
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...currentGoal,
+          subgoals: currentGoal.subgoals?.map((s) =>
+            s?.subgoal_id?.startsWith('temp-') && s.title === data.subgoal.title
+              ? { ...s, subgoal_id: data.subgoal.subgoal_id }
+              : s
+          ),
+        })
+      }
+
+      // Update the goals list with the real subgoal ID
+      if (currentGoals) {
+        queryClient.setQueryData<Goal[]>(
+          ['goals'],
+          currentGoals.map((g) =>
+            g.goal_id === id
+              ? {
+                  ...g,
+                  subgoals: g.subgoals?.map((s) =>
+                    s?.subgoal_id?.startsWith('temp-') &&
+                    s.title === data.subgoal.title
+                      ? { ...s, subgoal_id: data.subgoal.subgoal_id }
+                      : s
+                  ),
+                }
+              : g
+          )
+        )
+      }
+
+      toast.success('Subgoal created successfully')
     },
   })
 
@@ -317,58 +424,99 @@ export function useGoal(id?: string) {
       content: string
     }) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(`/api/goals/${id}/notes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          goal_id: id,
-          title: title,
-          content: content,
-        }),
-      })
-      if (!response.ok) throw new Error('Failed to add progress note')
-      return response.json()
+      return goalsService.addProgressNote(id, { title, content })
     },
     onMutate: async (newNote) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
+      await queryClient.cancelQueries({
+        queryKey: ['goal', id, 'progress-notes'],
+      })
 
-      // Snapshot the previous value
+      // Snapshot the previous values
       const previousGoal = queryClient.getQueryData<Goal>(['goal', id])
+      const previousNotes = queryClient.getQueryData<ProgressNote[]>([
+        'goal',
+        id,
+        'progress-notes',
+      ])
 
-      // Optimistically update the goal with new progress note
+      // Create an optimistic note
+      const optimisticNote = {
+        note_id: `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        goal_id: id!,
+        title: newNote.title,
+        content: newNote.content,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
+
+      // Optimistically update both caches
       if (previousGoal) {
         queryClient.setQueryData<Goal>(['goal', id], {
           ...previousGoal,
           progress_notes: [
-            {
-              note_id: crypto.randomUUID(),
-              goal_id: id!,
-              title: newNote.title,
-              content: newNote.content,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            },
+            optimisticNote,
             ...(previousGoal.progress_notes || []),
           ],
         })
       }
 
-      return { previousGoal }
+      queryClient.setQueryData<ProgressNote[]>(
+        ['goal', id, 'progress-notes'],
+        [optimisticNote, ...(previousNotes || [])]
+      )
+
+      return { previousGoal, previousNotes }
     },
     onError: (err, newNote, context) => {
       // Rollback on error
       if (context?.previousGoal) {
         queryClient.setQueryData(['goal', id], context.previousGoal)
       }
+      if (context?.previousNotes) {
+        queryClient.setQueryData(
+          ['goal', id, 'progress-notes'],
+          context.previousNotes
+        )
+      }
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to create progress note'
+      )
     },
-    onSettled: () => {
-      // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: ['goal', id] })
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
+    onSuccess: (newNote) => {
+      // Get the current caches
+      const currentGoal = queryClient.getQueryData<Goal>(['goal', id])
+      const currentNotes = queryClient.getQueryData<ProgressNote[]>([
+        'goal',
+        id,
+        'progress-notes',
+      ])
+
+      // Update both caches with the real note
+      if (currentGoal) {
+        queryClient.setQueryData<Goal>(['goal', id], {
+          ...currentGoal,
+          progress_notes: currentGoal.progress_notes?.map((note) =>
+            note?.note_id?.startsWith('temp-') && note.title === newNote.title
+              ? { ...note, note_id: newNote.note_id }
+              : note
+          ),
+        })
+      }
+
+      if (currentNotes) {
+        queryClient.setQueryData<ProgressNote[]>(
+          ['goal', id, 'progress-notes'],
+          currentNotes.map((note) =>
+            note?.note_id?.startsWith('temp-') && note.title === newNote.title
+              ? { ...note, note_id: newNote.note_id }
+              : note
+          )
+        )
+      }
+
+      toast.success('Progress note created successfully')
     },
   })
 
@@ -383,20 +531,7 @@ export function useGoal(id?: string) {
       content: string
     }) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(`/api/goals/${id}/notes/${noteId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          note_id: noteId,
-          title: title,
-          content: content,
-        }),
-      })
-      if (!response.ok) throw new Error('Failed to update progress note')
-      return response.json()
+      return goalsService.updateProgressNote(id, noteId, { title, content })
     },
     onMutate: async (updatedNote) => {
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
@@ -424,6 +559,9 @@ export function useGoal(id?: string) {
       if (context?.previousGoal) {
         queryClient.setQueryData(['goal', id], context.previousGoal)
       }
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to update progress note'
+      )
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
@@ -434,12 +572,7 @@ export function useGoal(id?: string) {
   const { mutate: deleteProgressNote } = useMutation({
     mutationFn: async (noteId: string) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(`/api/goals/${id}/notes/${noteId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
-      if (!response.ok) throw new Error('Failed to delete progress note')
-      return response.json()
+      return goalsService.deleteProgressNote(id, noteId)
     },
     onMutate: async (noteId) => {
       await queryClient.cancelQueries({ queryKey: ['goal', id] })
@@ -460,6 +593,9 @@ export function useGoal(id?: string) {
       if (context?.previousGoal) {
         queryClient.setQueryData(['goal', id], context.previousGoal)
       }
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to delete progress note'
+      )
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['goal', id] })
@@ -575,5 +711,6 @@ export function useGoal(id?: string) {
     updateProgressNote,
     addProgressNote,
     deleteProgressNote,
+    progressNotes,
   }
 }

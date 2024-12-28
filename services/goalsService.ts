@@ -1,5 +1,5 @@
 import { api } from './api'
-import { Goal } from '@/types/goal'
+import { Goal, ProgressNote } from '@/types/goal'
 
 export const goalsService = {
   async getGoals(): Promise<Goal[]> {
@@ -57,5 +57,43 @@ export const goalsService = {
         withCredentials: true,
       }
     )
+  },
+
+  async getProgressNotes(goalId: string): Promise<ProgressNote[]> {
+    const response = await api.get(`api/goals/${goalId}/notes`, {
+      withCredentials: true,
+    })
+    return response.data
+  },
+
+  async addProgressNote(
+    goalId: string,
+    noteData: { title: string; content: string }
+  ): Promise<ProgressNote> {
+    const response = await api.post(`api/goals/${goalId}/notes`, noteData, {
+      withCredentials: true,
+    })
+    return response.data
+  },
+
+  async updateProgressNote(
+    goalId: string,
+    noteId: string,
+    noteData: { title: string; content: string }
+  ): Promise<ProgressNote> {
+    const response = await api.put(
+      `api/goals/${goalId}/notes/${noteId}`,
+      noteData,
+      {
+        withCredentials: true,
+      }
+    )
+    return response.data
+  },
+
+  async deleteProgressNote(goalId: string, noteId: string): Promise<void> {
+    await api.delete(`api/goals/${goalId}/notes/${noteId}`, {
+      withCredentials: true,
+    })
   },
 }

@@ -1,4 +1,4 @@
-import { Goal } from '@/types/goal'
+import { Goal, ProgressNote } from '@/types/goal'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,6 +28,7 @@ import { AnimatedAccordion } from '@/components/ui/animated-accordion'
 
 interface ProgressNotesProps {
   goal: Goal
+  progressNotes: ProgressNote[]
   onEditNote: (noteId: string, note: { title: string; content: string }) => void
   onDeleteNote?: (noteId: string) => void
   onAddNote: (note: { title: string; content: string }) => void
@@ -35,6 +36,7 @@ interface ProgressNotesProps {
 
 export default function ProgressNotes({
   goal,
+  progressNotes,
   onEditNote,
   onDeleteNote,
   onAddNote,
@@ -46,7 +48,7 @@ export default function ProgressNotes({
   const [openItem, setOpenItem] = useState<string | null>(null)
 
   const accordionItems =
-    goal.progress_notes?.map((note) => ({
+    progressNotes?.map((note) => ({
       id: note.note_id || '',
       title: (
         <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2'>
@@ -146,11 +148,11 @@ export default function ProgressNotes({
             {editingNote && (
               <ProgressNoteEditor
                 initialTitle={
-                  goal.progress_notes?.find((n) => n.note_id === editingNote)
+                  progressNotes?.find((n) => n.note_id === editingNote)
                     ?.title || ''
                 }
                 initialContent={
-                  goal.progress_notes?.find((n) => n.note_id === editingNote)
+                  progressNotes?.find((n) => n.note_id === editingNote)
                     ?.content || ''
                 }
                 onSubmit={(note) => {
