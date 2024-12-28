@@ -2,10 +2,10 @@
   "name": "Goal Hacker",
   "short_name": "GoalHacker",
   "description": "Track and achieve your goals with AI-powered insights",
-  "start_url": "/?source=pwa",
+  "start_url": "/login?source=pwa",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#744afc",
+  "background_color": "#0c121d",
+  "theme_color": "#0c121d",
   "orientation": "portrait",
   "scope": "/",
   "categories": [

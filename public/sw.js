@@ -5,6 +5,7 @@ const urlsToCache = [
     '/',
     '/goals',
     '/dashboard',
+    '/login',
     '/manifest.json',
     '/icons/favicon-192x192.png',
     '/icons/favicon-512x512.png',
@@ -18,12 +19,24 @@ const appShellFiles = [
     '/_next/static/media/'
 ]
 
+// API endpoints to cache
+const apiEndpoints = [
+    '/api/goals',
+    '/api/insights'
+]
+
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             // Cache static routes and app shell
             return Promise.all([
                 cache.addAll(urlsToCache),
+                // Pre-cache API endpoints
+                ...apiEndpoints.map(endpoint =>
+                    fetch(endpoint, { credentials: 'include' })
+                        .then(response => cache.put(endpoint, response))
+                        .catch(error => console.log('Failed to cache:', endpoint, error))
+                ),
                 // Cache app shell files
                 ...appShellFiles.map(pattern =>
                     fetch(pattern)
@@ -48,7 +61,6 @@ self.addEventListener('activate', (event) => {
                     })
                 )
             }),
-            // Take control of all pages immediately
             self.clients.claim()
         ])
     )
@@ -72,6 +84,12 @@ self.addEventListener('fetch', (event) => {
                     const cachedResponse = await caches.match(event.request)
                     if (cachedResponse) return cachedResponse
 
+                    // For goal detail pages, return the goals page
+                    if (event.request.url.includes('/goals/')) {
+                        const goalsPageResponse = await caches.match('/goals')
+                        if (goalsPageResponse) return goalsPageResponse
+                    }
+
                     // If no cached page found, return cached home page
                     const homePageResponse = await caches.match('/')
                     if (homePageResponse) return homePageResponse
@@ -81,6 +99,41 @@ self.addEventListener('fetch', (event) => {
                         '<html><body><h1>Offline</h1><p>Please check your internet connection.</p></body></html>',
                         {
                             headers: { 'Content-Type': 'text/html' }
+                        }
+                    )
+                }
+            })()
+        )
+        return
+    }
+
+    // For API requests, try network first, then cache
+    if (event.request.url.includes('/api/')) {
+        event.respondWith(
+            (async () => {
+                try {
+                    const networkResponse = await fetch(event.request)
+                    const cache = await caches.open(CACHE_NAME)
+                    cache.put(event.request, networkResponse.clone())
+                    return networkResponse
+                } catch (error) {
+                    const cachedResponse = await caches.match(event.request)
+                    if (cachedResponse) {
+                        // Return cached API response
+                        return cachedResponse
+                    }
+
+                    // If it's a goals request, return cached goals
+                    if (event.request.url.includes('/api/goals')) {
+                        const cachedGoals = await caches.match('/api/goals')
+                        if (cachedGoals) return cachedGoals
+                    }
+
+                    // Return empty data with offline flag
+                    return new Response(
+                        JSON.stringify({ offline: true, data: [] }),
+                        {
+                            headers: { 'Content-Type': 'application/json' }
                         }
                     )
                 }
@@ -105,33 +158,6 @@ self.addEventListener('fetch', (event) => {
                     return response
                 })
             })
-        )
-        return
-    }
-
-    // For API requests, try network first, then cache
-    if (event.request.url.includes('/api/')) {
-        event.respondWith(
-            fetch(event.request)
-                .then((response) => {
-                    const responseToCache = response.clone()
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseToCache)
-                    })
-                    return response
-                })
-                .catch(async () => {
-                    const cachedResponse = await caches.match(event.request)
-                    if (cachedResponse) return cachedResponse
-
-                    // Return empty data with offline flag
-                    return new Response(
-                        JSON.stringify({ offline: true, data: [] }),
-                        {
-                            headers: { 'Content-Type': 'application/json' }
-                        }
-                    )
-                })
         )
         return
     }
