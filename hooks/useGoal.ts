@@ -5,10 +5,19 @@ import { goalsService } from '@/services/goalsService'
 import { Goal, Subgoal, SubgoalStatus } from '@/types/goal'
 import { toast } from 'sonner'
 import { useUser } from './auth/useUser'
+import { useGoalsWithOffline } from './useGoalsWithOffline'
 
 export function useGoal(id?: string) {
   const { user, isLoading: userLoading, hasSessionCookie } = useUser()
   const queryClient = useQueryClient()
+  const {
+    createGoal: createGoalOffline,
+    updateGoal: updateGoalOffline,
+    deleteGoal: deleteGoalOffline,
+    updateSubgoalStatus: updateSubgoalStatusOffline,
+    updateSubgoalsOrder: updateSubgoalsOrderOffline,
+    isOnline,
+  } = useGoalsWithOffline()
 
   const {
     data: goals = [],
@@ -45,8 +54,6 @@ export function useGoal(id?: string) {
     enabled: !!id && hasSessionCookie,
   })
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
-
   const isLoading = userLoading || isGoalsLoading || isIndividualGoalLoading
 
   const { mutate: createSubgoal, isPending: isCreatingSubgoal } = useMutation<
@@ -63,21 +70,25 @@ export function useGoal(id?: string) {
         throw new Error('Goal not found')
       }
 
-      const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/subgoals`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            title,
-            target_date: target_date || null,
-            status,
-          }),
-        }
-      )
+      const data = {
+        title,
+        target_date: target_date || undefined,
+        status,
+      }
+
+      if (!isOnline) {
+        await createGoalOffline(data)
+        return { subgoal: { ...data, subgoal_id: 'temp-' + Date.now() } }
+      }
+
+      const response = await fetch(`/api/goals/${goal.goal_id}/subgoals`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(data),
+      })
 
       if (!response.ok) {
         const error = await response.json()
@@ -105,8 +116,13 @@ export function useGoal(id?: string) {
     }) => {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
+      if (!isOnline) {
+        await updateSubgoalStatusOffline(subgoalId, status)
+        return { status }
+      }
+
       const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}/status`,
+        `/api/goals/${goal.goal_id}/subgoals/${subgoalId}/status`,
         {
           method: 'PATCH',
           headers: {
@@ -145,7 +161,7 @@ export function useGoal(id?: string) {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
       const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}/title`,
+        `/api/goals/${goal.goal_id}/subgoals/${subgoalId}/title`,
         {
           method: 'PATCH',
           headers: {
@@ -184,7 +200,7 @@ export function useGoal(id?: string) {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
       const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}/target-date`,
+        `/api/goals/${goal.goal_id}/subgoals/${subgoalId}/target-date`,
         {
           method: 'PATCH',
           headers: {
@@ -244,7 +260,7 @@ export function useGoal(id?: string) {
       if (!goal?.goal_id) throw new Error('Goal not found')
 
       const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/subgoals/${subgoalId}`,
+        `/api/goals/${goal.goal_id}/subgoals/${subgoalId}`,
         {
           method: 'DELETE',
           credentials: 'include',
@@ -301,7 +317,7 @@ export function useGoal(id?: string) {
       content: string
     }) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(`${API_URL}/api/goals/${id}/notes`, {
+      const response = await fetch(`/api/goals/${id}/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -367,21 +383,18 @@ export function useGoal(id?: string) {
       content: string
     }) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(
-        `${API_URL}/api/goals/${id}/notes/${noteId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            note_id: noteId,
-            title: title,
-            content: content,
-          }),
-        }
-      )
+      const response = await fetch(`/api/goals/${id}/notes/${noteId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          note_id: noteId,
+          title: title,
+          content: content,
+        }),
+      })
       if (!response.ok) throw new Error('Failed to update progress note')
       return response.json()
     },
@@ -421,13 +434,10 @@ export function useGoal(id?: string) {
   const { mutate: deleteProgressNote } = useMutation({
     mutationFn: async (noteId: string) => {
       if (!id) throw new Error('Goal ID is required')
-      const response = await fetch(
-        `${API_URL}/api/goals/${id}/notes/${noteId}`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-        }
-      )
+      const response = await fetch(`/api/goals/${id}/notes/${noteId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
       if (!response.ok) throw new Error('Failed to delete progress note')
       return response.json()
     },
@@ -551,23 +561,14 @@ export function useGoal(id?: string) {
     isLoading,
     isError,
     error,
-    isGoalsLoading,
-    isGoalsError,
-    goalsError,
-    refetchGoals,
     createSubgoal,
+    isCreatingSubgoal,
     updateSubgoalStatus,
     updateSubgoalTitle,
     updateSubgoalTargetDate,
     deleteSubgoal,
-    updateGoal,
-    deleteGoal,
-    addProgressNote,
-    updateProgressNote,
-    deleteProgressNote,
+    refetchGoals,
+    isOnline,
     updateSubgoalsOrder,
-    createGoal: createGoalMutation.mutate,
-    isCreatingGoal: createGoalMutation.isPending,
-    isCreatingSubgoal,
   }
 }
