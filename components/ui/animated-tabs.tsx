@@ -20,6 +20,7 @@ interface AnimatedTabsProps {
   variant?: 'default' | 'underline'
   showOverflowMenu?: boolean
   maxVisibleTabs?: number
+  underlineOffset?: string
 }
 
 export function AnimatedTabs({
@@ -32,6 +33,7 @@ export function AnimatedTabs({
   variant = 'default',
   showOverflowMenu = false,
   maxVisibleTabs = 3,
+  underlineOffset = 'bottom-0',
 }: AnimatedTabsProps) {
   const visibleItems = showOverflowMenu ? items.slice(0, maxVisibleTabs) : items
   const overflowItems = showOverflowMenu ? items.slice(maxVisibleTabs) : []
@@ -63,7 +65,7 @@ export function AnimatedTabs({
                 <motion.div
                   className={cn(
                     'absolute h-[1.5px] w-full bg-primary',
-                    variant === 'underline' && 'bottom-0'
+                    variant === 'underline' && underlineOffset
                   )}
                   layoutId={layoutId}
                 />

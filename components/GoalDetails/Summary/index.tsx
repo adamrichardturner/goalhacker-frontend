@@ -59,7 +59,7 @@ export const Summary = ({ goal }: { goal: Goal }) => {
   return (
     <Card className='rounded-2xl'>
       <CardContent className='space-y-8'>
-        <div className='flex items-center justify-between'>
+        <div className='flex items-center justify-end'>
           {goal.category && (
             <div className='flex items-center gap-2'>
               <StatusBadge

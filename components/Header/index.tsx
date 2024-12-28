@@ -32,6 +32,7 @@ import {
   LayoutDashboard,
 } from 'lucide-react'
 import { useLogout } from '@/hooks/auth/useLogout'
+import { cn } from '@/lib/utils'
 
 interface HeaderProps {
   user: User
@@ -46,8 +47,21 @@ const Header = ({ user }: HeaderProps) => {
   const { scrollY } = useScroll()
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640) // sm breakpoint is 640px
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    if (!isMobile) return
+
     const updateScrollDirection = () => {
       const currentScrollY = scrollY.get()
       setIsVisible(currentScrollY <= lastScrollY || currentScrollY < 50)
@@ -56,7 +70,7 @@ const Header = ({ user }: HeaderProps) => {
 
     const unsubscribe = scrollY.on('change', updateScrollDirection)
     return () => unsubscribe()
-  }, [scrollY, lastScrollY])
+  }, [scrollY, lastScrollY, isMobile])
 
   useEffect(() => {
     setMounted(true)
@@ -92,11 +106,19 @@ const Header = ({ user }: HeaderProps) => {
 
   return (
     <motion.header
-      className='w-full bg-card h-[70px] sm:mt-8 sm:rounded-2xl py-6 px-4 sm:px-6 flex justify-between items-center shadow-sm sm:relative fixed left-0 right-0 top-0'
-      initial={{ y: 0 }}
-      animate={{
-        y: isVisible ? 0 : -100,
-      }}
+      className={cn(
+        'w-full bg-white backdrop-blur-sm h-[70px] py-6 px-4 sm:px-6 flex justify-between items-center shadow-sm',
+        'sm:mt-8 sm:rounded-2xl sm:relative sm:animate-none',
+        'fixed left-0 right-0 top-0 sm:static'
+      )}
+      initial={false}
+      animate={
+        isMobile
+          ? {
+              y: isVisible ? 0 : -100,
+            }
+          : {}
+      }
       transition={{
         duration: 0.2,
         ease: 'easeInOut',

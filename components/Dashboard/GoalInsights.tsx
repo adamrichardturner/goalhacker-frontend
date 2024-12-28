@@ -42,7 +42,7 @@ const renderGoalText = (text: string, insight: Insight) => {
           return (
             <Link
               key={`${id}-${index}`}
-              href={`/goals/${id}?from=insights`}
+              href={`/goals?id=${id}`}
               className='text-primary hover:underline inline'
             >
               {truncatedTitle}
@@ -58,16 +58,23 @@ const renderGoalText = (text: string, insight: Insight) => {
     .filter(Boolean)
 }
 
-export default function GoalInsights() {
+interface GoalInsightsProps {
+  insights: Insight | null
+  isLoading: boolean
+}
+
+export default function GoalInsights({
+  insights,
+  isLoading: externalLoading,
+}: GoalInsightsProps) {
   const {
-    insight: currentInsight,
-    isLoading,
+    isLoading: insightsLoading,
     isGenerating,
     generateNewInsights,
     insightHistory,
     remainingGenerations,
   } = useInsights()
-  const [selectedInsight, setSelectedInsight] = useState(currentInsight)
+  const [selectedInsight, setSelectedInsight] = useState(insights)
   const [topPerformingOpenItem, setTopPerformingOpenItem] = useState<
     string | null
   >(null)
@@ -79,10 +86,10 @@ export default function GoalInsights() {
   >(null)
 
   useEffect(() => {
-    if (currentInsight) {
-      setSelectedInsight(currentInsight)
+    if (insights) {
+      setSelectedInsight(insights)
     }
-  }, [currentInsight])
+  }, [insights])
 
   const handleHistorySelect = (insightId: string) => {
     const historicalInsight = insightHistory?.find(
@@ -94,12 +101,15 @@ export default function GoalInsights() {
   }
 
   const handleGenerateInsights = async () => {
-    await generateNewInsights()
-    // Update selected insight to the latest one
-    setSelectedInsight(currentInsight)
+    const newInsight = await generateNewInsights()
+    if (newInsight) {
+      setSelectedInsight(newInsight)
+    }
   }
 
-  if (isLoading || isGenerating) {
+  const isLoadingState = externalLoading || insightsLoading
+
+  if (isLoadingState || isGenerating) {
     return (
       <Card className='bg-white'>
         <CardHeader>
@@ -122,12 +132,6 @@ export default function GoalInsights() {
               Our AI is analyzing your goals, progress, and patterns to provide
               personalized insights and recommendations.
             </p>
-            <div className='w-48'>
-              <Progress
-                value={isGenerating ? undefined : 100}
-                className='h-1'
-              />
-            </div>
           </motion.div>
         </CardContent>
       </Card>
@@ -192,7 +196,7 @@ export default function GoalInsights() {
                 size='sm'
                 onClick={handleGenerateInsights}
                 disabled={
-                  isGenerating || isLoading || remainingGenerations === 0
+                  isGenerating || isLoadingState || remainingGenerations === 0
                 }
                 className='relative'
               >
@@ -286,7 +290,7 @@ export default function GoalInsights() {
                                 </div>
                               </div>
                               <div className='flex justify-end mt-4'>
-                                <Link href={`/goals/${goalId}?from=insights`}>
+                                <Link href={`/goals?id=${goalId}`}>
                                   <Button variant='default' size='sm'>
                                     View Goal
                                   </Button>
@@ -357,7 +361,7 @@ export default function GoalInsights() {
                                 </div>
                               </div>
                               <div className='flex justify-end mt-4'>
-                                <Link href={`/goals/${goalId}?from=insights`}>
+                                <Link href={`/goals?id=${goalId}`}>
                                   <Button variant='default' size='sm'>
                                     View Goal
                                   </Button>
@@ -429,7 +433,7 @@ export default function GoalInsights() {
                                 </div>
                               </div>
                               <div className='flex justify-end mt-4'>
-                                <Link href={`/goals/${goalId}?from=insights`}>
+                                <Link href={`/goals?id=${goalId}`}>
                                   <Button variant='default' size='sm'>
                                     View Goal
                                   </Button>

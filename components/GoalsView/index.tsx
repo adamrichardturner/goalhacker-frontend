@@ -1,13 +1,9 @@
 'use client'
 
 import { User } from '@/types/auth'
-import { Goal as GoalType, GoalStatus } from '@/types/goal'
+import { Goal as GoalType } from '@/types/goal'
 import { Button } from '../ui/button'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import Goal from '../Goal'
-import { Skeleton } from '../ui/skeleton'
-import EmptyGoalsState from './EmptyGoalsState'
 import {
   Select,
   SelectContent,
@@ -17,27 +13,35 @@ import {
 } from '../ui/select'
 import { Label } from '../ui/label'
 import { AnimatedTabs } from '../ui/animated-tabs'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import RenderGoalDisplay from './RenderGoalDisplay'
 
-type FilterType = 'All' | 'Planned' | 'Active' | 'Completed'
+type FilterType = 'All' | 'Planned' | 'Active' | 'Completed' | 'Archived'
 
 interface GoalsViewProps {
   goals?: GoalType[]
   user?: User
   isLoading?: boolean
-  isArchived?: boolean
 }
 
-// GoalsView
-
-const GoalsView = ({
-  goals = [],
-  user,
-  isLoading = false,
-  isArchived = false,
-}: GoalsViewProps) => {
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>('Active')
+const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('All')
   const [delayedLoading, setDelayedLoading] = useState(true)
-  const filters: FilterType[] = ['Active', 'Planned', 'Completed', 'All']
+  const [selectedGoal, setSelectedGoal] = useState<GoalType | null>(() => {
+    const goalId = searchParams.get('id')
+    return goalId ? goals.find((g) => g.goal_id === goalId) || null : null
+  })
+  const isNewGoal = searchParams.get('new') === 'true'
+  const filters: FilterType[] = [
+    'All',
+    'Active',
+    'Planned',
+    'Completed',
+    'Archived',
+  ]
 
   useEffect(() => {
     if (isLoading || !user) {
@@ -50,26 +54,36 @@ const GoalsView = ({
     }
   }, [isLoading, user])
 
-  const nonArchivedGoals = goals.filter((goal) => goal.status !== 'archived')
+  useEffect(() => {
+    const goalId = searchParams.get('id')
+    if (goalId) {
+      const goal = goals.find((g) => g.goal_id === goalId)
+      if (goal) {
+        setSelectedGoal(goal)
+      }
+    } else {
+      setSelectedGoal(null)
+    }
+  }, [searchParams, goals])
+
+  const handleGoalClick = (goal: GoalType) => {
+    setSelectedGoal(goal)
+    router.push(`?id=${goal.goal_id}`, { scroll: false })
+  }
+
+  const handleNewGoal = () => {
+    router.push('?new=true', { scroll: false })
+  }
+
   const statusCounts: Record<FilterType, number> = {
-    All: nonArchivedGoals.length,
-    Planned: nonArchivedGoals.filter((goal) => goal.status === 'planned')
-      .length,
-    Active: nonArchivedGoals.filter((goal) => goal.status === 'in_progress')
-      .length,
-    Completed: nonArchivedGoals.filter((goal) => goal.status === 'completed')
-      .length,
+    All: goals.length,
+    Planned: goals.filter((goal) => goal.status === 'planned').length,
+    Active: goals.filter((goal) => goal.status === 'in_progress').length,
+    Completed: goals.filter((goal) => goal.status === 'completed').length,
+    Archived: goals.filter((goal) => goal.status === 'archived').length,
   }
 
   const filteredGoals = goals.filter((goal) => {
-    if (isArchived) {
-      return goal.status === 'archived'
-    }
-
-    if (goal.status === 'archived') {
-      return false
-    }
-
     switch (selectedFilter) {
       case 'Planned':
         return goal.status === 'planned'
@@ -77,118 +91,105 @@ const GoalsView = ({
         return goal.status === 'in_progress'
       case 'Completed':
         return goal.status === 'completed'
+      case 'Archived':
+        return goal.status === 'archived'
       default:
-        return !['archived' as GoalStatus].includes(goal.status)
+        return true
     }
   })
 
-  const archivedGoals = goals.filter((goal) => goal.status === 'archived')
-  const displayGoals = isArchived ? archivedGoals : filteredGoals
+  const displayGoals = filteredGoals
   const activeFilters = filters.filter((filter) => statusCounts[filter] > 0)
 
   return (
-    <div className='space-y-6'>
-      <div className='flex justify-between items-center'>
-        <div className='flex justify-between items-center w-full'>
-          <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty pr-6'>
-            {isArchived ? 'Archived Goals' : `Welcome, ${user?.first_name} 👋`}
-          </h1>
-
-          <div className='flex items-center gap-4'>
-            {goals.length > 0 && !isArchived && (
-              <Link href='/goals/new' className='block'>
-                <Button size='sm' className='min-w-[120px]'>
-                  New Goal
-                </Button>
-              </Link>
+    <div
+      className={cn(
+        'space-y-6',
+        selectedGoal || isNewGoal ? '-mx-4 sm:-mx-6' : 'pb-8'
+      )}
+    >
+      {!selectedGoal && !isNewGoal && (
+        <div className='space-y-6'>
+          <div className='flex justify-between items-center'>
+            <div className='flex justify-between items-center w-full'>
+              <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty pr-6'>
+                Welcome, {user?.first_name} 👋
+              </h1>
+            </div>
+            {goals.length > 0 && (
+              <Button
+                size='sm'
+                className='min-w-[120px]'
+                onClick={handleNewGoal}
+              >
+                New Goal
+              </Button>
             )}
           </div>
-        </div>
-      </div>
 
-      {nonArchivedGoals.length > 0 && !isArchived && (
-        <nav className='border-border sm:border-b sm:pb-4'>
-          <div className='hidden sm:block'>
-            <AnimatedTabs
-              items={activeFilters.map((filter) => ({
-                id: filter,
-                label: filter,
-                disabled: false,
-              }))}
-              selected={selectedFilter}
-              onChange={(value) => setSelectedFilter(value as FilterType)}
-              isLoading={delayedLoading}
-              layoutId='activeFilter'
-              variant='underline'
-            />
-          </div>
-          <div className='sm:hidden w-full sm:w-1/2'>
-            <Label className='text-xs font-light'>Filter goals</Label>
-            <Select
-              value={selectedFilter}
-              onValueChange={(value: string) =>
-                setSelectedFilter(value as FilterType)
-              }
-            >
-              <SelectTrigger className='border-0 shadow bg-input/5 focus:ring-0'>
-                <SelectValue placeholder='Filter goals' />
-              </SelectTrigger>
-              <SelectContent>
-                {filters
-                  .filter((filter) => statusCounts[filter] > 0)
-                  .map((filter) => (
-                    <SelectItem
-                      key={filter}
-                      value={filter}
-                      disabled={delayedLoading}
-                    >
-                      {filter}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </nav>
-      )}
-
-      <div className='grid grid-cols-1 gap-4'>
-        {delayedLoading ? (
-          Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className='h-[200px] bg-paper border rounded-2xl'>
-              <div className='flex h-full'>
-                <Skeleton className='w-1/2 h-full rounded-l-2xl' />
-                <div className='w-1/2 p-4 flex flex-col justify-between'>
-                  <Skeleton className='h-20 w-full' />
-                  <Skeleton className='h-8 w-full' />
+          <nav className='border-border sm:border-b sm:pb-2'>
+            <div className='hidden sm:block'>
+              <div className='flex justify-between items-center'>
+                <AnimatedTabs
+                  items={activeFilters.map((filter) => ({
+                    id: filter,
+                    label: filter,
+                    disabled: false,
+                  }))}
+                  selected={selectedFilter}
+                  onChange={(value) => setSelectedFilter(value as FilterType)}
+                  isLoading={delayedLoading}
+                  layoutId='activeFilter'
+                  variant='underline'
+                  underlineOffset='bottom-[-9px]'
+                />
+              </div>
+            </div>
+            <div className='sm:hidden w-full'>
+              <div className='flex flex-col gap-4'>
+                <Label className='text-xs font-light'>Filter goals</Label>
+                <div className='flex justify-between items-center'>
+                  <Select
+                    value={selectedFilter}
+                    onValueChange={(value: string) =>
+                      setSelectedFilter(value as FilterType)
+                    }
+                  >
+                    <SelectTrigger className='border-0 shadow bg-input/5 focus:ring-0'>
+                      <SelectValue placeholder='Filter goals' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filters
+                        .filter((filter) => statusCounts[filter] > 0)
+                        .map((filter) => (
+                          <SelectItem
+                            key={filter}
+                            value={filter}
+                            disabled={delayedLoading}
+                          >
+                            {filter}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
-          ))
-        ) : displayGoals.length === 0 ? (
-          <div className='text-center text-muted-foreground'>
-            {isArchived ? 'No archived goals yet' : <EmptyGoalsState />}
-          </div>
-        ) : (
-          <>
-            {displayGoals.map((goal, index) => (
-              <Goal key={goal.goal_id} goal={goal} index={index} />
-            ))}
-            {!isArchived && archivedGoals.length > 0 && (
-              <div className='flex justify-end mt-4'>
-                <Link href='/goals/archived'>
-                  <Button
-                    variant='ghost'
-                    className='text-muted-foreground hover:text-foreground'
-                  >
-                    View Archived Goals ({archivedGoals.length})
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+          </nav>
+        </div>
+      )}
+
+      <RenderGoalDisplay
+        user={user || null}
+        isLoading={delayedLoading}
+        selectedGoal={selectedGoal}
+        isNewGoal={isNewGoal}
+        selectedFilter={selectedFilter}
+        onGoalClick={handleGoalClick}
+        displayGoals={displayGoals}
+      />
     </div>
   )
 }
+
 export default GoalsView

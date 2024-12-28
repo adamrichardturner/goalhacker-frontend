@@ -67,7 +67,8 @@ export function useInsights(forceGenerate = false) {
       router.push('/login')
       return
     }
-    await generateMutation.mutateAsync()
+    const result = await generateMutation.mutateAsync()
+    return result.insight
   }
 
   return {

@@ -7,13 +7,21 @@ import DashboardCharts from './DashboardCharts'
 import Loading from '../ui/loading'
 import { Goal } from '@/types/goal'
 import { AnimatedTabs } from '@/components/ui/animated-tabs'
+import { Insight } from '@/services/insightsService'
 
-interface TabNavigationProps {
+export interface TabNavigationProps {
   goals: Goal[]
   goalsLoading: boolean
+  insights: Insight | null
+  insightsLoading: boolean
 }
 
-export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
+export function TabNavigation({
+  goals,
+  goalsLoading,
+  insights,
+  insightsLoading,
+}: TabNavigationProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'insights'
@@ -38,7 +46,7 @@ export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
       />
       <Tabs value={tab} onValueChange={handleTabChange}>
         <TabsContent value='insights' className='mt-4'>
-          <GoalInsights />
+          <GoalInsights insights={insights} isLoading={insightsLoading} />
         </TabsContent>
         <TabsContent value='analytics' className='mt-4'>
           {goalsLoading ? (
