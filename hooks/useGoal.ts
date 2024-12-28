@@ -570,5 +570,10 @@ export function useGoal(id?: string) {
     refetchGoals,
     isOnline,
     updateSubgoalsOrder,
+    updateGoal,
+    deleteGoal,
+    updateProgressNote,
+    addProgressNote,
+    deleteProgressNote,
   }
 }
