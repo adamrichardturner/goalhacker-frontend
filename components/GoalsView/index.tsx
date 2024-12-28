@@ -37,11 +37,11 @@ const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
   })
   const isNewGoal = searchParams.get('new') === 'true'
   const filters: FilterType[] = [
+    'All',
     'Active',
     'Planned',
     'Completed',
     'Archived',
-    'All',
   ]
 
   useEffect(() => {
@@ -109,73 +109,76 @@ const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
         selectedGoal || isNewGoal ? '-mx-4 sm:-mx-6' : 'pb-8'
       )}
     >
-      {!selectedGoal && !isNewGoal ? (
+      {!selectedGoal && !isNewGoal && (
         <div className='space-y-6'>
           <div className='flex justify-between items-center'>
             <div className='flex justify-between items-center w-full'>
               <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty pr-6'>
                 Welcome, {user?.first_name} 👋
               </h1>
-
-              <div className='flex items-center gap-4'>
-                {goals.length > 0 && selectedFilter !== 'Archived' && (
-                  <Button
-                    size='sm'
-                    className='min-w-[120px]'
-                    onClick={handleNewGoal}
-                  >
-                    New Goal
-                  </Button>
-                )}
-              </div>
             </div>
+            {goals.length > 0 && (
+              <Button
+                size='sm'
+                className='min-w-[120px]'
+                onClick={handleNewGoal}
+              >
+                New Goal
+              </Button>
+            )}
           </div>
 
           <nav className='border-border sm:border-b sm:pb-2'>
             <div className='hidden sm:block'>
-              <AnimatedTabs
-                items={activeFilters.map((filter) => ({
-                  id: filter,
-                  label: filter,
-                  disabled: false,
-                }))}
-                selected={selectedFilter}
-                onChange={(value) => setSelectedFilter(value as FilterType)}
-                isLoading={delayedLoading}
-                layoutId='activeFilter'
-                variant='underline'
-                underlineOffset='bottom-[-9px]'
-              />
+              <div className='flex justify-between items-center'>
+                <AnimatedTabs
+                  items={activeFilters.map((filter) => ({
+                    id: filter,
+                    label: filter,
+                    disabled: false,
+                  }))}
+                  selected={selectedFilter}
+                  onChange={(value) => setSelectedFilter(value as FilterType)}
+                  isLoading={delayedLoading}
+                  layoutId='activeFilter'
+                  variant='underline'
+                  underlineOffset='bottom-[-9px]'
+                />
+              </div>
             </div>
-            <div className='sm:hidden w-full sm:w-1/2'>
-              <Label className='text-xs font-light'>Filter goals</Label>
-              <Select
-                value={selectedFilter}
-                onValueChange={(value: string) =>
-                  setSelectedFilter(value as FilterType)
-                }
-              >
-                <SelectTrigger className='border-0 shadow bg-input/5 focus:ring-0'>
-                  <SelectValue placeholder='Filter goals' />
-                </SelectTrigger>
-                <SelectContent>
-                  {filters
-                    .filter((filter) => statusCounts[filter] > 0)
-                    .map((filter) => (
-                      <SelectItem
-                        key={filter}
-                        value={filter}
-                        disabled={delayedLoading}
-                      >
-                        {filter}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+            <div className='sm:hidden w-full'>
+              <div className='flex flex-col gap-4'>
+                <Label className='text-xs font-light'>Filter goals</Label>
+                <div className='flex justify-between items-center'>
+                  <Select
+                    value={selectedFilter}
+                    onValueChange={(value: string) =>
+                      setSelectedFilter(value as FilterType)
+                    }
+                  >
+                    <SelectTrigger className='border-0 shadow bg-input/5 focus:ring-0'>
+                      <SelectValue placeholder='Filter goals' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filters
+                        .filter((filter) => statusCounts[filter] > 0)
+                        .map((filter) => (
+                          <SelectItem
+                            key={filter}
+                            value={filter}
+                            disabled={delayedLoading}
+                          >
+                            {filter}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
           </nav>
         </div>
-      ) : null}
+      )}
 
       <RenderGoalDisplay
         goals={goals}
