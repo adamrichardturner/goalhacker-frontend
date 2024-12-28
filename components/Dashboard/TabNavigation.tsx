@@ -46,7 +46,7 @@ export function TabNavigation({
       />
       <Tabs value={tab} onValueChange={handleTabChange}>
         <TabsContent value='insights' className='mt-4'>
-          <GoalInsights />
+          <GoalInsights insights={insights} isLoading={insightsLoading} />
         </TabsContent>
         <TabsContent value='analytics' className='mt-4'>
           {goalsLoading ? (

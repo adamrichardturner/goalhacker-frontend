@@ -20,6 +20,7 @@ import { motion } from 'framer-motion'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { Label } from '../ui/label'
+import { Insights } from '@/types/insights'
 
 const MAX_TITLE_LENGTH = 60
 
@@ -58,10 +59,18 @@ const renderGoalText = (text: string, insight: Insight) => {
     .filter(Boolean)
 }
 
-export default function GoalInsights() {
+interface GoalInsightsProps {
+  insights: Insights | null
+  isLoading: boolean
+}
+
+export default function GoalInsights({
+  insights,
+  isLoading: externalLoading,
+}: GoalInsightsProps) {
   const {
     insight: currentInsight,
-    isLoading,
+    isLoading: insightsLoading,
     isGenerating,
     generateNewInsights,
     insightHistory,
@@ -99,7 +108,9 @@ export default function GoalInsights() {
     setSelectedInsight(currentInsight)
   }
 
-  if (isLoading || isGenerating) {
+  const isLoadingState = externalLoading || insightsLoading
+
+  if (isLoadingState || isGenerating) {
     return (
       <Card className='bg-white'>
         <CardHeader>
@@ -192,7 +203,7 @@ export default function GoalInsights() {
                 size='sm'
                 onClick={handleGenerateInsights}
                 disabled={
-                  isGenerating || isLoading || remainingGenerations === 0
+                  isGenerating || isLoadingState || remainingGenerations === 0
                 }
                 className='relative'
               >

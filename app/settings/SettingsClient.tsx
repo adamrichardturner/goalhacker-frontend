@@ -20,7 +20,7 @@ export default function SettingsClient() {
         <Header user={user} />
       )}
       <div className='flex flex-col gap-4 w-full px-0 rounded-2xl'>
-        <main className='flex flex-col gap-4 w-full bg-card px-4 py-12 sm:py-12 rounded-2xl shadow-sm'>
+        <main className='flex flex-col gap-4 w-full bg-card px-4 sm:px-6 py-12 sm:py-12 rounded-2xl shadow-sm'>
           <Settings />
         </main>
       </div>
