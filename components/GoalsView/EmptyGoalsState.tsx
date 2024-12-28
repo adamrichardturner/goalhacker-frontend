@@ -1,7 +1,14 @@
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 
 export default function EmptyGoalsState() {
+  const router = useRouter()
+
+  const handleNewGoal = () => {
+    router.push('?new=true', { scroll: false })
+  }
+
   return (
     <div className='flex flex-col items-center justify-center py-12 text-center space-y-8'>
       <div className='text-center text-primary space-y-4 max-w-lg'>
@@ -21,14 +28,13 @@ export default function EmptyGoalsState() {
         </p>
       </div>
 
-      <Link href='/goals/new'>
-        <Button
-          size='lg'
-          className='bg-primaryActive text-white h-12 hover:bg-primaryActive/95 hover:drop-shadow-lg'
-        >
-          New Goal
-        </Button>
-      </Link>
+      <Button
+        size='lg'
+        className='bg-primaryActive text-white h-12 hover:bg-primaryActive/95 hover:drop-shadow-lg'
+        onClick={handleNewGoal}
+      >
+        New Goal
+      </Button>
     </div>
   )
 }

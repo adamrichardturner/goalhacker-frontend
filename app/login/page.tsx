@@ -9,6 +9,8 @@ import Link from 'next/link'
 import { useLogin } from '@/hooks/auth/useLogin'
 import { PublicLogo } from '@/components/PublicLogo'
 import { Footer } from '@/components/Footer'
+import { GoogleButton } from '@/components/ui/google-button'
+import { Separator } from '@/components/ui/separator'
 
 export const dynamic = 'force-dynamic' // Disable prerendering for this page
 
@@ -33,6 +35,10 @@ export default function LoginPage() {
     }
   }
 
+  const handleGoogleSignIn = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/users/auth/google`
+  }
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
@@ -48,6 +54,17 @@ export default function LoginPage() {
         title='Login'
         description='Enter your credentials to access your account'
       >
+        <GoogleButton onClick={handleGoogleSignIn} />
+        <div className='relative my-4'>
+          <div className='absolute inset-0 flex items-center'>
+            <Separator />
+          </div>
+          <div className='relative flex justify-center text-xs uppercase'>
+            <span className='bg-white px-2 text-muted-foreground'>
+              Or continue with
+            </span>
+          </div>
+        </div>
         <form key='login-form' onSubmit={handleSubmit} className='space-y-4'>
           <div className='space-y-2'>
             <Input
