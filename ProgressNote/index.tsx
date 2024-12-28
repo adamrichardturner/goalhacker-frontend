@@ -25,6 +25,8 @@ interface ProgressNoteEditorProps {
   initialContent?: string
 }
 
+const MAX_TITLE_LENGTH = 100 // Same as goal title limit
+
 export default function ProgressNoteEditor({
   onSubmit,
   onCancel,
@@ -95,6 +97,7 @@ export default function ProgressNoteEditor({
           <Input
             id='title'
             value={title}
+            maxLength={MAX_TITLE_LENGTH}
             onChange={(e) => {
               setTitle(e.target.value)
               if (e.target.value.trim()) {
@@ -110,6 +113,9 @@ export default function ProgressNoteEditor({
             placeholder='Enter a title for your progress note'
             className={cn('border', errors.title && 'border-destructive')}
           />
+          <div className='text-xs text-muted-foreground mt-1 text-right'>
+            {title.length}/{MAX_TITLE_LENGTH}
+          </div>
         </div>
       </div>
       <div className='space-y-2'>

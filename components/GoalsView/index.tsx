@@ -17,12 +17,6 @@ import {
 } from '../ui/select'
 import { Label } from '../ui/label'
 import { AnimatedTabs } from '../ui/animated-tabs'
-import { MoreHorizontal } from 'lucide-react'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 
 type FilterType = 'All' | 'Planned' | 'Active' | 'Completed'
 

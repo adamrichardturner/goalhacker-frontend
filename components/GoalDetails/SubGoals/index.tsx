@@ -38,7 +38,6 @@ import { cn } from '@/lib/utils'
 import { useGoal } from '@/hooks/useGoal'
 import { format } from 'date-fns'
 import { Reorder, AnimatePresence, motion } from 'framer-motion'
-import { goalsService } from '@/services/goalsService'
 import { startOfDay } from 'date-fns'
 import debounce from 'lodash/debounce'
 
@@ -288,7 +287,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
       </div>
 
       {/* Desktop Add Form */}
-      <div className='hidden sm:flex flex-col sm:flex-row gap-3'>
+      <div className='hidden sm:flex flex-col sm:flex-row bg-paper z-10 gap-3'>
         <Input
           value={newSubgoal.title}
           onChange={(e) =>
@@ -302,7 +301,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
             }
           }}
         />
-        <div className='flex flex-col sm:flex-row gap-3 sm:items-center'>
+        <div className='flex flex-col sm:flex-row bg-paper gap-3 sm:items-center'>
           <Select
             value={newSubgoal.status}
             onValueChange={(value: SubgoalStatus) =>
@@ -405,7 +404,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                     },
                   }}
                   className={cn(
-                    'flex flex-col sm:flex-row gap-3 p-4 border rounded-2xl',
+                    'flex flex-col sm:flex-row gap-3 p-4 border rounded-2xl bg-white',
                     isDraggable && !isEditing() && 'cursor-grab'
                   )}
                   dragListener={isDraggable && !isEditing()}

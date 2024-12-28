@@ -503,7 +503,7 @@ export function useGoal(id?: string) {
       toast.error('Failed to reorder subgoals')
     },
     onSuccess: () => {
-      toast.success('Order updated successfully')
+      // Remove success toast
     },
     onSettled: () => {
       // Refetch to ensure consistency

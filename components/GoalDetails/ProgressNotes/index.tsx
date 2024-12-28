@@ -51,9 +51,7 @@ export default function ProgressNotes({
       id: note.note_id || '',
       title: (
         <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2'>
-          <h3 className='text-base font-semibold' title={note.title}>
-            {truncateText(note.title, 30)}
-          </h3>
+          <h3 className='text-base font-semibold'>{note.title}</h3>
           <span className='text-xs text-primary pr-2'>
             {note.created_at &&
               `${formatDate(note.created_at, settings?.date_format)} at ${formatTime(note.created_at)}`}
