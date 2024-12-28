@@ -35,9 +35,9 @@ const GoalsView = ({
   isLoading = false,
   isArchived = false,
 }: GoalsViewProps) => {
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>('All')
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('Active')
   const [delayedLoading, setDelayedLoading] = useState(true)
-  const filters: FilterType[] = ['All', 'Planned', 'Active', 'Completed']
+  const filters: FilterType[] = ['Active', 'Planned', 'Completed', 'All']
 
   useEffect(() => {
     if (isLoading || !user) {
