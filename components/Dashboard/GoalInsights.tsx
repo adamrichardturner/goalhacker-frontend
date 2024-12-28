@@ -178,308 +178,312 @@ export default function GoalInsights() {
   }
 
   return (
-    <Card className='bg-card p-auto sm:p-6'>
-      <CardHeader className='flex flex-row items-center justify-between pb-2'>
-        <CardTitle className='flex items-center gap-2'>
-          <Sparkles className='h-5 w-5 text-primary' />
-          AI Insights
-        </CardTitle>
-        <div className='flex flex-col-reverse items-end justify-end gap-2'>
-          <div className='flex flex-col items-end gap-2'>
-            <Button
-              variant='default'
-              size='sm'
-              onClick={handleGenerateInsights}
-              disabled={isGenerating || isLoading || remainingGenerations === 0}
-              className='relative'
-            >
-              Generate Insights
-            </Button>
-            {remainingGenerations > 0 && (
-              <span className='ml-2 text-xs text-muted-foreground'>
-                ({remainingGenerations} left)
-              </span>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className='space-y-8 pt-6'>
-        <div className='space-y-8'>
-          <div className='space-y-4'>
-            <div className='flex items-center gap-2'>
-              <StatusBadge>Summary</StatusBadge>
-            </div>
-            <div className='bg-accordion-body rounded-lg p-6'>
-              <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
-                {renderGoalText(selectedInsight.summary, selectedInsight)}
-              </p>
+    <div className='space-y-6'>
+      <Card className='bg-card'>
+        <CardHeader className='flex flex-row items-center justify-between pb-2'>
+          <CardTitle className='flex items-center gap-2'>
+            <Sparkles className='h-5 w-5 text-primary' />
+            AI Insights
+          </CardTitle>
+          <div className='flex flex-col-reverse items-end justify-end gap-2'>
+            <div className='flex flex-col items-end gap-2'>
+              <Button
+                variant='default'
+                size='sm'
+                onClick={handleGenerateInsights}
+                disabled={
+                  isGenerating || isLoading || remainingGenerations === 0
+                }
+                className='relative'
+              >
+                Generate Insights
+              </Button>
+              {remainingGenerations > 0 && (
+                <span className='ml-2 text-xs text-muted-foreground'>
+                  ({remainingGenerations} left)
+                </span>
+              )}
             </div>
           </div>
+        </CardHeader>
+        <CardContent className='space-y-8'>
+          <div className='space-y-8'>
+            <div className='space-y-4'>
+              <div className='flex items-center gap-2'>
+                <StatusBadge>Summary</StatusBadge>
+              </div>
+              <div className='bg-accordion-body rounded-lg p-0'>
+                <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
+                  {renderGoalText(selectedInsight.summary, selectedInsight)}
+                </p>
+              </div>
+            </div>
 
-          <div className='space-y-4'>
-            <div className='flex items-center gap-2'>
-              <StatusBadge icon={<TrendingUp className='h-3 w-3' />}>
-                Trends
-              </StatusBadge>
-            </div>
-            <div className='grid gap-4'>
-              {selectedInsight.trends.map((trend, index) => (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  key={index}
-                  className='bg-accordion-body rounded-lg p-4'
-                >
-                  <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
-                    {renderGoalText(trend, selectedInsight)}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {(selectedInsight.topPerforming ?? []).length > 0 && (
             <div className='space-y-4'>
               <div className='flex items-center gap-2'>
                 <StatusBadge icon={<TrendingUp className='h-3 w-3' />}>
-                  Top Performing Goals
+                  Trends
                 </StatusBadge>
               </div>
-              <div className='grid gap-3'>
-                <AnimatedAccordion
-                  items={(selectedInsight.topPerforming ?? [])
-                    .map((goal, index) => {
-                      const [goalRef, ...messageParts] = goal.split(':')
-                      const message = messageParts.join(':').trim()
-                      const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
-                      const goalData =
-                        selectedInsight.goal_stats.completionRates.find(
-                          (g) => g.goal_id === goalId
-                        )
-
-                      if (!goalData) return null
-
-                      return {
-                        id: `top-${index}`,
-                        title: (
-                          <span className='text-sm font-medium'>
-                            {goalData.title}
-                          </span>
-                        ),
-                        content: (
-                          <div className='flex flex-col gap-2 pt-2'>
-                            <p className='text-sm text-muted-foreground'>
-                              {message}
-                            </p>
-                            <div className='mt-2 flex justify-end flex-col gap-1'>
-                              <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
-                                <span>
-                                  Progress {goalData.completion.toFixed(1)}%
-                                </span>
-                              </div>
-                              <div className='flex items-center justify-end'>
-                                <Progress value={goalData.completion} />
-                              </div>
-                            </div>
-                            <div className='flex justify-end mt-4'>
-                              <Link href={`/goals/${goalId}?from=insights`}>
-                                <Button variant='default' size='sm'>
-                                  View Goal
-                                </Button>
-                              </Link>
-                            </div>
-                          </div>
-                        ),
-                      }
-                    })
-                    .filter(
-                      (
-                        item
-                      ): item is {
-                        id: string
-                        title: JSX.Element
-                        content: JSX.Element
-                      } => item !== null
-                    )}
-                  openItem={topPerformingOpenItem}
-                  onOpenChange={setTopPerformingOpenItem}
-                  variant='purple'
-                />
+              <div className='grid gap-4'>
+                {selectedInsight.trends.map((trend, index) => (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    key={index}
+                    className='bg-accordion-body rounded-lg p-0'
+                  >
+                    <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
+                      {renderGoalText(trend, selectedInsight)}
+                    </p>
+                  </motion.div>
+                ))}
               </div>
             </div>
-          )}
 
-          {(selectedInsight.needsWork ?? []).length > 0 && (
-            <div className='space-y-4'>
-              <div className='flex items-center gap-2'>
-                <StatusBadge icon={<LightbulbIcon className='h-3 w-3' />}>
-                  Goals Needing Focus
-                </StatusBadge>
-              </div>
-              <div className='grid gap-3'>
-                <AnimatedAccordion
-                  items={(selectedInsight.needsWork ?? [])
-                    .map((goal, index) => {
-                      const [goalRef, ...messageParts] = goal.split(':')
-                      const message = messageParts.join(':').trim()
-                      const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
-                      const goalData =
-                        selectedInsight.goal_stats.completionRates.find(
-                          (g) => g.goal_id === goalId
-                        )
+            {(selectedInsight.topPerforming ?? []).length > 0 && (
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2'>
+                  <StatusBadge icon={<TrendingUp className='h-3 w-3' />}>
+                    Top Performing Goals
+                  </StatusBadge>
+                </div>
+                <div className='grid gap-3'>
+                  <AnimatedAccordion
+                    items={(selectedInsight.topPerforming ?? [])
+                      .map((goal, index) => {
+                        const [goalRef, ...messageParts] = goal.split(':')
+                        const message = messageParts.join(':').trim()
+                        const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
+                        const goalData =
+                          selectedInsight.goal_stats.completionRates.find(
+                            (g) => g.goal_id === goalId
+                          )
 
-                      if (!goalData) return null
+                        if (!goalData) return null
 
-                      return {
-                        id: `needs-${index}`,
-                        title: (
-                          <span className='text-sm font-medium'>
-                            {goalData.title}
-                          </span>
-                        ),
-                        content: (
-                          <div className='flex flex-col gap-2 pt-2'>
-                            <p className='text-sm text-muted-foreground'>
-                              {message}
-                            </p>
-                            <div className='mt-2 flex justify-end flex-col gap-1'>
-                              <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
-                                <span>
-                                  Progress {goalData.completion.toFixed(1)}%
-                                </span>
+                        return {
+                          id: `top-${index}`,
+                          title: (
+                            <span className='text-sm font-medium'>
+                              {goalData.title}
+                            </span>
+                          ),
+                          content: (
+                            <div className='flex flex-col gap-2 pt-2'>
+                              <p className='text-sm text-muted-foreground'>
+                                {message}
+                              </p>
+                              <div className='mt-2 flex justify-end flex-col gap-1'>
+                                <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
+                                  <span>
+                                    Progress {goalData.completion.toFixed(1)}%
+                                  </span>
+                                </div>
+                                <div className='flex items-center justify-end'>
+                                  <Progress value={goalData.completion} />
+                                </div>
                               </div>
-                              <div className='flex items-center justify-end'>
-                                <Progress value={goalData.completion} />
-                              </div>
-                            </div>
-                            <div className='flex justify-end mt-4'>
-                              <Link href={`/goals/${goalId}?from=insights`}>
-                                <Button variant='default' size='sm'>
-                                  View Goal
-                                </Button>
-                              </Link>
-                            </div>
-                          </div>
-                        ),
-                      }
-                    })
-                    .filter(
-                      (
-                        item
-                      ): item is {
-                        id: string
-                        title: JSX.Element
-                        content: JSX.Element
-                      } => item !== null
-                    )}
-                  openItem={needsWorkOpenItem}
-                  onOpenChange={setNeedsWorkOpenItem}
-                  variant='purple'
-                />
-              </div>
-            </div>
-          )}
-
-          {selectedInsight.recommendations.length > 0 && (
-            <div className='space-y-4'>
-              <div className='flex items-center gap-2'>
-                <StatusBadge icon={<LightbulbIcon className='h-3 w-3' />}>
-                  Recommendations
-                </StatusBadge>
-              </div>
-              <div className='grid gap-3'>
-                <AnimatedAccordion
-                  items={selectedInsight.recommendations
-                    .map((recommendation, index) => {
-                      const [goalRef, ...messageParts] =
-                        recommendation.split(':')
-                      const message = messageParts.join(':').trim()
-                      const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
-                      const goalData =
-                        selectedInsight.goal_stats.completionRates.find(
-                          (g) => g.goal_id === goalId
-                        )
-
-                      if (!goalData) return null
-
-                      return {
-                        id: `recommendation-${index}`,
-                        title: (
-                          <span className='text-sm font-medium'>
-                            {goalData.title}
-                          </span>
-                        ),
-                        content: (
-                          <div className='flex flex-col gap-2 pt-2'>
-                            <p className='text-sm text-muted-foreground'>
-                              {message}
-                            </p>
-                            <div className='mt-2 flex justify-end flex-col gap-1'>
-                              <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
-                                <span>
-                                  Progress {goalData.completion.toFixed(1)}%
-                                </span>
-                              </div>
-                              <div className='flex items-center justify-end'>
-                                <Progress value={goalData.completion} />
+                              <div className='flex justify-end mt-4'>
+                                <Link href={`/goals/${goalId}?from=insights`}>
+                                  <Button variant='default' size='sm'>
+                                    View Goal
+                                  </Button>
+                                </Link>
                               </div>
                             </div>
-                            <div className='flex justify-end mt-4'>
-                              <Link href={`/goals/${goalId}?from=insights`}>
-                                <Button variant='default' size='sm'>
-                                  View Goal
-                                </Button>
-                              </Link>
-                            </div>
-                          </div>
-                        ),
-                      }
-                    })
-                    .filter(
-                      (
-                        item
-                      ): item is {
-                        id: string
-                        title: JSX.Element
-                        content: JSX.Element
-                      } => item !== null
-                    )}
-                  openItem={recommendationsOpenItem}
-                  onOpenChange={setRecommendationsOpenItem}
-                  variant='purple'
-                />
+                          ),
+                        }
+                      })
+                      .filter(
+                        (
+                          item
+                        ): item is {
+                          id: string
+                          title: JSX.Element
+                          content: JSX.Element
+                        } => item !== null
+                      )}
+                    openItem={topPerformingOpenItem}
+                    onOpenChange={setTopPerformingOpenItem}
+                    variant='purple'
+                  />
+                </div>
               </div>
-            </div>
-          )}
-          {insightHistory && insightHistory.length > 0 && (
-            <div className='flex flex-col gap-2 w-full items-end justify-end'>
-              <Label className='text-xs text-muted-foreground'>
-                View History
-              </Label>
-              <Select
-                value={selectedInsight?.insight_id}
-                onValueChange={handleHistorySelect}
-              >
-                <SelectTrigger className='w-[180px]'>
-                  <History className='h-4 w-4 mr-2' />
-                  <SelectValue placeholder='View history' />
-                </SelectTrigger>
-                <SelectContent>
-                  {insightHistory.map((insight) => (
-                    <SelectItem
-                      key={insight.insight_id}
-                      value={insight.insight_id}
-                    >
-                      {format(new Date(insight.created_at), 'MMM d, h:mm a')}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            )}
+
+            {(selectedInsight.needsWork ?? []).length > 0 && (
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2'>
+                  <StatusBadge icon={<LightbulbIcon className='h-3 w-3' />}>
+                    Goals Needing Focus
+                  </StatusBadge>
+                </div>
+                <div className='grid gap-3'>
+                  <AnimatedAccordion
+                    items={(selectedInsight.needsWork ?? [])
+                      .map((goal, index) => {
+                        const [goalRef, ...messageParts] = goal.split(':')
+                        const message = messageParts.join(':').trim()
+                        const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
+                        const goalData =
+                          selectedInsight.goal_stats.completionRates.find(
+                            (g) => g.goal_id === goalId
+                          )
+
+                        if (!goalData) return null
+
+                        return {
+                          id: `needs-${index}`,
+                          title: (
+                            <span className='text-sm font-medium'>
+                              {goalData.title}
+                            </span>
+                          ),
+                          content: (
+                            <div className='flex flex-col gap-2 pt-2'>
+                              <p className='text-sm text-muted-foreground'>
+                                {message}
+                              </p>
+                              <div className='mt-2 flex justify-end flex-col gap-1'>
+                                <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
+                                  <span>
+                                    Progress {goalData.completion.toFixed(1)}%
+                                  </span>
+                                </div>
+                                <div className='flex items-center justify-end'>
+                                  <Progress value={goalData.completion} />
+                                </div>
+                              </div>
+                              <div className='flex justify-end mt-4'>
+                                <Link href={`/goals/${goalId}?from=insights`}>
+                                  <Button variant='default' size='sm'>
+                                    View Goal
+                                  </Button>
+                                </Link>
+                              </div>
+                            </div>
+                          ),
+                        }
+                      })
+                      .filter(
+                        (
+                          item
+                        ): item is {
+                          id: string
+                          title: JSX.Element
+                          content: JSX.Element
+                        } => item !== null
+                      )}
+                    openItem={needsWorkOpenItem}
+                    onOpenChange={setNeedsWorkOpenItem}
+                    variant='purple'
+                  />
+                </div>
+              </div>
+            )}
+
+            {selectedInsight.recommendations.length > 0 && (
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2'>
+                  <StatusBadge icon={<LightbulbIcon className='h-3 w-3' />}>
+                    Recommendations
+                  </StatusBadge>
+                </div>
+                <div className='grid gap-3'>
+                  <AnimatedAccordion
+                    items={selectedInsight.recommendations
+                      .map((recommendation, index) => {
+                        const [goalRef, ...messageParts] =
+                          recommendation.split(':')
+                        const message = messageParts.join(':').trim()
+                        const goalId = goalRef.match(/\[([\w-]+)\]/)?.[1]
+                        const goalData =
+                          selectedInsight.goal_stats.completionRates.find(
+                            (g) => g.goal_id === goalId
+                          )
+
+                        if (!goalData) return null
+
+                        return {
+                          id: `recommendation-${index}`,
+                          title: (
+                            <span className='text-sm font-medium'>
+                              {goalData.title}
+                            </span>
+                          ),
+                          content: (
+                            <div className='flex flex-col gap-2 pt-2'>
+                              <p className='text-sm text-muted-foreground'>
+                                {message}
+                              </p>
+                              <div className='mt-2 flex justify-end flex-col gap-1'>
+                                <div className='flex items-center justify-end text-xs text-muted-foreground mb-1'>
+                                  <span>
+                                    Progress {goalData.completion.toFixed(1)}%
+                                  </span>
+                                </div>
+                                <div className='flex items-center justify-end'>
+                                  <Progress value={goalData.completion} />
+                                </div>
+                              </div>
+                              <div className='flex justify-end mt-4'>
+                                <Link href={`/goals/${goalId}?from=insights`}>
+                                  <Button variant='default' size='sm'>
+                                    View Goal
+                                  </Button>
+                                </Link>
+                              </div>
+                            </div>
+                          ),
+                        }
+                      })
+                      .filter(
+                        (
+                          item
+                        ): item is {
+                          id: string
+                          title: JSX.Element
+                          content: JSX.Element
+                        } => item !== null
+                      )}
+                    openItem={recommendationsOpenItem}
+                    onOpenChange={setRecommendationsOpenItem}
+                    variant='purple'
+                  />
+                </div>
+              </div>
+            )}
+            {insightHistory && insightHistory.length > 0 && (
+              <div className='flex flex-col gap-2 w-full items-end justify-end'>
+                <Label className='text-xs text-muted-foreground'>
+                  View History
+                </Label>
+                <Select
+                  value={selectedInsight?.insight_id}
+                  onValueChange={handleHistorySelect}
+                >
+                  <SelectTrigger className='w-[180px]'>
+                    <History className='h-4 w-4 mr-2' />
+                    <SelectValue placeholder='View history' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {insightHistory.map((insight) => (
+                      <SelectItem
+                        key={insight.insight_id}
+                        value={insight.insight_id}
+                      >
+                        {format(new Date(insight.created_at), 'MMM d, h:mm a')}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

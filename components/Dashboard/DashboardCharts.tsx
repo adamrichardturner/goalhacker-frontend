@@ -148,12 +148,12 @@ export default function DashboardCharts({
   const categoryData = getCategoryDistribution(goals)
 
   return (
-    <div className='grid gap-6'>
+    <div className='space-y-6'>
       <Card>
         <CardHeader>
           <CardTitle>Goal Status</CardTitle>
         </CardHeader>
-        <CardContent className='pt-6'>
+        <CardContent>
           {hasStatusData ? (
             <div className='h-[300px] w-full'>
               <ResponsiveContainer width='100%' height='100%'>
@@ -203,7 +203,7 @@ export default function DashboardCharts({
           <CardHeader>
             <CardTitle>Priority</CardTitle>
           </CardHeader>
-          <CardContent className='pt-6'>
+          <CardContent>
             {hasPriorityData ? (
               <div className='h-[300px] w-full'>
                 <ResponsiveContainer width='100%' height='100%'>
@@ -252,7 +252,7 @@ export default function DashboardCharts({
           <CardHeader>
             <CardTitle>Category Distribution</CardTitle>
           </CardHeader>
-          <CardContent className='pt-6'>
+          <CardContent>
             {hasCategoryData ? (
               <div className='h-[300px] w-full'>
                 <ResponsiveContainer width='100%' height='100%'>

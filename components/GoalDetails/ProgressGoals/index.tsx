@@ -26,28 +26,26 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
   )
 
   return (
-    <Card>
-      <CardContent className='pt-6'>
-        <div className='space-y-6'>
-          <div className='space-y-2'>
-            <div className='flex items-center justify-between'>
-              <h3 className='sm:text-2xl font-semibold'>Progress</h3>
-              <div className='hidden sm:block text-sm'>
-                <Stats />
-              </div>
-            </div>
-            <div className='flex items-center justify-start sm:justify-end w-full gap-2'>
-              <Progress value={progress} className='h-2' />
-            </div>
-            <div className='sm:hidden text-xs'>
+    <Card className='rounded-xl'>
+      <CardContent className='space-y-6'>
+        <div className='space-y-2'>
+          <div className='flex items-center justify-between'>
+            <h3 className='sm:text-2xl font-semibold'>Progress</h3>
+            <div className='hidden sm:block text-sm'>
               <Stats />
             </div>
           </div>
-
-          <div>
-            <h3 className='text-sm sm:text-lg font-semibold mb-3'>Subgoals</h3>
-            <SubGoals goal={goal} />
+          <div className='flex items-center justify-start sm:justify-end w-full gap-2'>
+            <Progress value={progress} className='h-2' />
           </div>
+          <div className='sm:hidden text-xs'>
+            <Stats />
+          </div>
+        </div>
+
+        <div>
+          <h3 className='text-sm sm:text-lg font-semibold mb-3'>Subgoals</h3>
+          <SubGoals goal={goal} />
         </div>
       </CardContent>
     </Card>
