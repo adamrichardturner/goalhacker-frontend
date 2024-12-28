@@ -244,7 +244,7 @@ function LandingPageClient() {
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                className='p-8 bg-card rounded-lg text-primary shadow-sm hover:shadow-md transition-all cursor-pointer'
+                className='p-8 bg-card rounded-2xl text-primary shadow-sm hover:shadow-md transition-all cursor-pointer'
                 variants={fadeIn}
                 whileHover={{ y: -5 }}
               >
@@ -277,7 +277,7 @@ function LandingPageClient() {
               {pricingPlans.map((plan, index) => (
                 <motion.div
                   key={index}
-                  className={`p-6 rounded-xl border-2 ${
+                  className={`p-6 rounded-2xl border-2 ${
                     plan.popular
                       ? 'border-primaryActive shadow-lg scale-105'
                       : 'border-border'
@@ -375,7 +375,7 @@ function LandingPageClient() {
 
           {/* CTA Section */}
           <motion.div
-            className='text-center bg-card rounded-lg p-8 sm:p-12 mb-16'
+            className='text-center bg-card rounded-2xl p-8 sm:p-12 mb-16'
             initial='hidden'
             whileInView='visible'
             viewport={{ once: true }}
@@ -445,7 +445,7 @@ function HomePageSkeleton() {
     <div className='space-y-4'>
       <Skeleton className='h-8 w-[200px]' />
       <div className='grid gap-4'>
-        <Skeleton className='h-[200px] rounded-xl' />
+        <Skeleton className='h-[200px] rounded-2xl' />
       </div>
     </div>
   )

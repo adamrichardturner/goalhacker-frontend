@@ -15,7 +15,7 @@ export default function SettingsPage() {
 
           {/* Main content skeleton */}
           <div className='flex flex-col gap-4 w-full sm:px-0 rounded-2xl'>
-            <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-lg shadow-sm'>
+            <main className='flex flex-col gap-4 w-full bg-card px-8 py-12 sm:px-12 sm:py-12 rounded-2xl shadow-sm'>
               <Skeleton className='h-8 w-32 mb-4' /> {/* Settings title */}
               <div className='space-y-6'>
                 {[1, 2, 3, 4].map((i) => (

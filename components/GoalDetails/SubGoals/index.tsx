@@ -405,7 +405,7 @@ export default function SubGoals({ goal }: SubGoalsProps) {
                     },
                   }}
                   className={cn(
-                    'flex flex-col sm:flex-row gap-3 p-4 border rounded-lg',
+                    'flex flex-col sm:flex-row gap-3 p-4 border rounded-2xl',
                     isDraggable && !isEditing() && 'cursor-grab'
                   )}
                   dragListener={isDraggable && !isEditing()}

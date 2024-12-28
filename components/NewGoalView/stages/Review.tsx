@@ -84,7 +84,7 @@ export function Review({
         </div>
 
         <div className='space-y-6'>
-          <div className='bg-card rounded-lg p-6 space-y-4 border'>
+          <div className='bg-card rounded-2xl p-6 space-y-4 border'>
             <div className='grid gap-6 sm:gap-4'>
               <div
                 onClick={() => onNavigateToStep(1)}
@@ -173,7 +173,7 @@ export function Review({
           {goalData.subgoals && goalData.subgoals.length > 0 && (
             <div
               onClick={() => onNavigateToStep(4)}
-              className='bg-card rounded-lg p-6 space-y-4 border cursor-pointer hover:bg-accent/50 transition-colors'
+              className='bg-card rounded-2xl p-6 space-y-4 border cursor-pointer hover:bg-accent/50 transition-colors'
             >
               <h3 className='text-lg font-semibold'>Sub-goals</h3>
               <div className='grid gap-3'>
@@ -197,7 +197,7 @@ export function Review({
             </div>
           )}
 
-          <div className='bg-card rounded-lg p-6 space-y-4 border'>
+          <div className='bg-card rounded-2xl p-6 space-y-4 border'>
             <div className='space-y-2'>
               <h3 className='text-lg font-semibold'>Motivational Image</h3>
               <p className='text-sm text-muted-foreground'>

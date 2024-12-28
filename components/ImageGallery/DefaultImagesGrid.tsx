@@ -33,16 +33,16 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
       ? Array.from({ length: 6 }).map((_, index) => (
           <div
             key={`skeleton-${index}`}
-            className='relative rounded-lg overflow-hidden border-2 border-transparent p-[0.5px] sm:aspect-[16/9]'
+            className='relative rounded-2xl overflow-hidden border-2 border-transparent p-[0.5px] sm:aspect-[16/9]'
           >
-            <Skeleton className='w-full h-full rounded-lg' />
+            <Skeleton className='w-full h-full rounded-2xl' />
           </div>
         ))
       : defaultImages?.map((image: Image) => (
           <div
             key={image.id}
             className={cn(
-              'relative cursor-pointer rounded-lg overflow-hidden border-2 p-[0.5px] sm:aspect-[16/9]',
+              'relative cursor-pointer rounded-2xl overflow-hidden border-2 p-[0.5px] sm:aspect-[16/9]',
               'hover:border-primaryActive',
               selectedImage?.id === image.id
                 ? 'border-primaryActive'
@@ -53,7 +53,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             <img
               src={image.url}
               alt={`${image.category} image`}
-              className='w-full h-full object-cover object-center rounded-lg'
+              className='w-full h-full object-cover object-center rounded-2xl'
             />
           </div>
         ))

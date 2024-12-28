@@ -26,7 +26,7 @@ export default function ProgressGoals({ goal }: ProgressGoalsProps) {
   )
 
   return (
-    <Card className='rounded-xl'>
+    <Card className='rounded-2xl'>
       <CardContent className='space-y-6'>
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>

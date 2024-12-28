@@ -96,7 +96,7 @@ export function CategorySelect({ value, onValueChange }: CategorySelectProps) {
             <PlusCircle className='h-5 w-5' />
           </Button>
         </DialogTrigger>
-        <DialogContent className='max-w-[90vw] sm:max-w-md rounded-lg bg-white'>
+        <DialogContent className='max-w-[90vw] sm:max-w-md rounded-2xl bg-white'>
           <DialogHeader>
             <DialogTitle>Create New Category</DialogTitle>
             <DialogDescription>

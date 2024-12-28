@@ -97,7 +97,7 @@ export default function ProgressNotes({
     })) || []
 
   return (
-    <Card className='rounded-xl'>
+    <Card className='rounded-2xl'>
       <CardHeader className='flex flex-row justify-between items-center'>
         <CardTitle className='text-xl sm:text-2xl font-semibold'>
           Notes

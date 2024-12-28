@@ -34,7 +34,7 @@ export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
         selected={tab}
         onChange={handleTabChange}
         variant='underline'
-        className='items-center h-3 w-full sm:w-[220px] flex py-[24px] justify-start sm:justify-center px-4 sm:px-4 sm:rounded-lg gap-2 bg-white'
+        className='items-center h-3 w-full sm:w-[220px] flex py-[24px] justify-start sm:justify-center px-4 sm:px-4 sm:rounded-2xl gap-2 bg-white'
       />
       <Tabs value={tab} onValueChange={handleTabChange}>
         <TabsContent value='insights' className='mt-4'>

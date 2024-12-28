@@ -212,7 +212,7 @@ export default function GoalInsights() {
               <div className='flex items-center gap-2'>
                 <StatusBadge>Summary</StatusBadge>
               </div>
-              <div className='bg-accordion-body rounded-lg p-0'>
+              <div className='bg-accordion-body rounded-2xl p-0'>
                 <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
                   {renderGoalText(selectedInsight.summary, selectedInsight)}
                 </p>
@@ -232,7 +232,7 @@ export default function GoalInsights() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     key={index}
-                    className='bg-accordion-body rounded-lg p-0'
+                    className='bg-accordion-body rounded-2xl p-0'
                   >
                     <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap'>
                       {renderGoalText(trend, selectedInsight)}

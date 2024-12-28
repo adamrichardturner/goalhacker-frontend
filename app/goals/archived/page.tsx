@@ -14,7 +14,7 @@ function ArchivedGoalsSkeleton() {
       <Skeleton className='h-8 w-[200px]' />
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
         {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className='h-[200px] rounded-xl' />
+          <Skeleton key={i} className='h-[200px] rounded-2xl' />
         ))}
       </div>
     </div>
@@ -30,14 +30,14 @@ function ArchivedGoalsContent() {
   }
 
   return (
-    <div className='container min-h-screen flex flex-col gap-6 pt-[20px] px-6 sm:px-4 w-full pb-12'>
+    <div className='container min-h-screen flex flex-col gap-6 pt-[20px] px-0 sm:px-4 w-full pb-12'>
       {userIsLoading ? (
         <Loading className='h-screen' />
       ) : (
         <Header user={user} />
       )}
-      <div className='flex flex-col gap-4 w-full px-0 sm:px-0 rounded-lg'>
-        <main className='flex flex-col gap-4 w-full bg-card px-4 sm:px-4 py-12 sm:py-12 rounded-lg shadow-sm'>
+      <div className='flex flex-col gap-4 w-full px-0 sm:px-0 rounded-2xl'>
+        <main className='flex flex-col gap-4 w-full bg-card px-4 sm:px-6 py-12 sm:py-12 rounded-2xl shadow-sm'>
           <Suspense fallback={<Loading className='h-screen' />}>
             {goalsLoading ? (
               <Loading className='h-screen' />
