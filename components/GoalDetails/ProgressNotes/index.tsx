@@ -25,7 +25,6 @@ import ProgressNoteEditor from '../ProgressNoteEditor'
 import { Trash2, Pen, ScrollText } from 'lucide-react'
 import { useSettings } from '@/hooks/useSettings'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
-import { truncateText } from '@/lib/utils'
 
 interface ProgressNotesProps {
   goal: Goal
