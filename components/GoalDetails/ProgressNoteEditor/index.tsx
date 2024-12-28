@@ -153,7 +153,7 @@ export default function ProgressNoteEditor({
         </Label>
         <div
           className={cn(
-            'rounded-2xl overflow-hidden',
+            'rounded-lg',
             errors.title && 'ring-1 ring-destructive'
           )}
         >
@@ -168,7 +168,7 @@ export default function ProgressNoteEditor({
             }}
             placeholder='Enter a title for your progress note'
             className={cn(
-              'border-0 bg-input focus-visible:ring-1 focus-visible:ring-primaryActive placeholder:text-muted-foreground/60',
+              'border-0 rounded-lg bg-input focus-visible:ring-primaryActive placeholder:text-muted-foreground/60',
               errors.title && 'border-destructive'
             )}
           />
@@ -178,7 +178,7 @@ export default function ProgressNoteEditor({
         <Label className='text-sm font-medium'>Content</Label>
         <div
           className={cn(
-            'rounded-2xl overflow-hidden bg-input',
+            'bg-input',
             errors.content && 'ring-1 ring-destructive'
           )}
         >
@@ -271,12 +271,12 @@ export default function ProgressNoteEditor({
           </div>
           <div
             ref={editorContainerRef}
-            className='p-4 min-h-[200px] cursor-text bg-input'
+            className='p-4 min-h-[120px] cursor-text mt-2.5 focus-visible:ring-primaryActive bg-input focus-within:ring-1 focus-within:ring-primaryActive rounded-lg'
             onClick={handleContainerClick}
           >
             <EditorContent
               editor={editor}
-              className='prose prose-sm max-w-none bg-input text-primary prose-p:leading-relaxed prose-p:my-1'
+              className='prose prose-sm max-w-none mt-1 h-full s rounded-lg bg-input text-primary prose-p:leading-relaxed prose-p:my-1'
               onFocus={() => {
                 if (editor?.getHTML().trim()) {
                   setErrors((prev) => ({ ...prev, content: false }))
