@@ -7,7 +7,7 @@ import { useGoal } from '@/hooks/useGoal'
 import { TabNavigation } from '@/components/Dashboard/TabNavigation'
 import { useUser } from '@/hooks/auth/useUser'
 import { Suspense } from 'react'
-import { Insights } from '@/types/insights'
+import { Insight, insightsService } from '@/services/insightsService'
 
 function TabNavigationSkeleton() {
   return (
@@ -21,7 +21,7 @@ function TabNavigationSkeleton() {
 export default function DashboardClient() {
   const { user, isLoading: userIsLoading } = useUser()
   const { goals, isLoading: goalsLoading } = useGoal()
-  const [insights, setInsights] = useState<Insights | null>(null)
+  const [insights, setInsights] = useState<Insight | null>(null)
   const [insightsLoading, setInsightsLoading] = useState(true)
 
   useEffect(() => {
@@ -29,10 +29,8 @@ export default function DashboardClient() {
       if (!user) return
 
       try {
-        const response = await fetch('/api/insights')
-        if (!response.ok) throw new Error('Failed to fetch insights')
-        const data = await response.json()
-        setInsights(data)
+        const response = await insightsService.getInsights()
+        setInsights(response.insight)
       } catch (error) {
         console.error('Error fetching insights:', error)
       } finally {

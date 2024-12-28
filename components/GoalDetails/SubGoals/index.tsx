@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Goal, SubgoalStatus } from '@/types/goal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -87,15 +87,15 @@ export default function SubGoals({ goal }: SubGoalsProps) {
   const [localSubgoals, setLocalSubgoals] = useState(goal.subgoals || [])
 
   // Debounced server update
-  const debouncedUpdateOrder = useCallback(
-    debounce((reorderedSubgoals: typeof localSubgoals) => {
+  const debouncedUpdateOrder = debounce(
+    (reorderedSubgoals: typeof localSubgoals) => {
       const updates = reorderedSubgoals.map((subgoal, index) => ({
         subgoal_id: subgoal.subgoal_id!,
         order: index,
       }))
       updateSubgoalsOrder(updates)
-    }, 750),
-    [updateSubgoalsOrder]
+    },
+    750
   )
 
   // Cleanup debounce on unmount

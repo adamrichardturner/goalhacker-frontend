@@ -20,7 +20,6 @@ import { motion } from 'framer-motion'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { Label } from '../ui/label'
-import { Insights } from '@/types/insights'
 
 const MAX_TITLE_LENGTH = 60
 
@@ -60,7 +59,7 @@ const renderGoalText = (text: string, insight: Insight) => {
 }
 
 interface GoalInsightsProps {
-  insights: Insights | null
+  insights: Insight | null
   isLoading: boolean
 }
 
@@ -69,14 +68,13 @@ export default function GoalInsights({
   isLoading: externalLoading,
 }: GoalInsightsProps) {
   const {
-    insight: currentInsight,
     isLoading: insightsLoading,
     isGenerating,
     generateNewInsights,
     insightHistory,
     remainingGenerations,
   } = useInsights()
-  const [selectedInsight, setSelectedInsight] = useState(currentInsight)
+  const [selectedInsight, setSelectedInsight] = useState(insights)
   const [topPerformingOpenItem, setTopPerformingOpenItem] = useState<
     string | null
   >(null)
@@ -88,10 +86,10 @@ export default function GoalInsights({
   >(null)
 
   useEffect(() => {
-    if (currentInsight) {
-      setSelectedInsight(currentInsight)
+    if (insights) {
+      setSelectedInsight(insights)
     }
-  }, [currentInsight])
+  }, [insights])
 
   const handleHistorySelect = (insightId: string) => {
     const historicalInsight = insightHistory?.find(
@@ -103,9 +101,10 @@ export default function GoalInsights({
   }
 
   const handleGenerateInsights = async () => {
-    await generateNewInsights()
-    // Update selected insight to the latest one
-    setSelectedInsight(currentInsight)
+    const newInsight = await generateNewInsights()
+    if (newInsight) {
+      setSelectedInsight(newInsight)
+    }
   }
 
   const isLoadingState = externalLoading || insightsLoading
@@ -133,12 +132,6 @@ export default function GoalInsights({
               Our AI is analyzing your goals, progress, and patterns to provide
               personalized insights and recommendations.
             </p>
-            <div className='w-48'>
-              <Progress
-                value={isGenerating ? undefined : 100}
-                className='h-1'
-              />
-            </div>
           </motion.div>
         </CardContent>
       </Card>

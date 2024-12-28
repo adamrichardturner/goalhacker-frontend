@@ -7,12 +7,12 @@ import DashboardCharts from './DashboardCharts'
 import Loading from '../ui/loading'
 import { Goal } from '@/types/goal'
 import { AnimatedTabs } from '@/components/ui/animated-tabs'
-import { Insights } from '@/types/insights'
+import { Insight } from '@/services/insightsService'
 
 export interface TabNavigationProps {
   goals: Goal[]
   goalsLoading: boolean
-  insights: Insights | null
+  insights: Insight | null
   insightsLoading: boolean
 }
 

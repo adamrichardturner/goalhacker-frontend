@@ -9,7 +9,6 @@ import GoalDetails from '../GoalDetails'
 import NewGoalView from '../NewGoalView'
 
 interface RenderGoalDisplayProps {
-  goals: GoalType[]
   user: User | null
   isLoading: boolean
   selectedGoal: GoalType | null
@@ -20,7 +19,6 @@ interface RenderGoalDisplayProps {
 }
 
 export default function RenderGoalDisplay({
-  goals,
   user,
   isLoading,
   selectedGoal,
@@ -71,13 +69,13 @@ export default function RenderGoalDisplay({
         </div>
       ) : (
         <>
-          {displayGoals.map((goal, index) => (
+          {displayGoals.map((goal) => (
             <div
               key={goal.goal_id}
               onClick={() => onGoalClick(goal)}
               className='cursor-pointer hover:opacity-90 transition-opacity'
             >
-              <GoalCard goal={goal} index={index} />
+              <GoalCard goal={goal} />
             </div>
           ))}
         </>

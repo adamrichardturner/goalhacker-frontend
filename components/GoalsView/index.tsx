@@ -180,7 +180,6 @@ const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
       )}
 
       <RenderGoalDisplay
-        goals={goals}
         user={user || null}
         isLoading={delayedLoading}
         selectedGoal={selectedGoal}

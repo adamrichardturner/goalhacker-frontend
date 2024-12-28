@@ -4,19 +4,15 @@ import { Goal as GoalType } from '@/types/goal'
 import GoalImage from '../GoalImage'
 import GoalProgress from './GoalProgress'
 import { useCategory } from '@/hooks/useCategory'
-import { Card } from '../ui/card'
+import { Card } from '@/components/ui/card'
 import { motion } from 'framer-motion'
-import { StatusBadge } from '../ui/status-badge'
 import { FolderOpen } from 'lucide-react'
 
 interface GoalProps {
   goal: GoalType
-  className?: string
-  showFullDetails?: boolean
-  index?: number
 }
 
-export default function Goal({ goal, className = '', index = 0 }: GoalProps) {
+export default function Goal({ goal }: GoalProps) {
   const { categories } = useCategory()
   const hasProgress = (goal.subgoals?.length ?? 0) > 0
   const category = categories.find((c) => c.category_id === goal.category_id)
