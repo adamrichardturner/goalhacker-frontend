@@ -8,40 +8,29 @@ const urlsToCache = [
     '/manifest.json',
     '/icons/favicon-192x192.png',
     '/icons/favicon-512x512.png',
-    '/icons/apple-touch-icon.png',
-    '/_next/static/**/*',
-    '/api/goals',
-    '/api/insights'
+    '/icons/apple-touch-icon.png'
+]
+
+// Cache the app shell (HTML, CSS, JS)
+const appShellFiles = [
+    '/_next/static/css/',
+    '/_next/static/chunks/',
+    '/_next/static/media/'
 ]
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            // Cache all static routes
-            return cache.addAll([
-                '/',
-                '/goals',
-                '/dashboard',
-                '/manifest.json',
-                '/icons/favicon-192x192.png',
-                '/icons/favicon-512x512.png',
-                '/icons/apple-touch-icon.png'
-            ]).then(() => {
-                // Cache Next.js chunks and static files
-                return caches.open(CACHE_NAME).then((cache) => {
-                    return fetch('/_next/static/chunks/pages-manifest.json')
-                        .then((response) => response.json())
-                        .then((manifest) => {
-                            const urls = Object.values(manifest).map(
-                                (path) => '/_next/' + path
-                            )
-                            return cache.addAll(urls)
-                        })
-                        .catch((error) => {
-                            console.error('Failed to cache Next.js files:', error)
-                        })
-                })
-            })
+            // Cache static routes and app shell
+            return Promise.all([
+                cache.addAll(urlsToCache),
+                // Cache app shell files
+                ...appShellFiles.map(pattern =>
+                    fetch(pattern)
+                        .then(response => cache.put(pattern, response))
+                        .catch(error => console.log('Failed to cache:', pattern, error))
+                )
+            ])
         })
     )
     self.skipWaiting()
@@ -49,17 +38,20 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName)
-                    }
-                })
-            )
-        })
+        Promise.all([
+            caches.keys().then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        if (cacheName !== CACHE_NAME) {
+                            return caches.delete(cacheName)
+                        }
+                    })
+                )
+            }),
+            // Take control of all pages immediately
+            self.clients.claim()
+        ])
     )
-    self.clients.claim()
 })
 
 self.addEventListener('fetch', (event) => {
@@ -69,15 +61,30 @@ self.addEventListener('fetch', (event) => {
     // Handle navigation requests
     if (event.request.mode === 'navigate') {
         event.respondWith(
-            fetch(event.request)
-                .catch(() => {
-                    return caches.match(event.request)
-                        .then((response) => {
-                            if (response) return response
-                            // If no cached page found, return cached home page
-                            return caches.match('/')
-                        })
-                })
+            (async () => {
+                try {
+                    // Try network first for navigation
+                    const networkResponse = await fetch(event.request)
+                    const cache = await caches.open(CACHE_NAME)
+                    cache.put(event.request, networkResponse.clone())
+                    return networkResponse
+                } catch (error) {
+                    const cachedResponse = await caches.match(event.request)
+                    if (cachedResponse) return cachedResponse
+
+                    // If no cached page found, return cached home page
+                    const homePageResponse = await caches.match('/')
+                    if (homePageResponse) return homePageResponse
+
+                    // If all else fails, return a custom offline page
+                    return new Response(
+                        '<html><body><h1>Offline</h1><p>Please check your internet connection.</p></body></html>',
+                        {
+                            headers: { 'Content-Type': 'text/html' }
+                        }
+                    )
+                }
+            })()
         )
         return
     }
@@ -86,8 +93,11 @@ self.addEventListener('fetch', (event) => {
     if (event.request.url.includes('/_next/static/')) {
         event.respondWith(
             caches.match(event.request).then((response) => {
-                return response || fetch(event.request).then((response) => {
+                if (response) return response
+
+                return fetch(event.request).then((response) => {
                     if (!response || response.status !== 200) return response
+
                     const responseToCache = response.clone()
                     caches.open(CACHE_NAME).then((cache) => {
                         cache.put(event.request, responseToCache)
@@ -110,14 +120,17 @@ self.addEventListener('fetch', (event) => {
                     })
                     return response
                 })
-                .catch(() => {
-                    return caches.match(event.request).then((response) => {
-                        if (response) return response
-                        // If no cached API response, return empty data with offline flag
-                        return new Response(JSON.stringify({ offline: true, data: [] }), {
+                .catch(async () => {
+                    const cachedResponse = await caches.match(event.request)
+                    if (cachedResponse) return cachedResponse
+
+                    // Return empty data with offline flag
+                    return new Response(
+                        JSON.stringify({ offline: true, data: [] }),
+                        {
                             headers: { 'Content-Type': 'application/json' }
-                        })
-                    })
+                        }
+                    )
                 })
         )
         return

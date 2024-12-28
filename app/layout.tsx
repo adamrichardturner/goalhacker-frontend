@@ -22,18 +22,21 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <head>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#744afc" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Goal Hacker" />
-        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-        <link rel="apple-touch-startup-image" href="/icons/splash.png" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="application-name" content="Goal Hacker" />
-        <meta name="msapplication-TileColor" content="#744afc" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel='manifest' href='/manifest.json' />
+        <meta name='theme-color' content='#744afc' />
+        <meta name='apple-mobile-web-app-capable' content='yes' />
+        <meta name='apple-mobile-web-app-status-bar-style' content='default' />
+        <meta name='apple-mobile-web-app-title' content='Goal Hacker' />
+        <link rel='apple-touch-icon' href='/icons/apple-touch-icon.png' />
+        <link rel='apple-touch-startup-image' href='/icons/splash.png' />
+        <meta name='mobile-web-app-capable' content='yes' />
+        <meta name='application-name' content='Goal Hacker' />
+        <meta name='msapplication-TileColor' content='#744afc' />
+        <meta name='msapplication-tap-highlight' content='no' />
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
+        />
         <ServiceWorkerRegistration />
       </head>
       <body className={`${inter.className} bg-background overflow-y-scroll`}>
