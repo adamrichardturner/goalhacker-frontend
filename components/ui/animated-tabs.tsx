@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { MoreHorizontal } from 'lucide-react'
+import { Button } from './button'
+import { Popover, PopoverContent, PopoverTrigger } from './popover'
 
 export interface TabItem {
   id: string
@@ -15,6 +18,8 @@ interface AnimatedTabsProps {
   layoutId?: string
   className?: string
   variant?: 'default' | 'underline'
+  showOverflowMenu?: boolean
+  maxVisibleTabs?: number
 }
 
 export function AnimatedTabs({
@@ -25,11 +30,16 @@ export function AnimatedTabs({
   layoutId = 'activeTab',
   className,
   variant = 'default',
+  showOverflowMenu = false,
+  maxVisibleTabs = 3,
 }: AnimatedTabsProps) {
+  const visibleItems = showOverflowMenu ? items.slice(0, maxVisibleTabs) : items
+  const overflowItems = showOverflowMenu ? items.slice(maxVisibleTabs) : []
+
   return (
     <nav className={cn('flex gap-6 items-center', className)}>
       <div className='flex gap-6 items-center'>
-        {items.map((item) => {
+        {visibleItems.map((item) => {
           const isSelected = selected === item.id
           return (
             <motion.div key={item.id} className='relative'>
@@ -61,6 +71,34 @@ export function AnimatedTabs({
             </motion.div>
           )
         })}
+        {showOverflowMenu && overflowItems.length > 0 && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
+                <MoreHorizontal className='h-4 w-4' />
+                <span className='sr-only'>More options</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-[200px] p-0' align='end'>
+              <div className='flex flex-col'>
+                {overflowItems.map((item) => (
+                  <Button
+                    key={item.id}
+                    variant='ghost'
+                    className={cn(
+                      'justify-start h-9 px-4 py-2',
+                      selected === item.id && 'bg-accent text-accent-foreground'
+                    )}
+                    onClick={() => onChange(item.id)}
+                    disabled={isLoading || item.disabled}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
     </nav>
   )

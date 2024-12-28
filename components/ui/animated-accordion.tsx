@@ -31,7 +31,12 @@ export function AnimatedAccordion({
   variant = 'default',
 }: AnimatedAccordionProps) {
   useEffect(() => {
-    if (items.length > 0 && openItem === null && onOpenChange) {
+    if (
+      items.length > 0 &&
+      onOpenChange &&
+      openItem &&
+      !items.find((item) => item.id === openItem)
+    ) {
       onOpenChange(items[0].id)
     }
   }, [items, openItem, onOpenChange])
@@ -49,13 +54,15 @@ export function AnimatedAccordion({
           key={item.id}
           value={item.id}
           className={cn(
-            'overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 rounded-2xl [&[data-state=open]]:rounded-2xl',
+            'overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] rounded-2xl [&[data-state=open]]:rounded-2xl',
             variant === 'purple' ? 'border-0' : 'border border-border/50'
           )}
         >
           <AccordionTrigger
             className={cn(
-              'hover:no-underline px-6 py-6 transition-colors [&>svg]:text-primary [&>svg]:h-5 [&>svg]:w-5',
+              'hover:no-underline px-6 py-6',
+              'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+              '[&>svg]:text-primary [&>svg]:h-5 [&>svg]:w-5',
               'rounded-2xl data-[state=open]:rounded-t-2xl data-[state=open]:rounded-b-none',
               variant === 'purple' && [
                 'text-primary bg-accordion-bg',
@@ -68,10 +75,10 @@ export function AnimatedAccordion({
           >
             {item.title}
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className='transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
             <div
               className={cn(
-                'prose-content text-sm text-muted-foreground p-6 bg-accordion-body hover:bg-accordion-body/90 rounded-b-2xl',
+                'prose-content text-sm text-muted-foreground p-6 bg-accordion-body hover:bg-accordion-body/90 rounded-b-2xl transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
                 item.contentClassName
               )}
             >

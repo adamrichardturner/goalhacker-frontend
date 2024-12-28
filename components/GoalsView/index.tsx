@@ -17,6 +17,12 @@ import {
 } from '../ui/select'
 import { Label } from '../ui/label'
 import { AnimatedTabs } from '../ui/animated-tabs'
+import { MoreHorizontal } from 'lucide-react'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 type FilterType = 'All' | 'Planned' | 'Active' | 'Completed'
 
@@ -84,12 +90,13 @@ const GoalsView = ({
 
   const archivedGoals = goals.filter((goal) => goal.status === 'archived')
   const displayGoals = isArchived ? archivedGoals : filteredGoals
+  const activeFilters = filters.filter((filter) => statusCounts[filter] > 0)
 
   return (
     <div className='space-y-6'>
       <div className='flex justify-between items-center'>
         <div className='flex justify-between items-center w-full'>
-          <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
+          <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty pr-6'>
             {isArchived ? 'Archived Goals' : `Welcome, ${user?.first_name} 👋`}
           </h1>
 
@@ -109,13 +116,11 @@ const GoalsView = ({
         <nav className='border-border sm:border-b sm:pb-4'>
           <div className='hidden sm:block'>
             <AnimatedTabs
-              items={filters
-                .filter((filter) => statusCounts[filter] > 0)
-                .map((filter) => ({
-                  id: filter,
-                  label: filter,
-                  disabled: false,
-                }))}
+              items={activeFilters.map((filter) => ({
+                id: filter,
+                label: filter,
+                disabled: false,
+              }))}
               selected={selectedFilter}
               onChange={(value) => setSelectedFilter(value as FilterType)}
               isLoading={delayedLoading}
@@ -123,7 +128,7 @@ const GoalsView = ({
               variant='underline'
             />
           </div>
-          <div className='sm:hidden w-1/2'>
+          <div className='sm:hidden w-full sm:w-1/2'>
             <Label className='text-xs font-light'>Filter goals</Label>
             <Select
               value={selectedFilter}
@@ -131,7 +136,7 @@ const GoalsView = ({
                 setSelectedFilter(value as FilterType)
               }
             >
-              <SelectTrigger className='border-0 shadow bg-input focus:ring-0'>
+              <SelectTrigger className='border-0 shadow bg-input/5 focus:ring-0'>
                 <SelectValue placeholder='Filter goals' />
               </SelectTrigger>
               <SelectContent>
