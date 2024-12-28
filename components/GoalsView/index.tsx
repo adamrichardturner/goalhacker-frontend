@@ -125,7 +125,11 @@ const GoalsView = ({
           <GoalDetails goal={selectedGoal} />
         </motion.div>
       ) : (
-        <motion.div animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
+        <motion.div
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.15 }}
+          className='space-y-8'
+        >
           <div className='flex justify-between items-center'>
             <div className='flex justify-between items-center w-full'>
               <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty pr-6'>
@@ -147,7 +151,7 @@ const GoalsView = ({
           </div>
 
           {nonArchivedGoals.length > 0 && !isArchived && (
-            <nav className='border-border sm:border-b sm:pb-4'>
+            <nav className='border-border sm:border-b sm:pb-2'>
               <div className='hidden sm:block'>
                 <AnimatedTabs
                   items={activeFilters.map((filter) => ({
@@ -160,6 +164,7 @@ const GoalsView = ({
                   isLoading={delayedLoading}
                   layoutId='activeFilter'
                   variant='underline'
+                  underlineOffset='bottom-[-9px]'
                 />
               </div>
               <div className='sm:hidden w-full sm:w-1/2'>
