@@ -1,4 +1,4 @@
-import { Goal, ProgressNote } from '@/types/goal'
+import { ProgressNote } from '@/types/goal'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,7 +27,6 @@ import { useSettings } from '@/hooks/useSettings'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
 
 interface ProgressNotesProps {
-  goal: Goal
   progressNotes: ProgressNote[]
   onEditNote: (noteId: string, note: { title: string; content: string }) => void
   onDeleteNote?: (noteId: string) => void
@@ -35,7 +34,6 @@ interface ProgressNotesProps {
 }
 
 export default function ProgressNotes({
-  goal,
   progressNotes,
   onEditNote,
   onDeleteNote,

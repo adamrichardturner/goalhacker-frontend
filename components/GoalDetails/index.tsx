@@ -123,7 +123,6 @@ export default function GoalDetails({ goal }: GoalDetailsProps) {
                 transition={{ duration: 0.3 }}
               >
                 <ProgressNotes
-                  goal={goal}
                   progressNotes={progressNotes}
                   onEditNote={handleProgressNoteEdit}
                   onDeleteNote={handleProgressNoteDelete}
