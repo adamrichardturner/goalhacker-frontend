@@ -7,24 +7,103 @@ const urlsToCache = [
     '/dashboard',
     '/manifest.json',
     '/icons/favicon-192x192.png',
-    '/icons/favicon-512x512.png'
+    '/icons/favicon-512x512.png',
+    '/icons/apple-touch-icon.png',
+    '/_next/static/**/*',
+    '/api/goals',
+    '/api/insights'
 ]
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(urlsToCache)
+            // Cache all static routes
+            return cache.addAll([
+                '/',
+                '/goals',
+                '/dashboard',
+                '/manifest.json',
+                '/icons/favicon-192x192.png',
+                '/icons/favicon-512x512.png',
+                '/icons/apple-touch-icon.png'
+            ]).then(() => {
+                // Cache Next.js chunks and static files
+                return caches.open(CACHE_NAME).then((cache) => {
+                    return fetch('/_next/static/chunks/pages-manifest.json')
+                        .then((response) => response.json())
+                        .then((manifest) => {
+                            const urls = Object.values(manifest).map(
+                                (path) => '/_next/' + path
+                            )
+                            return cache.addAll(urls)
+                        })
+                        .catch((error) => {
+                            console.error('Failed to cache Next.js files:', error)
+                        })
+                })
+            })
         })
     )
+    self.skipWaiting()
+})
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName)
+                    }
+                })
+            )
+        })
+    )
+    self.clients.claim()
 })
 
 self.addEventListener('fetch', (event) => {
+    // Skip non-GET requests
+    if (event.request.method !== 'GET') return
+
+    // Handle navigation requests
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .catch(() => {
+                    return caches.match(event.request)
+                        .then((response) => {
+                            if (response) return response
+                            // If no cached page found, return cached home page
+                            return caches.match('/')
+                        })
+                })
+        )
+        return
+    }
+
+    // For Next.js static files
+    if (event.request.url.includes('/_next/static/')) {
+        event.respondWith(
+            caches.match(event.request).then((response) => {
+                return response || fetch(event.request).then((response) => {
+                    if (!response || response.status !== 200) return response
+                    const responseToCache = response.clone()
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, responseToCache)
+                    })
+                    return response
+                })
+            })
+        )
+        return
+    }
+
     // For API requests, try network first, then cache
     if (event.request.url.includes('/api/')) {
         event.respondWith(
             fetch(event.request)
                 .then((response) => {
-                    // Clone the response before caching
                     const responseToCache = response.clone()
                     caches.open(CACHE_NAME).then((cache) => {
                         cache.put(event.request, responseToCache)
@@ -32,24 +111,25 @@ self.addEventListener('fetch', (event) => {
                     return response
                 })
                 .catch(() => {
-                    // If network fails, try cache
-                    return caches.match(event.request)
+                    return caches.match(event.request).then((response) => {
+                        if (response) return response
+                        // If no cached API response, return empty data with offline flag
+                        return new Response(JSON.stringify({ offline: true, data: [] }), {
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                    })
                 })
         )
         return
     }
 
-    // For other requests, try cache first, then network
+    // For all other requests, try cache first, then network
     event.respondWith(
         caches.match(event.request).then((response) => {
-            if (response) {
-                return response
-            }
+            if (response) return response
+
             return fetch(event.request).then((response) => {
-                // Don't cache if not a valid response
-                if (!response || response.status !== 200 || response.type !== 'basic') {
-                    return response
-                }
+                if (!response || response.status !== 200) return response
 
                 const responseToCache = response.clone()
                 caches.open(CACHE_NAME).then((cache) => {
@@ -94,7 +174,8 @@ async function getOfflineData() {
 
 async function performOperation(operation) {
     const response = await fetch(operation.endpoint, {
-        method: operation.type,
+        method: operation.type === 'create' ? 'POST' :
+            operation.type === 'update' ? 'PUT' : 'DELETE',
         headers: {
             'Content-Type': 'application/json',
         },
