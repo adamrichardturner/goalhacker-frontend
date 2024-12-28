@@ -58,7 +58,7 @@ export function GoalStatusEditor({
   }
 
   return (
-    <div className='flex flex-col gap-2 sm:w-[220px] w-full rounded-lg'>
+    <div className='flex flex-col gap-2 sm:w-[220px] w-full rounded-2xl'>
       <div className='flex flex-col items-start gap-1 w-full'>
         <Label className='text-xs text-left'>Goal Status</Label>
         <div className='flex items-center justify-start gap-2 w-full'>

@@ -86,6 +86,11 @@ export default function Settings() {
     }
   }, [user])
 
+  const hasNameChanged =
+    user &&
+    (userProfile.first_name !== user.first_name ||
+      userProfile.last_name !== user.last_name)
+
   // Check for existing cooldown on mount
   useEffect(() => {
     const lastResetTime = localStorage.getItem('lastPasswordResetRequest')
@@ -103,6 +108,8 @@ export default function Settings() {
   }, [])
 
   const handleProfileUpdate = async () => {
+    if (!hasNameChanged) return
+
     try {
       await updateProfile({
         firstName: userProfile.first_name,
@@ -157,14 +164,19 @@ export default function Settings() {
 
   return (
     <div className='space-y-6'>
-      {/* Profile Information */}
-      <Card className='bg-paper'>
+      <div className='flex justify-between items-center'>
+        <h1 className='text-md sm:text-sm md:text-2xl leading-none font-semibold text-pretty'>
+          Settings
+        </h1>
+      </div>
+
+      <Card>
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>
           <CardDescription>Update your personal information</CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
             <div className='space-y-2'>
               <Label>First Name</Label>
               <Input
@@ -197,11 +209,7 @@ export default function Settings() {
           <div className='flex justify-between gap-2'>
             <Button
               onClick={handleProfileUpdate}
-              disabled={
-                !isEditingName ||
-                isUpdatingProfile ||
-                (!userProfile.first_name && !userProfile.last_name)
-              }
+              disabled={!isEditingName || isUpdatingProfile || !hasNameChanged}
             >
               {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
             </Button>
@@ -223,8 +231,7 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Avatar */}
-      <Card className='bg-paper'>
+      <Card>
         <CardHeader>
           <CardTitle>Profile Picture</CardTitle>
           <CardDescription>
@@ -251,8 +258,7 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Password Reset */}
-      <Card className='bg-paper'>
+      <Card>
         <CardHeader>
           <CardTitle>Password</CardTitle>
           <CardDescription>
@@ -279,8 +285,7 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Date Format */}
-      <Card className='bg-paper'>
+      <Card>
         <CardHeader>
           <CardTitle>Date Format</CardTitle>
           <CardDescription>
@@ -310,33 +315,7 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Theme */}
-      {/* <Card className='bg-paper'>
-        <CardHeader>
-          <CardTitle>Appearance</CardTitle>
-          <CardDescription>
-            Customize how Goal Hacker looks on your device
-          </CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='space-y-1'>
-            <Label>Theme</Label>
-            <Select value={theme} onValueChange={setTheme}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='light'>Light</SelectItem>
-                <SelectItem value='dark'>Dark</SelectItem>
-                <SelectItem value='system'>System</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card> */}
-
-      {/* Delete Account */}
-      <Card className='bg-paper'>
+      <Card>
         <CardHeader>
           <CardTitle>Delete Account</CardTitle>
           <CardDescription>

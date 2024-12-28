@@ -146,14 +146,14 @@ export default function ProgressNoteEditor({
   console.log(editorButtonState)
 
   return (
-    <div className='space-y-6 bg-card rounded-xl p-6 border shadow-sm'>
+    <div className='space-y-6 bg-card rounded-2xl p-6 border shadow-sm'>
       <div className='space-y-2'>
         <Label htmlFor='title' className='text-sm font-medium'>
           Title
         </Label>
         <div
           className={cn(
-            'rounded-lg overflow-hidden',
+            'rounded-2xl overflow-hidden',
             errors.title && 'ring-1 ring-destructive'
           )}
         >
@@ -178,7 +178,7 @@ export default function ProgressNoteEditor({
         <Label className='text-sm font-medium'>Content</Label>
         <div
           className={cn(
-            'rounded-lg overflow-hidden bg-input',
+            'rounded-2xl overflow-hidden bg-input',
             errors.content && 'ring-1 ring-destructive'
           )}
         >

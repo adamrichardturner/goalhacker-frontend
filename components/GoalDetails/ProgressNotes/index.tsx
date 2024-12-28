@@ -25,7 +25,6 @@ import ProgressNoteEditor from '../ProgressNoteEditor'
 import { Trash2, Pen, ScrollText } from 'lucide-react'
 import { useSettings } from '@/hooks/useSettings'
 import { AnimatedAccordion } from '@/components/ui/animated-accordion'
-import { truncateText } from '@/lib/utils'
 
 interface ProgressNotesProps {
   goal: Goal
@@ -51,9 +50,7 @@ export default function ProgressNotes({
       id: note.note_id || '',
       title: (
         <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-2'>
-          <h3 className='text-base font-semibold' title={note.title}>
-            {truncateText(note.title, 30)}
-          </h3>
+          <h3 className='text-base font-semibold'>{note.title}</h3>
           <span className='text-xs text-primary pr-2'>
             {note.created_at &&
               `${formatDate(note.created_at, settings?.date_format)} at ${formatTime(note.created_at)}`}
@@ -97,7 +94,7 @@ export default function ProgressNotes({
     })) || []
 
   return (
-    <Card>
+    <Card className='rounded-2xl'>
       <CardHeader className='flex flex-row justify-between items-center'>
         <CardTitle className='text-xl sm:text-2xl font-semibold'>
           Notes

@@ -11,8 +11,8 @@ function TabNavigationSkeleton() {
   // TODO: Add a skeleton for the tab navigation
   return (
     <div className='flex flex-col gap-4'>
-      <div className='h-12 bg-card rounded-lg animate-pulse' />
-      <div className='h-[400px] bg-card rounded-lg animate-pulse' />
+      <div className='h-12 bg-card rounded-2xl animate-pulse' />
+      <div className='h-[400px] bg-card rounded-2xl animate-pulse' />
     </div>
   )
 }
@@ -34,7 +34,7 @@ export default function DashboardClient() {
       )}
       <div className='flex flex-col gap-6 w-full px-0 sm:px-0 flex-1'>
         <div className='grid grid-cols-1 gap-6'>
-          <div className='flex flex-col bg-paper rounded-lg gap-4'>
+          <div className='flex flex-col bg-paper rounded-2xl gap-4'>
             <Suspense fallback={<TabNavigationSkeleton />}>
               <TabNavigation goals={goals} goalsLoading={goalsLoading} />
             </Suspense>

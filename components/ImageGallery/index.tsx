@@ -70,7 +70,7 @@ export const ImageGallery = memo(function ImageGallery({
             <div className='flex flex-col items-center space-y-4'>
               <label
                 className={cn(
-                  'flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer',
+                  'flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-2xl cursor-pointer',
                   'hover:bg-gray-50 dark:hover:bg-gray-800 relative overflow-hidden',
                   uploadPreview ? 'border-primaryActive' : 'border-gray-300'
                 )}
