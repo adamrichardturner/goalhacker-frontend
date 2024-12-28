@@ -62,6 +62,7 @@ export default function NewGoalView() {
       const subgoals = goalData.subgoals?.filter((subgoal) => subgoal.title)
       const newGoal = await goalsService.createGoal({
         ...goalData,
+        category_id: goalData.category_id,
         subgoals: subgoals?.length ? subgoals : undefined,
         user_id: user.user_id,
       })
