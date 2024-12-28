@@ -4,7 +4,6 @@ import { User } from '@/types/auth'
 import { Goal as GoalType } from '@/types/goal'
 import { Button } from '../ui/button'
 import { useState, useEffect } from 'react'
-import { Skeleton } from '../ui/skeleton'
 import {
   Select,
   SelectContent,
@@ -29,7 +28,7 @@ interface GoalsViewProps {
 const GoalsView = ({ goals = [], user, isLoading = false }: GoalsViewProps) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>('Active')
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('All')
   const [delayedLoading, setDelayedLoading] = useState(true)
   const [selectedGoal, setSelectedGoal] = useState<GoalType | null>(() => {
     const goalId = searchParams.get('id')

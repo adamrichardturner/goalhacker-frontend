@@ -7,13 +7,21 @@ import DashboardCharts from './DashboardCharts'
 import Loading from '../ui/loading'
 import { Goal } from '@/types/goal'
 import { AnimatedTabs } from '@/components/ui/animated-tabs'
+import { Insights } from '@/types/insights'
 
-interface TabNavigationProps {
+export interface TabNavigationProps {
   goals: Goal[]
   goalsLoading: boolean
+  insights: Insights | null
+  insightsLoading: boolean
 }
 
-export function TabNavigation({ goals, goalsLoading }: TabNavigationProps) {
+export function TabNavigation({
+  goals,
+  goalsLoading,
+  insights,
+  insightsLoading,
+}: TabNavigationProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'insights'

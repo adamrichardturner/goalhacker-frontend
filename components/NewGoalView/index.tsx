@@ -10,6 +10,7 @@ import { Loading } from '../ui/loading'
 import SmartDialog from '../SmartDialog'
 import GoalCreationTimeline from './GoalCreationTimeline'
 import { useUser } from '@/hooks/auth/useUser'
+import { useQueryClient } from '@tanstack/react-query'
 
 export const stages = [
   'BasicInfo',
@@ -22,6 +23,7 @@ export type Stage = (typeof stages)[number]
 
 export default function NewGoalView() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { user, isLoading: userLoading } = useUser()
   const [currentStage, setCurrentStage] = useState<Stage>('BasicInfo')
   const [goalData, setGoalData] = useState<Partial<Goal>>({
@@ -58,11 +60,12 @@ export default function NewGoalView() {
     try {
       setIsSubmitting(true)
       const subgoals = goalData.subgoals?.filter((subgoal) => subgoal.title)
-      await goalsService.createGoal({
+      const newGoal = await goalsService.createGoal({
         ...goalData,
         subgoals: subgoals?.length ? subgoals : undefined,
         user_id: user.user_id,
       })
+      await queryClient.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Goal created successfully!')
       router.push('/goals')
     } catch (error) {
