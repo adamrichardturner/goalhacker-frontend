@@ -1,6 +1,6 @@
 {
   "name": "Goal Hacker",
-  "short_name": "GoalHacker",
+  "short_name": "Goal Hacker",
   "description": "Track and achieve your goals with AI-powered insights",
   "start_url": "/login?source=pwa",
   "display": "standalone",
