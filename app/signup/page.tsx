@@ -10,6 +10,8 @@ import { PublicLogo } from '@/components/PublicLogo'
 import { processAuthError } from '@/utils/auth-errors'
 import { Footer } from '@/components/Footer'
 import { useSignup } from '@/hooks/auth/useSignup'
+import { GoogleButton } from '@/components/ui/google-button'
+import { Separator } from '@/components/ui/separator'
 
 interface ValidationErrors {
   email?: string
@@ -165,6 +167,21 @@ function SignupForm() {
       title='Create an account'
       description='Enter your details to create your account'
     >
+      <GoogleButton
+        onClick={() => {
+          window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/users/auth/google`
+        }}
+      />
+      <div className='relative my-4'>
+        <div className='absolute inset-0 flex items-center'>
+          <Separator />
+        </div>
+        <div className='relative flex justify-center text-xs uppercase'>
+          <span className='bg-white px-2 text-muted-foreground'>
+            Or continue with
+          </span>
+        </div>
+      </div>
       <form onSubmit={handleSubmit} className='space-y-4'>
         {errors.general && (
           <Alert variant='destructive' className='mb-4 dark:text-white'>
