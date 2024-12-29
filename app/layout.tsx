@@ -22,6 +22,13 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <head>
+        <title>
+          Goal Hacker | Track and achieve your goals with AI-powered insights
+        </title>
+        <meta
+          name='description'
+          content='Goal Hacker helps you set, track, and achieve your goals with AI-powered insights. Create actionable plans, track progress, and get personalized recommendations.'
+        />
         <link rel='manifest' href='/manifest.json' />
         <meta name='theme-color' content='#0c121d' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
