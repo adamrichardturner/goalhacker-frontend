@@ -88,6 +88,19 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Prevent iOS zoom on inputs */
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='number'],
+  input[type='search'],
+  input[type='tel'],
+  select,
+  textarea {
+    @apply text-base;
+    font-size: 16px !important; /* Minimum font size to prevent zoom */
+  }
 }
 
 .prose {

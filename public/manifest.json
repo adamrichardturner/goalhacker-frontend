@@ -4,9 +4,13 @@
   "description": "Track and achieve your goals with AI-powered insights",
   "start_url": "/login?source=pwa",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "fullscreen"
+  ],
   "background_color": "#0c121d",
   "theme_color": "#0c121d",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "scope": "/",
   "categories": [
     "productivity",

@@ -35,8 +35,9 @@ export default function RootLayout({
         <meta name='msapplication-tap-highlight' content='no' />
         <meta
           name='viewport'
-          content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
+          content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=0'
         />
+        <meta name='text-size-adjust' content='none' />
         <ServiceWorkerRegistration />
       </head>
       <body className={`${inter.className} bg-background overflow-y-scroll`}>
