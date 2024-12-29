@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Download, Share2 } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -17,14 +18,26 @@ interface ExtendedWindow extends Window {
   MSStream?: boolean
 }
 
+const AUTH_PATHS = ['/goals', '/dashboard', '/settings']
+
 export function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null)
   const [showPrompt, setShowPrompt] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [isInStandaloneMode, setIsInStandaloneMode] = useState(false)
+  const pathname = usePathname()
+
+  // Check if current path is an authenticated path
+  const isAuthPath = AUTH_PATHS.some((path) => pathname?.startsWith(path))
 
   useEffect(() => {
+    // Don't show on non-auth paths
+    if (!isAuthPath) {
+      setShowPrompt(false)
+      return
+    }
+
     // Check if it's iOS
     const isIOSDevice =
       /iPad|iPhone|iPod/.test(navigator.userAgent) &&
@@ -57,7 +70,7 @@ export function InstallPrompt() {
         )
       }
     }
-  }, [])
+  }, [isAuthPath])
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return
@@ -75,8 +88,20 @@ export function InstallPrompt() {
     setShowPrompt(false)
   }
 
-  // Don't show if already installed or no prompt available
-  if (isInStandaloneMode || (!showPrompt && !isIOS)) return null
+  const handleClose = () => {
+    setShowPrompt(false)
+    // Store in localStorage to prevent showing again in this session
+    localStorage.setItem('pwaPromptDismissed', 'true')
+  }
+
+  // Don't show if already installed, no prompt available, or on non-auth paths
+  if (
+    isInStandaloneMode ||
+    (!showPrompt && !isIOS) ||
+    !isAuthPath ||
+    localStorage.getItem('pwaPromptDismissed')
+  )
+    return null
 
   // iOS-specific install instructions
   if (isIOS) {
@@ -99,7 +124,8 @@ export function InstallPrompt() {
           <Button
             variant='ghost'
             size='sm'
-            onClick={() => setShowPrompt(false)}
+            onClick={handleClose}
+            className='hover:bg-accent'
           >
             ✕
           </Button>
@@ -117,10 +143,20 @@ export function InstallPrompt() {
           Get quick access from your home screen
         </p>
       </div>
-      <Button onClick={handleInstallClick} variant='default'>
-        <Download className='h-4 w-4 mr-2' />
-        Install
-      </Button>
+      <div className='flex items-center gap-2'>
+        <Button onClick={handleInstallClick} variant='default'>
+          <Download className='h-4 w-4 mr-2' />
+          Install
+        </Button>
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={handleClose}
+          className='hover:bg-accent'
+        >
+          ✕
+        </Button>
+      </div>
     </div>
   )
 }

@@ -19,30 +19,40 @@ const CookieConsent = () => {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Only show on root path and if no consent choice made
+    // Check if user has already made a choice and if we're on the root page
     const hasConsent = localStorage.getItem('cookieConsent')
+
+    // Show banner if no choice has been made yet and we're on the root page
     if (!hasConsent && pathname === '/') {
       setShowBanner(true)
     } else {
       setShowBanner(false)
     }
-  }, [pathname])
+  }, [pathname]) // Re-run when pathname changes
 
   const handleAccept = () => {
     localStorage.setItem('cookieConsent', 'granted')
-    window.gtag('consent', 'update', {
-      analytics_storage: 'granted',
-      ad_storage: 'granted',
-    })
+    try {
+      window.gtag('consent', 'update', {
+        analytics_storage: 'granted',
+        ad_storage: 'granted',
+      })
+    } catch (error) {
+      console.error('Error updating gtag consent:', error)
+    }
     setShowBanner(false)
   }
 
   const handleDeny = () => {
     localStorage.setItem('cookieConsent', 'denied')
-    window.gtag('consent', 'update', {
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-    })
+    try {
+      window.gtag('consent', 'update', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+      })
+    } catch (error) {
+      console.error('Error updating gtag consent:', error)
+    }
     setShowBanner(false)
   }
 
