@@ -154,7 +154,7 @@ function LandingPageClient() {
             </div>
 
             <motion.p
-              className='text-md sm:text-2xl text-white/90 mb-4'
+              className='text-md sm:text-2xl text-white/90 mb-0'
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -261,7 +261,7 @@ function LandingPageClient() {
           </motion.div>
 
           {/* New Pricing Section */}
-          <motion.div
+          {/* <motion.div
             className='w-full max-w-6xl mx-auto mb-16'
             initial='hidden'
             whileInView='visible'
@@ -312,7 +312,7 @@ function LandingPageClient() {
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+          </motion.div> */}
 
           {/* How It Works Section */}
           <motion.div

@@ -31,9 +31,10 @@ function TermsAndConditionsContent() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>2. Data Controller</h2>
         <p className='mb-4'>
-          The Data Controller for Goal Hacker is Adam Richard Turner. [Address
-          to be added upon request]
+          The Data Controller for Goal Hacker is Adam Richard Turner.
         </p>
+        <p>Data Controller Address: 11 Templar Place, London, TW12 2NE</p>
+        <p>Data Controller Reference: ZB500467</p>
       </section>
 
       <section className='mb-8'>
@@ -131,7 +132,8 @@ function TermsAndConditionsContent() {
         <h2 className='text-2xl font-semibold mb-4'>10. Contact Information</h2>
         <p className='mb-4'>
           If you have any questions about these Terms and Conditions, your data,
-          or your rights, please contact us at: [Contact details to be added]
+          or your rights, please contact us at:{' '}
+          <a href='mailto:info@goalhacker.app'>info@goalhacker.app</a>
         </p>
       </section>
 
