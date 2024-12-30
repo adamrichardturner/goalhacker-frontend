@@ -11,14 +11,35 @@ import CookieConsent from '@/components/CookieConsent'
 import { ServiceWorkerRegistration } from '@/components/PWA/ServiceWorkerRegistration'
 import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
 import { InstallPrompt } from '@/components/PWA/InstallPrompt'
+import { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
+
+// Move registration function outside component to avoid recreating it
+const registerServiceWorker = async () => {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+    return
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js')
+    console.log('ServiceWorker registration successful')
+    return registration
+  } catch (err) {
+    console.error('ServiceWorker registration failed: ', err)
+  }
+}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Register service worker once on mount
+  useEffect(() => {
+    registerServiceWorker()
+  }, [])
+
   return (
     <html lang='en' suppressHydrationWarning>
       <head>
@@ -47,12 +68,14 @@ export default function RootLayout({
         <meta name='text-size-adjust' content='none' />
         <ServiceWorkerRegistration />
       </head>
-      <body className={`${inter.className} bg-background overflow-y-scroll`}>
+      {/* TODO: somehow use linear-gradient in globals.css */}
+      <body
+        className={`${inter.className} bg-[linear-gradient(90deg,_#0C101D_0%,_#364883_100%)] overflow-y-scroll`}
+      >
         <ThemeProvider>
           <Providers>
-            <main className='container mx-auto min-h-screen px-0 sm:px-4 w-full flex items-center justify-center'>
-              {children}
-            </main>
+            {/*             <main className='container mx-auto min-h-screen px-0 sm:px-4 w-full flex items-center justify-center'> */}
+            <main className=''>{children}</main>
             <BackToTop />
             <CookieConsent />
             <OfflineIndicator />

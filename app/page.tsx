@@ -9,6 +9,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { Users, Brain, BarChart3 } from 'lucide-react'
+import LandingPage from '@/components/LandingPage'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -452,7 +453,7 @@ function HomePageSkeleton() {
 }
 
 function HomeContent() {
-  return <LandingPageClient />
+  return <LandingPage />
 }
 
 export default function HomePage() {
