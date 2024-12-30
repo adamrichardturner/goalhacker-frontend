@@ -36,6 +36,7 @@ import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
 import { settingsService } from '@/services/settingsService'
 import { useUser } from '@/hooks/auth/useUser'
+import NotificationSettings from './NotificationSettings'
 
 interface UserProfile {
   avatar_url?: string | null
@@ -257,6 +258,8 @@ export default function Settings() {
           </Avatar>
         </CardContent>
       </Card>
+
+      <NotificationSettings />
 
       <Card>
         <CardHeader>

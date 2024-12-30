@@ -11,14 +11,35 @@ import CookieConsent from '@/components/CookieConsent'
 import { ServiceWorkerRegistration } from '@/components/PWA/ServiceWorkerRegistration'
 import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
 import { InstallPrompt } from '@/components/PWA/InstallPrompt'
+import { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
+
+// Move registration function outside component to avoid recreating it
+const registerServiceWorker = async () => {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+    return
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js')
+    console.log('ServiceWorker registration successful')
+    return registration
+  } catch (err) {
+    console.error('ServiceWorker registration failed: ', err)
+  }
+}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Register service worker once on mount
+  useEffect(() => {
+    registerServiceWorker()
+  }, [])
+
   return (
     <html lang='en' suppressHydrationWarning>
       <head>

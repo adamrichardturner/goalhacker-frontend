@@ -416,4 +416,57 @@ async function openDB() {
             }
         }
     })
-} 
+}
+
+self.addEventListener('push', function (event) {
+    if (!event.data) {
+        return;
+    }
+
+    const data = event.data.json();
+    const options = {
+        body: data.body,
+        icon: data.icon,
+        badge: '/icons/badge.png',
+        data: data.data,
+        actions: [
+            {
+                action: 'view',
+                title: 'View',
+            },
+        ],
+    };
+
+    event.waitUntil(
+        self.registration.showNotification(data.title, options)
+    );
+});
+
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+
+    if (event.action === 'view') {
+        const data = event.notification.data;
+        let url = '/goals';
+
+        if (data.type === 'goal') {
+            url = `/goals/${data.goalId}`;
+        } else if (data.type === 'subgoal') {
+            url = `/goals/${data.goalId}?subgoal=${data.subgoalId}`;
+        }
+
+        event.waitUntil(
+            clients.matchAll({ type: 'window' }).then(function (clientList) {
+                for (let i = 0; i < clientList.length; i++) {
+                    const client = clientList[i];
+                    if (client.url === url && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                if (clients.openWindow) {
+                    return clients.openWindow(url);
+                }
+            })
+        );
+    }
+}); 
