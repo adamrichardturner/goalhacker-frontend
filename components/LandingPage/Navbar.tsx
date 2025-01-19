@@ -7,7 +7,9 @@ const links = ['Features', 'FAQ']
 const Navbar = () => {
   return (
     <div className='flex justify-between items-center'>
-      <Logo size='2xl' mode='dark' />
+      <Link href='/'>
+        <Logo size='2xl' mode='dark' />
+      </Link>
       {/* links */}
       <div className='text-white flex gap-[26px] items-center'>
         {links.map((name) => (
