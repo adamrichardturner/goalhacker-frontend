@@ -4,7 +4,7 @@ const ShowcaseSection = () => {
   return (
     <Section title='Achieve more with Goal Hacker'>
       <img
-        className='w-1/2 mx-auto'
+        className='w-1/2 mx-auto rounded-[20]'
         src='/mockups/goalhacker-showcase.jpg'
         alt='GoalHacker showcase'
       />
