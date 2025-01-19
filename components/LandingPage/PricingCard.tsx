@@ -1,6 +1,6 @@
 import { CircleCheck, Flame } from 'lucide-react'
-import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 
 const PricingCard = ({ pricingPlan }) => {
   const { name, price, period, features, buttonText, popular } = pricingPlan
@@ -32,7 +32,7 @@ const PricingCard = ({ pricingPlan }) => {
       {/* features */}
       {features.map((feature) => (
         <div key={feature} className='flex items-center gap-[10] mb-[18]'>
-          <CircleCheck  />
+          <CircleCheck />
           <p className='text-h5-desktop'>{feature}</p>
         </div>
       ))}

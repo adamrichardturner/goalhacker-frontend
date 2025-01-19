@@ -14,7 +14,10 @@ const CTASection = () => {
           <span className='font-bold'>It&apos;s free</span> to get started — no
           credit card required.
         </p>
-        <Button size='sm' className='bg-[#8b00f2] font-semibold text-white mt-[50] px-[44]'>
+        <Button
+          size='sm'
+          className='bg-[#8b00f2] font-semibold text-white mt-[50] px-[44]'
+        >
           Get started For Free
         </Button>
       </div>

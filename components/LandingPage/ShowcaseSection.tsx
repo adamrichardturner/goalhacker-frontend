@@ -3,7 +3,11 @@ import Section from './Section'
 const ShowcaseSection = () => {
   return (
     <Section title='Achieve more with Goal Hacker'>
-      <img className='w-1/2 mx-auto' src='/mockups/goalhacker-showcase.jpg' alt='GoalHacker showcase' />
+      <img
+        className='w-1/2 mx-auto'
+        src='/mockups/goalhacker-showcase.jpg'
+        alt='GoalHacker showcase'
+      />
     </Section>
   )
 }
