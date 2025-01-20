@@ -13,7 +13,11 @@ const Navbar = () => {
       {/* links */}
       <div className='text-white flex gap-[26px] items-center'>
         {links.map((name) => (
-          <Link key={name} href={`/#${name.toLowerCase()}`}>
+          <Link
+            key={name}
+            href={`/#${name.toLowerCase()}`}
+            className='hover:underline underline-offset-8'
+          >
             {name}{' '}
           </Link>
         ))}

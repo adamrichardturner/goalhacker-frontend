@@ -1,17 +1,17 @@
 'use client'
 
+import CookieConsent from '@/components/CookieConsent'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
+import { InstallPrompt } from '@/components/PWA/InstallPrompt'
+import { ServiceWorkerRegistration } from '@/components/PWA/ServiceWorkerRegistration'
+import { ThemeProvider } from '@/components/ThemeProvider'
+import { BackToTop } from '@/components/ui/back-to-top'
+import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
 import { Inter } from 'next/font/google'
+import { useEffect } from 'react'
+import { Toaster as Sonner } from 'sonner'
 import './globals.css'
 import { Providers } from './providers'
-import { ThemeProvider } from '@/components/ThemeProvider'
-import { Toaster as Sonner } from 'sonner'
-import { BackToTop } from '@/components/ui/back-to-top'
-import GoogleAnalytics from '@/components/GoogleAnalytics'
-import CookieConsent from '@/components/CookieConsent'
-import { ServiceWorkerRegistration } from '@/components/PWA/ServiceWorkerRegistration'
-import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
-import { InstallPrompt } from '@/components/PWA/InstallPrompt'
-import { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -68,10 +68,7 @@ export default function RootLayout({
         <meta name='text-size-adjust' content='none' />
         <ServiceWorkerRegistration />
       </head>
-      {/* TODO: somehow use linear-gradient in globals.css */}
-      <body
-        className={`${inter.className} bg-[linear-gradient(90deg,_#0C101D_0%,_#364883_100%)] overflow-y-scroll`}
-      >
+      <body className={`${inter.className} bg-background overflow-y-scroll`}>
         <ThemeProvider>
           <Providers>
             {/*             <main className='container mx-auto min-h-screen px-0 sm:px-4 w-full flex items-center justify-center'> */}
