@@ -3,6 +3,8 @@
 import Link from 'next/link'
 
 export function Footer() {
+  const year = new Date().getFullYear()
+
   return (
     <footer className='text-center flex my-4 flex-col items-center justify-center text-xs text-white/90'>
       <div className='flex flex-col items-center justify-center gap-1 sm:gap-2'>
@@ -10,7 +12,7 @@ export function Footer() {
           <Link href='/' className='hover:text-white'>
             Goal Hacker
           </Link>
-          {' © 2024'}
+          © {year}. All rights reserved.
         </div>
         <div className='flex items-center gap-2'>
           <Link href='/terms-conditions' className='hover:text-white'>
