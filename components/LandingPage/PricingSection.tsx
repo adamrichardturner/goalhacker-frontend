@@ -49,7 +49,7 @@ const pricingPlans = [
 
 const PricingSection = () => {
   return (
-    <Section title='Pricing'>
+    <Section id='pricing' title='Pricing'>
       <div className='flex gap-[28] items-center flex-wrap'>
         {pricingPlans.map((plan) => (
           <PricingCard key={plan.name} pricingPlan={plan} />

@@ -38,7 +38,7 @@ const PricingCard = ({ pricingPlan }) => {
             className={cn(
               'text-h5-desktop',
               feature.includes('Everything') && 'font-bold'
-            )}
+          )}
           >
             {feature}
           </p>

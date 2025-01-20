@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Logo from '../Logo'
 import { Button } from '../ui/button'
 
-const links = ['Features', 'FAQ']
+const links = ['Features', 'Pricing', 'FAQ']
 
 const Navbar = () => {
   return (
