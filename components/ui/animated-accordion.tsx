@@ -84,7 +84,7 @@ export function AnimatedAccordion({
                 'border border-accordion-border',
               ],
               variant === 'lightGray' &&
-                'bg-gray-25 hover:bg-gray-50 text-white',
+                'bg-gray-25 hover:bg-gray-50 text-white [&>svg]:text-white',
               item.titleClassName
             )}
           >
