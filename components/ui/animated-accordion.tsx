@@ -61,7 +61,7 @@ export function AnimatedAccordion({
       collapsible
       className={cn('space-y-4', className)}
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <AccordionItem
           key={item.id}
           value={item.id}
@@ -88,7 +88,7 @@ export function AnimatedAccordion({
               item.titleClassName
             )}
           >
-            {item.title}
+            {index + 1}. {item.title}
           </AccordionTrigger>
           <AccordionContent
             className={cn(
