@@ -4,7 +4,7 @@ import Section from './Section'
 const CTASection = () => {
   return (
     <Section title='Ready to  Achieve Your Goals?'>
-      <div className='w-1/2 mx-auto bg-gray-30 text-white rounded-[15] px-[67] py-[54] text-center'>
+      <div className='w-1/2 mx-auto bg-gray-30 text-white rounded-[15] px-[67] py-[54] text-center hover:bg-gray-25'>
         <p className='text-left'>
           Take the first step toward turning your ambitions into reality. Join
           thousands who are already crushing their goals with our{' '}
