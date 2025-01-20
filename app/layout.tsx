@@ -68,12 +68,14 @@ export default function RootLayout({
         <meta name='text-size-adjust' content='none' />
         <ServiceWorkerRegistration />
       </head>
-      <body className={`${inter.className} bg-background overflow-y-scroll`}>
+      {/* TODO: somehow use linear-gradient in globals.css */}
+      <body
+        className={`${inter.className} bg-[linear-gradient(90deg,_#0C101D_0%,_#364883_100%)] overflow-y-scroll`}
+      >
         <ThemeProvider>
           <Providers>
-            <main className='container mx-auto min-h-screen px-0 sm:px-4 w-full flex items-center justify-center'>
-              {children}
-            </main>
+            {/*             <main className='container mx-auto min-h-screen px-0 sm:px-4 w-full flex items-center justify-center'> */}
+            <main className=''>{children}</main>
             <BackToTop />
             <CookieConsent />
             <OfflineIndicator />

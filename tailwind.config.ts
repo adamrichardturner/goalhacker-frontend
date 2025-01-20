@@ -27,7 +27,7 @@ const config = {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
+        background: 'var(--background)',
         foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
@@ -52,6 +52,7 @@ const config = {
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
+          secondary: 'rgb(var(--accent-secondary))',
         },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
@@ -64,6 +65,16 @@ const config = {
         accordion: {
           bg: 'hsl(var(--accordion-bg))',
           body: 'hsl(var(--accordion-body))',
+        },
+        gray: {
+          100: 'rgba(var(--gray), 100%)',
+          75: 'rgba(var(--gray), 75%)',
+          50: 'rgba(var(--gray), 50%)',
+          40: 'rgba(var(--gray), 40%)',
+          30: 'rgba(var(--gray), 30%)',
+          25: 'rgba(var(--gray), 25%)',
+          15: 'rgba(var(--gray), 15%)',
+          10: 'rgba(var(--gray), 10%)',
         },
       },
       borderRadius: {
@@ -84,6 +95,22 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      fontSize: {
+        // desktop
+        'h1-desktop': '2.5rem',
+        'h2-desktop': '2rem',
+        'h3-desktop': '1.5rem',
+        'h4-desktop': '1.24rem',
+        'h5-desktop': '0.99rem', // used for paragraphs
+        'h6-desktop': '0.875rem',
+        // mobile
+        'h1-mobile': '2rem',
+        'h2-mobile': '1.6rem',
+        'h3-mobile': '1.2rem',
+        'h4-mobile': '0.99rem',
+        'h5-mobile': '0.79rem',
+        'h6-mobile': '0.7rem',
       },
     },
   },
