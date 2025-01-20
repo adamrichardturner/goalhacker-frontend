@@ -65,17 +65,16 @@ const config = {
           bg: 'hsl(var(--accordion-bg))',
           body: 'hsl(var(--accordion-body))',
         },
-        // grays
-        // TODO: fix
-        /* customGray: {
-          '100': 'var(--gray-100)',
-          '75': 'hsl(var(--gray-75))',
-          '50': 'hsl(var(--gray-50))',
-        '40': 'var(--gray-40)',
-          '25': 'var(--gray-25)',
-          '15': 'rgba(var(--gray-15))',
-          '10': 'hsl(var(--gray-10))',
-        }, */
+        gray: {
+          100: 'rgba(var(--gray), 100%)',
+          75: 'rgba(var(--gray), 75%)',
+          50: 'rgba(var(--gray), 50%)',
+          40: 'rgba(var(--gray), 40%)',
+          30: 'rgba(var(--gray), 30%)',
+          25: 'rgba(var(--gray), 25%)',
+          15: 'rgba(var(--gray), 15%)',
+          10: 'rgba(var(--gray), 10%)',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

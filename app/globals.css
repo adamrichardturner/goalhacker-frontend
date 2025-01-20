@@ -44,7 +44,11 @@ body {
     --accordion-body-hover: 222 47% 97%;
     --accordion-hover: 222 47% 97%;
     --accordion-border: 254 97% 60%;
+
+    /* custom grays - different shades in tailwind config */
+    --gray: 140, 140, 140;
   }
+
   .dark {
     --background: 218 40% 8%;
     --foreground: 0 0% 98%;
@@ -78,15 +82,6 @@ body {
     --accordion-body-hover: 222 47% 97%;
     --accordion-hover: 222 47% 97%;
     --accordion-border: 222 47% 11%;
-
-    /* TODO: fix */
-    /* --gray-100: rgba(140, 140, 140, 100%);
-    --gray-75: rgba(140, 140, 140, 75%);
-    --gray-50: rgba(140, 140, 140, 50%);
-    --gray-40: rgba(140, 140, 140, 40%);
-    --gray-25: rgba(140, 140, 140, 25%);
-    --gray-15: rgba(140, 140, 140, 15%);
-    --gray-15: rgba(140, 140, 140, 10%); */
   }
 }
 

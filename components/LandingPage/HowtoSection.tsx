@@ -30,7 +30,7 @@ const HowtoSection = () => {
         >
           {/* rectangle */}
           {/* TODO: use css var */}
-          <div className='w-[156] h-[156] bg-[rgba(140,140,140,0.38)] text-white rounded-full text-[4rem] flex justify-center items-center'>
+          <div className='w-[156] h-[156] bg-gray-40 text-white rounded-full text-[4rem] flex justify-center items-center'>
             {index + 1}
           </div>
 
@@ -41,7 +41,7 @@ const HowtoSection = () => {
           </div>
 
           {steps[index + 1] && (
-            <div className='line w-[2] h-[220] bg-[rgba(140,140,140,0.38)] absolute top-[160] left-[75]'></div>
+            <div className='line w-[2] h-[220] bg-gray-40 absolute top-[160] left-[75]'></div>
           )}
         </div>
       ))}

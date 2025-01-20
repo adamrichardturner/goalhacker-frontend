@@ -73,7 +73,7 @@ const FeatureSection = () => {
           <Card
             key={feature.name}
             // TODO: fix using css's vars
-            className='bg-[rgba(140,140,140,0.25)] text-white flex items-center justify-center px-[20] py-[20] border-none hover:bg-gray-500'
+            className='bg-gray-25 text-white flex items-center justify-center px-[20] py-[20] border-none hover:bg-gray-500'
           >
             {/* <CardHeader>
             </CardHeader> */}

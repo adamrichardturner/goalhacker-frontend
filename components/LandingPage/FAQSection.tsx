@@ -49,12 +49,12 @@ const FAQSection = () => {
   return (
     <Section id='faq' title='Frequently Asked Questions' className='w-1/2'>
       <AnimatedAccordion
+        variant='lightGray'
         items={accordionItems.map((item) => {
           return { id: item.title, ...item }
         })}
         openItem={openItem}
         onOpenChange={setOpenItem}
-        className='text-white bg-[rgba(140,140,140,0.25)]'
       ></AnimatedAccordion>
     </Section>
   )

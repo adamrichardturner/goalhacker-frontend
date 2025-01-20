@@ -1,4 +1,3 @@
-import { ReactNode, useEffect, useRef } from 'react'
 import {
   Accordion,
   AccordionContent,
@@ -6,6 +5,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { cn } from '@/lib/utils'
+import { ReactNode, useEffect, useRef } from 'react'
 
 export interface AccordionItemType {
   id: string
@@ -20,7 +20,7 @@ interface AnimatedAccordionProps {
   openItem?: string | null
   onOpenChange?: (value: string | null) => void
   className?: string
-  variant?: 'default' | 'purple'
+  variant?: 'default' | 'purple' | 'lightGray'
 }
 
 export function AnimatedAccordion({
@@ -67,7 +67,8 @@ export function AnimatedAccordion({
           value={item.id}
           className={cn(
             'overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 ease-out rounded-2xl [&[data-state=open]]:rounded-2xl',
-            variant === 'purple' ? 'border-0' : 'border border-border/50'
+            variant === 'purple' ? 'border-0' : 'border border-border/50',
+            variant === 'lightGray' && 'border-none'
           )}
         >
           <AccordionTrigger
@@ -82,17 +83,25 @@ export function AnimatedAccordion({
                 'data-[state=open]:bg-accordion-bg',
                 'border border-accordion-border',
               ],
+              variant === 'lightGray' &&
+                'bg-gray-25 hover:bg-gray-50 text-white',
               item.titleClassName
             )}
           >
             {item.title}
           </AccordionTrigger>
-          <AccordionContent className='transition-all duration-300 ease-out'>
+          <AccordionContent
+            className={cn(
+              'transition-all duration-300 ease-out',
+              variant === 'lightGray' && 'bg-gray-25 text-white'
+            )}
+          >
             <div
-              className={cn(
-                'prose-content text-sm text-muted-foreground p-6 bg-accordion-body hover:bg-accordion-body/90 rounded-b-2xl transition-all duration-300 ease-out',
-                item.contentClassName
-              )}
+              className={cn([
+                'p-6 rounded-b-2xl transition-all duration-300 ease-out',
+                `${variant === 'lightGray' ? 'bg-inherit text-white hover:bg-gray-50' : 'prose-content text-sm text-muted-foreground bg-accordion-body hover:bg-accordion-body/90 '}`,
+                item.contentClassName,
+              ])}
             >
               {item.content}
             </div>
