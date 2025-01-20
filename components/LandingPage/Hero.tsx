@@ -36,7 +36,11 @@ const Hero = () => {
           tincidunt sagittis eros.
         </p>
 
-        <Button size='lg' className='bg-[#8b00f2] font-semibold max-w-max'>
+        <Button
+          size='lg'
+          className='bg-accent-secondary font-semibold max-w-max'
+          variant='ghost'
+        >
           Get started
         </Button>
       </div>

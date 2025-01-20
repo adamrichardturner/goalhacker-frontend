@@ -37,7 +37,11 @@ const PricingCard = ({ pricingPlan }) => {
         </div>
       ))}
 
-      <Button size='sm' className='bg-white font-semibold w-full text-black'>
+      <Button
+        size='sm'
+        className='bg-accent-secondary font-semibold w-full text-white'
+        variant='ghost'
+      >
         {buttonText}
       </Button>
     </div>

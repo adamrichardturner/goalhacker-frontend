@@ -16,7 +16,8 @@ const CTASection = () => {
         </p>
         <Button
           size='sm'
-          className='bg-[#8b00f2] font-semibold text-white mt-[50] px-[44]'
+          className='bg-accent-secondary font-semibold text-white mt-[50] px-[44]'
+          variant='ghost'
         >
           Get started For Free
         </Button>

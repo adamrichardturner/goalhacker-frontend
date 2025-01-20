@@ -17,7 +17,11 @@ const Navbar = () => {
             {name}{' '}
           </Link>
         ))}
-        <Button size='sm' className='bg-[#8B00F2] font-bold'>
+        <Button
+          size='sm'
+          className='bg-accent-secondary font-bold'
+          variant='ghost'
+        >
           Get started
         </Button>
       </div>

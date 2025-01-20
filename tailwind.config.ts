@@ -52,6 +52,7 @@ const config = {
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
+          secondary: 'rgb(var(--accent-secondary))',
         },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
