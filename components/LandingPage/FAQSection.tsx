@@ -47,7 +47,7 @@ const FAQSection = () => {
   const [openItem, setOpenItem] = useState(null)
 
   return (
-    <Section id='faq' title='Frequently Asked Questions' className='w-1/2'>
+    <Section id='faq' title='Frequently Asked Questions' className='sm:w-1/2'>
       <AnimatedAccordion
         variant='lightGray'
         items={accordionItems.map((item) => {

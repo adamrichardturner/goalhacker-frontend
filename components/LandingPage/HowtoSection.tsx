@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import Section from './Section'
 
 const steps = [
@@ -26,23 +27,25 @@ const HowtoSection = () => {
       {steps.map((step, index) => (
         <div
           key={step.title}
-          className='flex justifiy-center items-center gap-[40] mt-[97] mb-[225] relative'
+          className={cn('flex gap-[40]', index === 0 && 'mt-[97]')}
         >
           {/* rectangle */}
           {/* TODO: use css var */}
-          <div className='w-[156] h-[156] bg-gray-40 text-white rounded-full text-[4rem] flex justify-center items-center'>
-            {index + 1}
+          <div>
+            <div className='sm:w-[156] sm:h-[156] w-[70] h-[70] bg-gray-40 text-white rounded-full sm:text-[4rem] text-[2rem] flex justify-center items-center'>
+              {index + 1}
+            </div>
+
+            {steps[index + 1] && (
+              <div className='line w-[2] h-[220] bg-gray-40 mx-auto'></div>
+            )}
           </div>
 
           {/* step info */}
-          <div className=''>
-            <h4 className='text-h4-desktop font-bold mb-[30]'>{step.title}</h4>
+          <div>
+            <h4 className='text-h4-desktop font-bold sm:mb-[30] mb-[20] sm:mt-[30]'>{step.title}</h4>
             <p className='text-h5-desktop'>{step.description}</p>
           </div>
-
-          {steps[index + 1] && (
-            <div className='line w-[2] h-[220] bg-gray-40 absolute top-[160] left-[75]'></div>
-          )}
         </div>
       ))}
     </Section>

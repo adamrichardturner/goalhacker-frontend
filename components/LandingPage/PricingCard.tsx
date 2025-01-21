@@ -8,7 +8,7 @@ const PricingCard = ({ pricingPlan }) => {
 
   return (
     <div
-      className={`bg-gray-25 rounded-[15] px-[60] py-[40] ${name === 'Pro' && 'bg-[linear-gradient(90deg,_#0C101D_0%,_#364883_100%)] border-[3px] border-[white] shadow-xl'} `}
+      className={`w-full sm:w-max bg-gray-25 rounded-[15] sm:px-[60] sm:py-[40] px-[30] py-[30] ${name === 'Pro' && 'bg-[linear-gradient(90deg,_#0C101D_0%,_#364883_100%)] border-[3px] border-[white] shadow-xl'} `}
     >
       {popular && (
         <Badge className='bg-accent-secondary px-[10] py-[6] mb-[42]'>

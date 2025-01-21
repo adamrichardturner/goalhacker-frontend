@@ -18,7 +18,7 @@ const LandingPage = () => {
   }
 
   return (
-    <div className='flex flex-col size-full px-[50] py-[50] gap-[80] min-h-screen bg-gradient-to-r from-[#0C101D] to-[#364883]'>
+    <div className='flex flex-col size-full px-[50] py-[50] gap-[80] min-h-screen min-w-fit bg-gradient-to-r from-[#0C101D] to-[#364883]'>
       <Navbar />
       <Hero />
       <FeatureSection />
