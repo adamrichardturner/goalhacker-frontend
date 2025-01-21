@@ -1,6 +1,15 @@
 import { cn } from '@/lib/utils'
+import { ReactNode } from 'react'
 
-const Section = ({ id, title, paragraph, className, children }) => {
+type Section = {
+  id?: string
+  title?: string
+  paragraph?: string
+  className?: string
+  children?: ReactNode
+}
+
+const Section = ({ id, title, paragraph, className, children }: Section) => {
   return (
     <div
       id={id}

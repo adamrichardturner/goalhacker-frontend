@@ -75,7 +75,6 @@ const FeatureSection = () => {
         {features.map((feature) => (
           <Card
             key={feature.name}
-            // TODO: fix using css's vars
             className='bg-gray-25 text-white sm:flex sm:items-center justify-center px-[20] py-[20] border-none hover:bg-gray-500'
           >
             {/* <CardHeader>

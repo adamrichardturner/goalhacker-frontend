@@ -4,7 +4,18 @@ import Link from 'next/link'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 
-const PricingCard = ({ pricingPlan }) => {
+type Plan = {
+  pricingPlan: {
+    name: string
+    price: number
+    period: string
+    features: []
+    buttonText: string
+    popular: boolean
+  }
+}
+
+const PricingCard = ({ pricingPlan }: Plan) => {
   const { name, price, period, features, buttonText, popular } = pricingPlan
 
   return (

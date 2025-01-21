@@ -30,7 +30,6 @@ const HowtoSection = () => {
           className={cn('flex gap-[40]', index === 0 && 'mt-[97]')}
         >
           {/* rectangle */}
-          {/* TODO: use css var */}
           <div>
             <div className='sm:w-[156] sm:h-[156] w-[70] h-[70] bg-gray-40 text-white rounded-full sm:text-[4rem] text-[2rem] flex justify-center items-center'>
               {index + 1}
@@ -43,7 +42,9 @@ const HowtoSection = () => {
 
           {/* step info */}
           <div>
-            <h4 className='text-h4-desktop font-bold sm:mb-[30] mb-[20] sm:mt-[30]'>{step.title}</h4>
+            <h4 className='text-h4-desktop font-bold sm:mb-[30] mb-[20] sm:mt-[30]'>
+              {step.title}
+            </h4>
             <p className='text-h5-desktop'>{step.description}</p>
           </div>
         </div>
