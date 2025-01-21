@@ -1,9 +1,6 @@
 'use client'
 
-import Link from 'next/link'
-import { motion, useScroll } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { usePathname } from 'next/navigation'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +8,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useState, useEffect } from 'react'
+import { useLogout } from '@/hooks/auth/useLogout'
+import useMobile from '@/hooks/useMobile'
+import { cn } from '@/lib/utils'
+import { User } from '@/types/auth'
+import { motion } from 'framer-motion'
+import {
+  FileText,
+  HelpCircle,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  Target,
+} from 'lucide-react'
+import { useTheme } from 'next-themes'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { ClientLogo } from '../Logo'
+import { Search } from '../Search'
 import {
   Sheet,
   SheetContent,
@@ -19,20 +34,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '../ui/sheet'
-import { User } from '@/types/auth'
-import { useTheme } from 'next-themes'
-import { ClientLogo } from '../Logo'
-import { Search } from '../Search'
-import {
-  Settings,
-  HelpCircle,
-  FileText,
-  LogOut,
-  Target,
-  LayoutDashboard,
-} from 'lucide-react'
-import { useLogout } from '@/hooks/auth/useLogout'
-import { cn } from '@/lib/utils'
 
 interface HeaderProps {
   user: User
@@ -44,33 +45,7 @@ const Header = ({ user }: HeaderProps) => {
   const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
-  const { scrollY } = useScroll()
-  const [lastScrollY, setLastScrollY] = useState(0)
-  const [isVisible, setIsVisible] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640) // sm breakpoint is 640px
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (!isMobile) return
-
-    const updateScrollDirection = () => {
-      const currentScrollY = scrollY.get()
-      setIsVisible(currentScrollY <= lastScrollY || currentScrollY < 50)
-      setLastScrollY(currentScrollY)
-    }
-
-    const unsubscribe = scrollY.on('change', updateScrollDirection)
-    return () => unsubscribe()
-  }, [scrollY, lastScrollY, isMobile])
+  const { isVisible, isMobile } = useMobile()
 
   useEffect(() => {
     setMounted(true)
