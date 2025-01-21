@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { CircleCheck, Flame } from 'lucide-react'
+import Link from 'next/link'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 
@@ -38,22 +39,25 @@ const PricingCard = ({ pricingPlan }) => {
             className={cn(
               'text-h5-desktop',
               feature.includes('Everything') && 'font-bold'
-          )}
+            )}
           >
             {feature}
           </p>
         </div>
       ))}
-      <Button
-        size='sm'
-        className={cn(
-          'font-semibold w-full',
-          popular ? 'bg-accent-secondary text-white' : 'bg-white text-black'
-        )}
-        variant='ghost'
-      >
-        {buttonText}
-      </Button>
+
+      <Link href='/signup'>
+        <Button
+          size='sm'
+          className={cn(
+            'font-semibold w-full',
+            popular ? 'bg-accent-secondary text-white' : 'bg-white text-black'
+          )}
+          variant='ghost'
+        >
+          {buttonText}
+        </Button>
+      </Link>
     </div>
   )
 }

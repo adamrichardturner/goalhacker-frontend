@@ -25,13 +25,15 @@ const Navbar = () => {
               {name}{' '}
             </Link>
           ))}
-        <Button
-          size='sm'
-          className='bg-accent-secondary font-bold'
-          variant='ghost'
-        >
-          Get started
-        </Button>
+        <Link href='/signup'>
+          <Button
+            size='sm'
+            className='bg-accent-secondary font-bold'
+            variant='ghost'
+          >
+            Sign up
+          </Button>
+        </Link>
       </div>
     </div>
   )

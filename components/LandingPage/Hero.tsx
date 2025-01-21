@@ -1,5 +1,6 @@
 import useMobile from '@/hooks/useMobile'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { Button } from '../ui/button'
 
 const images = [
@@ -66,13 +67,15 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      <Button
-        size='lg'
-        className='bg-accent-secondary font-semibold sm:max-w-max w-full'
-        variant='ghost'
-      >
-        Get started
-      </Button>
+      <Link href='/signup'>
+        <Button
+          size='lg'
+          className='bg-accent-secondary font-semibold sm:max-w-max w-full'
+          variant='ghost'
+        >
+          Get started
+        </Button>
+      </Link>
     </div>
   )
 }

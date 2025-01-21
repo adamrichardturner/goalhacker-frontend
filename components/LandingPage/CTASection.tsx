@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Button } from '../ui/button'
 import Section from './Section'
 
@@ -14,13 +15,16 @@ const CTASection = () => {
           <span className='font-bold'>It&apos;s free</span> to get started — no
           credit card required.
         </p>
-        <Button
-          size='sm'
-          className='bg-accent-secondary font-semibold text-white mt-[50] px-[44]'
-          variant='ghost'
-        >
-          Get started For Free
-        </Button>
+
+        <Link href='/signup'>
+          <Button
+            size='sm'
+            className='bg-accent-secondary font-semibold text-white mt-[50] px-[44]'
+            variant='ghost'
+          >
+            Get started For Free
+          </Button>
+        </Link>
       </div>
     </Section>
   )
