@@ -11,53 +11,53 @@ import {
 import { Card, CardContent, CardTitle } from '../ui/card'
 import Section from './Section'
 
+const features = [
+  {
+    name: 'AI-Powered Insights',
+    description:
+      'Get intelligent recommendations for goal optimization and personalized strategies for success.',
+    icon: Sparkles,
+  },
+  {
+    name: 'Progress Analytics',
+    description:
+      'Comprehensive dashboards showing individual and team performance metrics, trends, and achievements.',
+    icon: ChartBar,
+  },
+  {
+    name: 'Team Management',
+    description:
+      'Set and track team goals, monitor progress, and provide meaningful feedback to drive performance.',
+    icon: Users,
+  },
+  {
+    name: 'Subgoal System',
+    description:
+      'Break down larger goals into achievable subgoals, making complex objectives more manageable and trackable.',
+    icon: ListChecks,
+  },
+  {
+    name: 'Customization',
+    description:
+      'Personalize your goal tracker with custom categories, motivational wallpapers, and your own images to make it uniquely yours.',
+    icon: Brush,
+  },
+  {
+    name: 'Reminders',
+    description:
+      'Stay on track with customizable reminders and notifications that keep you motivated and focused on your goals.',
+    icon: Bell,
+  },
+]
+
+const section = {
+  title: 'Unlock your full potential',
+  paragraph:
+    'With SMART goal-tracking tools, break down your ambitions into actionable steps and stay on track with personalized features.',
+}
+
 const FeatureSection = () => {
   const { isMobile } = useMobile()
-
-  const features = [
-    {
-      name: 'AI-Powered Insights',
-      description:
-        'Get intelligent recommendations for goal optimization and personalized strategies for success.',
-      icon: Sparkles,
-    },
-    {
-      name: 'Progress Analytics',
-      description:
-        'Comprehensive dashboards showing individual and team performance metrics, trends, and achievements.',
-      icon: ChartBar,
-    },
-    {
-      name: 'Team Management',
-      description:
-        'Set and track team goals, monitor progress, and provide meaningful feedback to drive performance.',
-      icon: Users,
-    },
-    {
-      name: 'Subgoal System',
-      description:
-        'Break down larger goals into achievable subgoals, making complex objectives more manageable and trackable.',
-      icon: ListChecks,
-    },
-    {
-      name: 'Customization',
-      description:
-        'Personalize your goal tracker with custom categories, motivational wallpapers, and your own images to make it uniquely yours.',
-      icon: Brush,
-    },
-    {
-      name: 'Reminders',
-      description:
-        'Stay on track with customizable reminders and notifications that keep you motivated and focused on your goals.',
-      icon: Bell,
-    },
-  ]
-
-  const section = {
-    title: 'Unlock your full potential',
-    paragraph:
-      'With SMART goal-tracking tools, break down your ambitions into actionable steps and stay on track with personalized features.',
-  }
 
   return (
     <Section id='features' title={section.title} paragraph={section.paragraph}>
