@@ -1,14 +1,11 @@
 import Section from './Section'
+import VideoPlayer from './VideoPlayer'
 
 const ShowcaseSection = () => {
   return (
-    <Section title='Achieve more with Goal Hacker'>
-      <img
-        className='sm:w-1/2 mx-auto rounded-[20]'
-        src='/mockups/goalhacker-showcase.jpg'
-        alt='GoalHacker showcase'
-      />
-    </Section>
+    <div className='flex justify-center items-center w-full'>
+      <VideoPlayer />
+    </div>
   )
 }
 
