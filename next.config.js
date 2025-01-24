@@ -39,10 +39,10 @@ const nextConfig = {
       test: /\.(mp4|webm)$/,
       type: 'asset/resource',
       generator: {
-        filename: 'static/videos/[name][ext]'
-      }
-    });
-    return config;
+        filename: 'static/videos/[name][ext]',
+      },
+    })
+    return config
   },
 }
 
