@@ -13,6 +13,7 @@ interface GoalBannerProps {
 }
 
 export default function GoalBanner({ goal }: GoalBannerProps) {
+  // Handle goal banner image
   const statusConfig = getGoalStatus(goal.status)
   const priorityConfig = getPriorityConfig(goal.priority)
   const { settings } = useSettings()
