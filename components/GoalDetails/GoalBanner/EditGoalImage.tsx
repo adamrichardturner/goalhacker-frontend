@@ -65,50 +65,41 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
       const formData = new FormData()
       formData.append('image', file)
 
-      // Get signed URL for upload
-      const response = await fetch(`${API_URL}/api/images/upload`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      })
-
-      if (!response.ok) throw new Error('Failed to get upload URL')
-
-      const { uploadUrl, key } = await response.json()
-
-      // Upload to S3
-      const uploadResponse = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': file.type,
-        },
-      })
-
-      if (!uploadResponse.ok) throw new Error('Failed to upload to S3')
-
-      // Get the signed URL for the uploaded image
-      const signedUrlResponse = await fetch(
-        `${API_URL}/api/images/goals/${key}`,
+      // Upload through our API
+      const response = await fetch(
+        `${API_URL}/api/goals/${goal.goal_id}/image`,
         {
+          method: 'POST',
+          body: formData,
           credentials: 'include',
         }
       )
 
-      if (!signedUrlResponse.ok) throw new Error('Failed to get signed URL')
-      const { url: signedUrl } = await signedUrlResponse.json()
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to upload image')
+      }
 
-      // Update goal with the new image key and URL
+      const { imageUrl, signedUrl } = await response.json()
+
+      // Update goal with the signed URL
       setEditedGoal((prev) => ({
         ...prev,
-        image_url: key, // Store the S3 key
+        image_url: signedUrl, // Store the signed URL directly
         category: undefined, // Clear category when custom image is uploaded
       }))
+
+      // Update the ImageGallery with the signed URL for immediate display
+      if (selectedImage) {
+        selectedImage.url = signedUrl
+      }
 
       toast.success('Image uploaded successfully')
     } catch (error) {
       console.error('Upload error:', error)
-      toast.error('Failed to upload image')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to upload image'
+      )
     } finally {
       setIsUploading(false)
     }
@@ -116,9 +107,15 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
 
   const handleSave = async () => {
     try {
-      // Only update the image_url
+      if (!editedGoal.image_url) {
+        toast.error('Please select or upload an image first')
+        return
+      }
+
+      // Update with both image_url and user_id
       const updatePayload: Partial<Goal> = {
-        image_url: editedGoal.image_url,
+        image_url: editedGoal.image_url, // This is now the full API path
+        user_id: goal.user_id, // Required for RLS
       }
 
       await updateGoal(updatePayload)
@@ -144,10 +141,10 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
   }, [])
 
   const selectedImage = useMemo(() => {
-    if (editedGoal.image_url && editedGoal.category) {
+    if (editedGoal.image_url) {
       return {
         id: editedGoal.image_url.split('/').pop()?.split('.')[0] || '',
-        url: editedGoal.image_url,
+        url: editedGoal.image_url, // Use the URL directly since it's already a signed URL
         category: editedGoal.category,
       }
     }

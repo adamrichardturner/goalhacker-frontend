@@ -6,6 +6,11 @@ import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Label } from '@/components/ui/label'
 import { CategorySelect } from '@/components/CategorySelect'
+import { ImageGallery } from '@/components/ImageGallery'
+import { useState } from 'react'
+import { API_URL } from '@/config/api'
+import { toast } from 'sonner'
+import { Image } from '@/types/image'
 
 interface BasicInfoProps {
   onNext: () => void
@@ -20,10 +25,58 @@ export function BasicInfo({
   goalData,
   isLoading = false,
 }: BasicInfoProps) {
+  const [isUploading, setIsUploading] = useState(false)
+
   const handleNext = () => {
     if (goalData.title) {
       onNext()
     }
+  }
+
+  const handleImageUpload = async (file: File) => {
+    try {
+      setIsUploading(true)
+
+      // Create form data
+      const formData = new FormData()
+      formData.append('image', file)
+
+      // Upload through our API
+      const response = await fetch(`${API_URL}/api/goals/upload`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to upload image')
+      }
+
+      const { imageUrl, signedUrl } = await response.json()
+
+      // Update goal with the signed URL
+      updateGoalData({ image_url: signedUrl })
+
+      // Update the ImageGallery with the signed URL for immediate display
+      const selectedImage = { url: signedUrl } as Image
+      handleImageSelect(selectedImage)
+
+      toast.success('Image uploaded successfully')
+    } catch (error) {
+      console.error('Upload error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to upload image'
+      )
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleImageSelect = (image: Image) => {
+    // For default gallery images, store the URL as is
+    // For uploaded images, the URL is already in the correct format
+    updateGoalData({ image_url: image.url })
   }
 
   if (isLoading) {
@@ -91,6 +144,23 @@ export function BasicInfo({
             onValueChange={(categoryId) =>
               updateGoalData({ category_id: categoryId })
             }
+          />
+        </div>
+
+        <div className='space-y-1 pb-6'>
+          <Label>Goal Image (Optional)</Label>
+          <ImageGallery
+            onImageSelect={handleImageSelect}
+            selectedImage={
+              goalData.image_url
+                ? ({
+                    url: goalData.image_url, // Use the URL directly since it's already a signed URL
+                  } as Image)
+                : undefined
+            }
+            existingImage={goalData.image_url || undefined}
+            onImageUpload={handleImageUpload}
+            isUploading={isUploading}
           />
         </div>
 
