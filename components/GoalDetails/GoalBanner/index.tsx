@@ -5,7 +5,7 @@ import { formatDate } from '@/utils/dateFormat'
 import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { useSettings } from '@/hooks/useSettings'
-import useGoalImageDisplay from '@/hooks/useGoalImageDisplay'
+import { useGoalImageDisplay } from '@/hooks/useGoalImageDisplay'
 import { Layers, Target, AlertTriangle, Flag } from 'lucide-react'
 
 interface GoalBannerProps {

@@ -12,18 +12,15 @@ const nextConfig = {
         source: '/api/:path*',
         destination: `${apiUrl}/api/:path*`,
       },
-      {
-        source: '/default-goal-images/:path*',
-        destination: `${apiUrl}/api/images/default-goal-images/:path*`,
-      },
-      {
-        source: '/uploads/:path*',
-        destination: `${apiUrl}/api/images/uploads/:path*`,
-      },
     ]
   },
   images: {
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.amazonaws.com',
+        pathname: '/**',
+      },
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -31,7 +28,6 @@ const nextConfig = {
         pathname: '/api/images/**',
       },
     ],
-    domains: ['localhost'],
   },
   output: 'standalone',
 }

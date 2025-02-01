@@ -62,7 +62,7 @@ export const useImageGallery = (initialPage = 1) => {
   // Transform the API response into a more usable format
   const defaultImages = data?.images.map((img) => ({
     id: img.key,
-    url: `${API_URL}${img.url}`,
+    url: img.url,
     category: img.category,
   }))
 
