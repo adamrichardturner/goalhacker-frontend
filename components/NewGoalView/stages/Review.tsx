@@ -7,11 +7,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { ImageGallery } from '@/components/ImageGallery'
 import { Badge } from '@/components/ui/badge'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
 import { useCategories } from '@/hooks/useCategories'
 import { Category } from '@/types/category'
+import { API_URL } from '@/config/api'
+import { toast } from 'sonner'
 
 interface ReviewProps {
   onBack?: () => void
@@ -34,6 +36,43 @@ export function Review({
 }: ReviewProps) {
   const { settings } = useSettings()
   const { data: categories } = useCategories()
+  const [isUploading, setIsUploading] = useState(false)
+
+  const handleImageUpload = async (file: File) => {
+    try {
+      setIsUploading(true)
+
+      // Create form data
+      const formData = new FormData()
+      formData.append('image', file)
+
+      // Upload through our API using the images endpoint
+      const response = await fetch(`${API_URL}/api/images/upload`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to upload image')
+      }
+
+      const { signedUrl } = await response.json()
+
+      // Update goal with the signed URL
+      updateGoalData({ image_url: signedUrl })
+
+      toast.success('Image uploaded successfully')
+    } catch (error) {
+      console.error('Upload error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to upload image'
+      )
+    } finally {
+      setIsUploading(false)
+    }
+  }
 
   const handleImageSelect = useCallback(
     (image: Image) => {
@@ -226,8 +265,9 @@ export function Review({
             <ImageGallery
               onImageSelect={handleImageSelect}
               selectedImage={selectedImage}
-              onImageUpload={async () => {}}
-              isUploading={false}
+              onImageUpload={handleImageUpload}
+              isUploading={isUploading}
+              existingImage={goalData.image_url || undefined}
             />
           </div>
         </div>
@@ -238,7 +278,7 @@ export function Review({
           </Button>
           <Button
             onClick={onSubmit}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploading}
             className='flex-1 h-12'
           >
             {isSubmitting ? 'Creating Goal...' : 'Create Goal'}
