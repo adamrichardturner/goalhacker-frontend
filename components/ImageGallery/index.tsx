@@ -5,7 +5,6 @@ import { Image } from '@/types/image'
 import { DefaultImagesGrid } from './DefaultImagesGrid'
 import { Upload, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
 
 interface ImageGalleryProps {
   onImageSelect: (image: Image) => void

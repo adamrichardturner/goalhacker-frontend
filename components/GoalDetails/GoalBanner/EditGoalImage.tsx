@@ -39,10 +39,6 @@ type EditedGoal = {
   category?: string
 }
 
-type UpdateGoalPayload = Omit<Goal, 'category'> & {
-  category?: string
-}
-
 export function EditGoalImage({ goal }: EditGoalImageProps) {
   const router = useRouter()
   const { updateGoal, deleteGoal } = useGoal(goal.goal_id)
@@ -80,7 +76,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
         throw new Error(error.message || 'Failed to upload image')
       }
 
-      const { imageUrl, signedUrl } = await response.json()
+      const { signedUrl } = await response.json()
 
       // Update goal with the signed URL
       setEditedGoal((prev) => ({

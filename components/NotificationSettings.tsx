@@ -34,8 +34,6 @@ export function NotificationSettings() {
     updatePreferences,
   } = useNotifications()
 
-  console.log(settings?.preferences)
-
   if (!isSupported) {
     return (
       <Card>

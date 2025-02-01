@@ -94,7 +94,7 @@ export default function NotificationSettings() {
             : settings.preferences.subgoalReminders.daysBeforeDeadline,
       },
     }
-  }, [settings])
+  }, [settings, defaultPreferences])
 
   const [preferences, setPreferences] =
     useState<NotificationPreferences>(initialPreferences)
