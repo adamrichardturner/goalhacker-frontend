@@ -47,7 +47,6 @@ export interface Goal {
   subgoals?: Subgoal[]
   progress_notes?: ProgressNote[]
   image_url: string | null
-  default_image_key: string | null
 }
 
 export type GoalStatus = Goal['status']

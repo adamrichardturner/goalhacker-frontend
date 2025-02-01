@@ -88,7 +88,9 @@ export function BasicInfo({
           <Label>Category (Optional)</Label>
           <CategorySelect
             value={goalData.category_id}
-            onValueChange={(value) => updateGoalData({ category_id: value })}
+            onValueChange={(categoryId) =>
+              updateGoalData({ category_id: categoryId })
+            }
           />
         </div>
 

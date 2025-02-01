@@ -25,9 +25,22 @@ import {
 } from '../../ui/alert-dialog'
 import { useRouter } from 'next/navigation'
 import { ImageGallery } from '../../ImageGallery'
+import { API_URL } from '@/config/api'
 
 interface EditGoalImageProps {
   goal: Goal
+}
+
+type EditedGoal = {
+  title: string
+  aims: string
+  target_date: string
+  image_url: string
+  category?: string
+}
+
+type UpdateGoalPayload = Omit<Goal, 'category'> & {
+  category?: string
 }
 
 export function EditGoalImage({ goal }: EditGoalImageProps) {
@@ -35,47 +48,122 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
   const { updateGoal, deleteGoal } = useGoal(goal.goal_id)
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [editedGoal, setEditedGoal] = useState({
+  const [isUploading, setIsUploading] = useState(false)
+  const [editedGoal, setEditedGoal] = useState<EditedGoal>({
     title: goal.title || '',
     aims: goal.aims || '',
     target_date: goal.target_date || '',
-    default_image_key: goal.default_image_key || '',
     image_url: goal.image_url || '',
+    category: goal.category?.name,
   })
 
-  const handleSave = () => {
+  const handleImageUpload = async (file: File) => {
     try {
-      updateGoal(editedGoal)
+      setIsUploading(true)
+
+      // Create form data
+      const formData = new FormData()
+      formData.append('image', file)
+
+      // Get signed URL for upload
+      const response = await fetch(`${API_URL}/api/images/upload`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      })
+
+      if (!response.ok) throw new Error('Failed to get upload URL')
+
+      const { uploadUrl, key } = await response.json()
+
+      // Upload to S3
+      const uploadResponse = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': file.type,
+        },
+      })
+
+      if (!uploadResponse.ok) throw new Error('Failed to upload to S3')
+
+      // Get the signed URL for the uploaded image
+      const signedUrlResponse = await fetch(
+        `${API_URL}/api/images/goals/${key}`,
+        {
+          credentials: 'include',
+        }
+      )
+
+      if (!signedUrlResponse.ok) throw new Error('Failed to get signed URL')
+      const { url: signedUrl } = await signedUrlResponse.json()
+
+      // Update goal with the new image key and URL
+      setEditedGoal((prev) => ({
+        ...prev,
+        image_url: key, // Store the S3 key
+        category: undefined, // Clear category when custom image is uploaded
+      }))
+
+      toast.success('Image uploaded successfully')
+    } catch (error) {
+      console.error('Upload error:', error)
+      toast.error('Failed to upload image')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    try {
+      // Only update the image_url
+      const updatePayload: Partial<Goal> = {
+        image_url: editedGoal.image_url,
+      }
+
+      await updateGoal(updatePayload)
       setIsEditing(false)
       toast.success('Goal updated successfully')
-    } catch {
+    } catch (error) {
+      console.error('Save error:', error)
       toast.error('Failed to update goal')
     }
   }
 
-  const handleImageSelect = useCallback((image: Image) => {
-    setEditedGoal((prev) => ({
-      ...prev,
-      default_image_key: image.id,
-      image_url: image.url,
-    }))
+  const handleImageSelect = useCallback(async (image: Image) => {
+    try {
+      setEditedGoal((prev) => ({
+        ...prev,
+        image_url: image.url, // Store the S3 URL for default gallery images
+        category: image.category,
+      }))
+    } catch (error) {
+      console.error('Error selecting image:', error)
+      toast.error('Failed to select image')
+    }
   }, [])
 
   const selectedImage = useMemo(() => {
-    if (editedGoal.default_image_key && editedGoal.image_url) {
+    if (editedGoal.image_url && editedGoal.category) {
       return {
-        id: editedGoal.default_image_key,
+        id: editedGoal.image_url.split('/').pop()?.split('.')[0] || '',
         url: editedGoal.image_url,
+        category: editedGoal.category,
       }
     }
     return undefined
-  }, [editedGoal.default_image_key, editedGoal.image_url])
+  }, [editedGoal.image_url, editedGoal.category])
 
-  const handleGoalDelete = () => {
-    setIsDeleting(true)
-    deleteGoal()
-    toast.success('Goal deleted successfully')
-    router.push('/goals')
+  const handleGoalDelete = async () => {
+    try {
+      setIsDeleting(true)
+      await deleteGoal()
+      toast.success('Goal deleted successfully')
+      router.push('/goals')
+    } catch (error) {
+      console.error('Delete error:', error)
+      toast.error('Failed to delete goal')
+    }
   }
 
   return (
@@ -101,6 +189,8 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
               onImageSelect={handleImageSelect}
               selectedImage={selectedImage}
               existingImage={editedGoal.image_url}
+              onImageUpload={handleImageUpload}
+              isUploading={isUploading}
             />
           </div>
           <div className='flex justify-end gap-2 pt-4'>
@@ -108,10 +198,13 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
               variant='outline'
               className='bg-input hover:bg-input/98'
               onClick={() => setIsEditing(false)}
+              disabled={isUploading}
             >
               Cancel
             </Button>
-            <Button onClick={handleSave}>Save Changes</Button>
+            <Button onClick={handleSave} disabled={isUploading}>
+              Save Changes
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -130,18 +223,21 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
-              goal and all its subgoals.
+              goal and all its data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDeleting(false)}>
+            <AlertDialogCancel
+              onClick={() => setIsDeleting(false)}
+              className='bg-input hover:bg-input/98'
+            >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleGoalDelete}
-              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+              className='bg-destructive hover:bg-destructive/90'
             >
-              Delete Goal
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -7,9 +7,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { ImageGallery } from '@/components/ImageGallery'
 import { Badge } from '@/components/ui/badge'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
+import { useCategories } from '@/hooks/useCategories'
+import { Category } from '@/types/category'
 
 interface ReviewProps {
   onBack?: () => void
@@ -31,17 +33,32 @@ export function Review({
   onNavigateToStep,
 }: ReviewProps) {
   const { settings } = useSettings()
+  const { data: categories } = useCategories()
 
   const handleImageSelect = useCallback(
     (image: Image) => {
       updateGoalData({
-        ...goalData,
         image_url: image.url,
-        default_image_key: image.id,
       })
     },
-    [goalData, updateGoalData]
+    [updateGoalData]
   )
+
+  const selectedImage = useMemo(() => {
+    if (goalData.image_url && goalData.category_id && categories) {
+      const category = categories.find(
+        (c: Category) => c.category_id === goalData.category_id
+      )
+      if (category) {
+        return {
+          id: goalData.image_url.split('/').pop()?.split('.')[0] || '',
+          url: goalData.image_url,
+          category: category.name.toLowerCase(),
+        }
+      }
+    }
+    return undefined
+  }, [goalData.image_url, goalData.category_id, categories])
 
   if (isLoading) {
     return (
@@ -208,15 +225,9 @@ export function Review({
 
             <ImageGallery
               onImageSelect={handleImageSelect}
-              selectedImage={
-                goalData.image_url && goalData.default_image_key
-                  ? {
-                      id: goalData.default_image_key,
-                      url: goalData.image_url,
-                      category: 'default',
-                    }
-                  : undefined
-              }
+              selectedImage={selectedImage}
+              onImageUpload={async () => {}}
+              isUploading={false}
             />
           </div>
         </div>
