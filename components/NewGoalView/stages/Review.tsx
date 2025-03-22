@@ -76,8 +76,19 @@ export function Review({
 
   const handleImageSelect = useCallback(
     (image: Image) => {
+      // For default gallery images, store just the path portion without the API_URL
+      // This ensures consistency with how we process image URLs in useGoalImageDisplay
+      let imagePath = image.url
+
+      // If this is a URL from our API
+      if (image.url.includes('/api/images/default-goal-images')) {
+        // Extract just the path portion after "/api/images/"
+        const pathMatch = image.url.match(/\/api\/images\/(.*)/i)
+        imagePath = pathMatch ? pathMatch[1] : image.url
+      }
+
       updateGoalData({
-        image_url: image.url,
+        image_url: imagePath,
       })
     },
     [updateGoalData]

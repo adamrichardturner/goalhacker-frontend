@@ -15,9 +15,13 @@ export function useGoalImageDisplay(goal: Goal) {
         return goal.image_url
       }
 
-      // Check if it's a default gallery image
+      // For default gallery images, they might be stored with a path that includes "/api/images/default-goal-images"
       if (goal.image_url.includes('default-goal-images')) {
-        return `${API_URL}/api/images/${goal.image_url}`
+        // Remove any leading slashes to avoid double slashes
+        const cleanPath = goal.image_url.startsWith('/')
+          ? goal.image_url.slice(1)
+          : goal.image_url
+        return `${API_URL}/${cleanPath}`
       }
 
       // Get signed URL for custom uploaded image
