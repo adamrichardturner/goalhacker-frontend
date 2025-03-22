@@ -39,6 +39,10 @@ export function useImages() {
 
   // Normalize image paths for storage
   const normalizeImagePathForStorage = (url: string): string => {
+    if (!url) {
+      return ''
+    }
+
     // If it's a default gallery image
     if (url.includes('default-goal-images')) {
       const pathParts = url.split('default-goal-images/')
@@ -75,12 +79,20 @@ export function useImages() {
       const cleanPath = pathComponent.startsWith('/')
         ? pathComponent.substring(1)
         : pathComponent
-      return `${API_URL}/api/images/default-goal-images/${cleanPath}`
+
+      // Use full domain to avoid relative path issues
+      const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL
+      return `${baseUrl}/api/images/default-goal-images/${cleanPath}`
     }
 
     try {
       // For custom uploaded images, get a signed URL
-      const response = await fetch(`${API_URL}/api/images/goals/${imagePath}`, {
+      const cleanPath = imagePath.startsWith('/')
+        ? imagePath.substring(1)
+        : imagePath
+      const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL
+
+      const response = await fetch(`${baseUrl}/api/images/goals/${cleanPath}`, {
         credentials: 'include',
       })
 
@@ -97,12 +109,47 @@ export function useImages() {
     }
   }
 
+  // Get image URL for preview purposes (non-reactive)
+  const getImagePreviewUrl = (imagePath: string | undefined): string => {
+    if (!imagePath) {
+      return ''
+    }
+
+    // If it's already a full URL or data URL, use it directly
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:')) {
+      return imagePath
+    }
+
+    // For default gallery images
+    if (imagePath.includes('default-goal-images')) {
+      const pathComponent = imagePath.includes('default-goal-images/')
+        ? imagePath.split('default-goal-images/')[1]
+        : imagePath.replace('default-goal-images', '')
+
+      const cleanPath = pathComponent.startsWith('/')
+        ? pathComponent.substring(1)
+        : pathComponent
+      const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL
+      return `${baseUrl}/api/images/default-goal-images/${cleanPath}`
+    }
+
+    // For uploaded images, construct path to the API
+    const cleanPath = imagePath.startsWith('/')
+      ? imagePath.substring(1)
+      : imagePath
+    const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL
+    return `${baseUrl}/api/images/goals/${cleanPath}`
+  }
+
   // Get display URL for an image using React Query
   const useImageDisplay = (imagePath: string | undefined) => {
     return useQuery({
       queryKey: ['image', imagePath],
       queryFn: () => getDisplayUrl(imagePath || ''),
       enabled: !!imagePath,
+      staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+      gcTime: 1000 * 60 * 10, // Keep in memory for 10 minutes
+      retry: 1, // Only retry once
     })
   }
 
@@ -246,6 +293,7 @@ export function useImages() {
     // Display and path handling
     useImageDisplay,
     getDisplayUrl,
+    getImagePreviewUrl,
     normalizeImagePathForStorage,
     handleImageSelect,
   }

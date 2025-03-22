@@ -1,10 +1,11 @@
-import { useState, memo, useCallback } from 'react'
+import { useState, memo, useCallback, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Image } from '@/types/image'
 import { DefaultImagesGrid } from './DefaultImagesGrid'
 import { Upload, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useImages } from '@/hooks/useImages'
 
 interface ImageGalleryProps {
   onImageSelect: (image: Image) => void
@@ -21,9 +22,17 @@ export const ImageGallery = memo(function ImageGallery({
   onImageUpload,
   isUploading,
 }: ImageGalleryProps) {
-  const [uploadPreview, setUploadPreview] = useState<string>(
-    existingImage || ''
-  )
+  const { getImagePreviewUrl } = useImages()
+  const [uploadPreview, setUploadPreview] = useState<string>('')
+
+  // Initialize preview when the component mounts or existingImage changes
+  useEffect(() => {
+    if (existingImage) {
+      setUploadPreview(getImagePreviewUrl(existingImage))
+    } else {
+      setUploadPreview('')
+    }
+  }, [existingImage, getImagePreviewUrl])
 
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
