@@ -12,8 +12,6 @@ export function useGoal(id?: string) {
   const queryClient = useQueryClient()
   const {
     createGoal: createGoalOffline,
-    updateGoal: updateGoalOffline,
-    deleteGoal: deleteGoalOffline,
     updateSubgoalStatus: updateSubgoalStatusOffline,
     updateSubgoalsOrder: updateSubgoalsOrderOffline,
     isOnline,
