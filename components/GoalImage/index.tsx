@@ -4,7 +4,7 @@ import { AspectRatio } from '../ui/aspect-ratio'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { getPriorityConfig } from '@/utils/goalPriority'
 import { StatusBadge } from '../ui/status-badge'
-import { useGoalImageDisplay } from '@/hooks/useGoalImageDisplay'
+import { useImages } from '@/hooks/useImages'
 import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
 import { Layers, Target, AlertTriangle, Flag } from 'lucide-react'
@@ -15,7 +15,10 @@ interface GoalImageProps {
 }
 
 export default function GoalImage({ goal, className = '' }: GoalImageProps) {
-  const { imageUrl, isLoading } = useGoalImageDisplay(goal)
+  const { useImageDisplay } = useImages()
+  const { data: imageUrl, isLoading } = useImageDisplay(
+    goal.image_url || undefined
+  )
   const { settings } = useSettings()
   if (!goal) return null
 

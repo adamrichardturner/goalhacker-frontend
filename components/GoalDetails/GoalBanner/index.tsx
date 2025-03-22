@@ -5,7 +5,7 @@ import { formatDate } from '@/utils/dateFormat'
 import { EditGoalImage } from './EditGoalImage'
 import { getGoalStatus } from '@/utils/goalStatus'
 import { useSettings } from '@/hooks/useSettings'
-import { useGoalImageDisplay } from '@/hooks/useGoalImageDisplay'
+import { useImages } from '@/hooks/useImages'
 import { Layers, Target, AlertTriangle, Flag } from 'lucide-react'
 
 interface GoalBannerProps {
@@ -17,7 +17,8 @@ export default function GoalBanner({ goal }: GoalBannerProps) {
   const statusConfig = getGoalStatus(goal.status)
   const priorityConfig = getPriorityConfig(goal.priority)
   const { settings } = useSettings()
-  const { imageUrl } = useGoalImageDisplay(goal)
+  const { useImageDisplay } = useImages()
+  const { data: imageUrl } = useImageDisplay(goal.image_url || undefined)
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {

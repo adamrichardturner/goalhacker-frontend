@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { Image } from '@/types/image'
-import { useImageGallery } from '@/hooks/useImageGallery'
+import { useImages } from '@/hooks/useImages'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -17,19 +17,19 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
   selectedImage,
 }: DefaultImagesGridProps) {
   const {
-    defaultImages,
+    galleryImages,
     categories,
-    isLoadingDefaultImages,
-    isLoadingNextPage,
+    isLoadingGallery,
+    isFetchingGallery,
     page,
     selectedCategory,
     changePage,
     changeCategory,
     totalPages,
-  } = useImageGallery()
+  } = useImages()
 
   const gridItems =
-    isLoadingDefaultImages || isLoadingNextPage
+    isLoadingGallery || isFetchingGallery
       ? Array.from({ length: 6 }).map((_, index) => (
           <div
             key={`skeleton-${index}`}
@@ -38,7 +38,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             <Skeleton className='w-full h-full rounded-2xl' />
           </div>
         ))
-      : defaultImages?.map((image: Image) => (
+      : galleryImages?.map((image: Image) => (
           <div
             key={image.id}
             className={cn(
@@ -80,7 +80,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             variant='outline'
             size='sm'
             onClick={() => changePage(page - 1)}
-            disabled={page === 1 || isLoadingNextPage}
+            disabled={page === 1 || isFetchingGallery}
           >
             Prev
           </Button>
@@ -91,7 +91,7 @@ export const DefaultImagesGrid = memo(function DefaultImagesGrid({
             variant='outline'
             size='sm'
             onClick={() => changePage(page + 1)}
-            disabled={page === totalPages || isLoadingNextPage}
+            disabled={page === totalPages || isFetchingGallery}
           >
             Next
           </Button>

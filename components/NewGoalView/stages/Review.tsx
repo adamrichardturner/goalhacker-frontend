@@ -12,8 +12,8 @@ import { formatDate } from '@/utils/dateFormat'
 import { useSettings } from '@/hooks/useSettings'
 import { useCategories } from '@/hooks/useCategories'
 import { Category } from '@/types/category'
-import { API_URL } from '@/config/api'
 import { toast } from 'sonner'
+import { useImages } from '@/hooks/useImages'
 
 interface ReviewProps {
   onBack?: () => void
@@ -36,29 +36,15 @@ export function Review({
 }: ReviewProps) {
   const { settings } = useSettings()
   const { data: categories } = useCategories()
+  const { uploadImage, handleImageSelect } = useImages()
   const [isUploading, setIsUploading] = useState(false)
 
   const handleImageUpload = async (file: File) => {
     try {
       setIsUploading(true)
 
-      // Create form data
-      const formData = new FormData()
-      formData.append('image', file)
-
-      // Upload through our API using the images endpoint
-      const response = await fetch(`${API_URL}/api/images/upload`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Failed to upload image')
-      }
-
-      const { signedUrl } = await response.json()
+      // Use the uploadImage function from useImages hook
+      const { signedUrl } = await uploadImage(file)
 
       // Update goal with the signed URL
       updateGoalData({ image_url: signedUrl })
@@ -74,24 +60,15 @@ export function Review({
     }
   }
 
-  const handleImageSelect = useCallback(
+  const onImageSelect = useCallback(
     (image: Image) => {
-      // For default gallery images, store just the path portion without the API_URL
-      // This ensures consistency with how we process image URLs in useGoalImageDisplay
-      let imagePath = image.url
-
-      // If this is a URL from our API
-      if (image.url.includes('/api/images/default-goal-images')) {
-        // Extract just the path portion after "/api/images/"
-        const pathMatch = image.url.match(/\/api\/images\/(.*)/i)
-        imagePath = pathMatch ? pathMatch[1] : image.url
-      }
-
+      // Use handleImageSelect from useImages hook
+      const imagePath = handleImageSelect(image)
       updateGoalData({
         image_url: imagePath,
       })
     },
-    [updateGoalData]
+    [updateGoalData, handleImageSelect]
   )
 
   const selectedImage = useMemo(() => {
@@ -274,7 +251,7 @@ export function Review({
             </div>
 
             <ImageGallery
-              onImageSelect={handleImageSelect}
+              onImageSelect={onImageSelect}
               selectedImage={selectedImage}
               onImageUpload={handleImageUpload}
               isUploading={isUploading}

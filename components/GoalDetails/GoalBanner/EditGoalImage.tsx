@@ -25,7 +25,7 @@ import {
 } from '../../ui/alert-dialog'
 import { useRouter } from 'next/navigation'
 import { ImageGallery } from '../../ImageGallery'
-import { API_URL } from '@/config/api'
+import { useImages } from '@/hooks/useImages'
 
 interface EditGoalImageProps {
   goal: Goal
@@ -42,6 +42,7 @@ type EditedGoal = {
 export function EditGoalImage({ goal }: EditGoalImageProps) {
   const router = useRouter()
   const { updateGoal, deleteGoal } = useGoal(goal.goal_id)
+  const { uploadGoalImage, handleImageSelect } = useImages()
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -57,26 +58,8 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
     try {
       setIsUploading(true)
 
-      // Create form data
-      const formData = new FormData()
-      formData.append('image', file)
-
-      // Upload through our API
-      const response = await fetch(
-        `${API_URL}/api/goals/${goal.goal_id}/image`,
-        {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-        }
-      )
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Failed to upload image')
-      }
-
-      const { signedUrl } = await response.json()
+      // Use the consolidated hook for image upload
+      const { signedUrl } = await uploadGoalImage(goal.goal_id ?? '', file)
 
       // Update goal with the signed URL
       setEditedGoal((prev) => ({
@@ -110,7 +93,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
 
       // Update with both image_url and user_id
       const updatePayload: Partial<Goal> = {
-        image_url: editedGoal.image_url, // This is now the full API path
+        image_url: editedGoal.image_url,
         user_id: goal.user_id, // Required for RLS
       }
 
@@ -123,30 +106,24 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
     }
   }
 
-  const handleImageSelect = useCallback(async (image: Image) => {
-    try {
-      // For default gallery images, store just the path portion without the API_URL
-      // This ensures consistency with how we process image URLs in useGoalImageDisplay
-      // We'll strip any leading slashes and API_URL to store just the relative path
-      let imagePath = image.url
+  const onImageSelect = useCallback(
+    async (image: Image) => {
+      try {
+        // Use the handleImageSelect from the useImages hook
+        const imagePath = handleImageSelect(image)
 
-      // If this is a URL from our API
-      if (image.url.includes('/api/images/default-goal-images')) {
-        // Extract just the path portion after "/api/images/"
-        const pathMatch = image.url.match(/\/api\/images\/(.*)/i)
-        imagePath = pathMatch ? pathMatch[1] : image.url
+        setEditedGoal((prev) => ({
+          ...prev,
+          image_url: imagePath,
+          category: image.category,
+        }))
+      } catch (error) {
+        console.error('Error selecting image:', error)
+        toast.error('Failed to select image')
       }
-
-      setEditedGoal((prev) => ({
-        ...prev,
-        image_url: imagePath,
-        category: image.category,
-      }))
-    } catch (error) {
-      console.error('Error selecting image:', error)
-      toast.error('Failed to select image')
-    }
-  }, [])
+    },
+    [handleImageSelect]
+  )
 
   const selectedImage = useMemo(() => {
     if (editedGoal.image_url) {
@@ -191,7 +168,7 @@ export function EditGoalImage({ goal }: EditGoalImageProps) {
           </DialogHeader>
           <div className='py-4'>
             <ImageGallery
-              onImageSelect={handleImageSelect}
+              onImageSelect={onImageSelect}
               selectedImage={selectedImage}
               existingImage={editedGoal.image_url}
               onImageUpload={handleImageUpload}
