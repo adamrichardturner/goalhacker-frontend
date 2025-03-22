@@ -15,7 +15,7 @@ export function useGoalImageDisplay(goal: Goal) {
 
       // Get signed URL for custom uploaded image
       const response = await fetch(
-        `${API_URL}/api/images/goals/${goal.image_url}`,
+        `${API_URL}api/images/goals/${goal.image_url}`,
         {
           credentials: 'include',
         }
@@ -27,6 +27,8 @@ export function useGoalImageDisplay(goal: Goal) {
     },
     enabled: !!goal.image_url,
   })
+
+  console.log('imageUrl', imageUrl)
 
   return { imageUrl, isLoading }
 }
